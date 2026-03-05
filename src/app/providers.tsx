@@ -1,28 +1,27 @@
 "use client";
-import { useState, useEffect } from "react";
 import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
 import { statusCardComponent } from "@/lib/demo-component";
 import { initialMessages } from "@/lib/initial-messages";
+import { useLocalStorage } from "@/lib/use-local-storage";
 
-const STORAGE_KEY = "tambo-demo-user-key";
-
-function getUserKey(): string {
-  if (typeof window === "undefined") return "";
-  let key = localStorage.getItem(STORAGE_KEY);
-  if (!key) {
-    key = crypto.randomUUID();
-    localStorage.setItem(STORAGE_KEY, key);
+function getOrCreateId(): string {
+  const key = "tambo-demo-user-key";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = crypto.randomUUID();
+    localStorage.setItem(key, id);
   }
-  return key;
+  return id;
 }
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [userKey, setUserKey] = useState("");
+  const [userKey] = useLocalStorage("tambo-demo-user-key", "");
 
-  useEffect(() => {
-    setUserKey(getUserKey());
-  }, []);
+  // Lazily initialize on first client render
+  if (typeof window !== "undefined" && !userKey) {
+    getOrCreateId();
+  }
 
   if (!userKey) return null;
 
