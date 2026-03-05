@@ -9,9 +9,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Foundation
 
-- [ ] **FOUND-01**: App uses Next.js App Router with route groups for CSS isolation between demo pages
-- [ ] **FOUND-02**: TamboProvider is mounted per-skin layout (not shared root) to isolate thread state
-- [ ] **FOUND-03**: Tambo API key is configured via environment variable (not hardcoded)
+- [x] **FOUND-01**: App uses Next.js App Router with route groups for CSS isolation between demo pages
+- [x] **FOUND-02**: TamboProvider is mounted per-skin layout (not shared root) to isolate thread state
+- [x] **FOUND-03**: Tambo API key is configured via environment variable (not hardcoded)
 
 ### Chat Functionality
 
@@ -76,9 +76,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
 | LAYOUT-01 | Phase 1 | Pending |
 | LAYOUT-02 | Phase 1 | Pending |
 | LAYOUT-03 | Phase 1 | Pending |
