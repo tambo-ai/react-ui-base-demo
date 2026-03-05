@@ -15,6 +15,10 @@ export default function PrimerDemo() {
           overflow: "hidden",
         }}
       >
+        <div style={{ padding: "8px 16px", borderBottom: "1px solid #d0d7de", fontSize: 13, flexShrink: 0 }}>
+          <a href="/" style={{ color: "#0969da", textDecoration: "none" }}>← Home</a>
+          <span style={{ color: "#656d76", marginLeft: 8 }}>/ Primer</span>
+        </div>
         <PrimerMessageHistory />
         <PrimerMessageInput />
       </div>

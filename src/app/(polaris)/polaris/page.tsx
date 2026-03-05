@@ -15,6 +15,10 @@ export default function PolarisDemo() {
           overflow: "hidden",
         }}
       >
+        <div style={{ padding: "8px 16px", borderBottom: "1px solid #e1e3e5", fontSize: 13, flexShrink: 0 }}>
+          <a href="/" style={{ color: "#008060", textDecoration: "none" }}>← Home</a>
+          <span style={{ color: "#6d7175", marginLeft: 8 }}>/ Polaris</span>
+        </div>
         <PolarisMessageHistory />
         <PolarisMessageInput />
       </div>
