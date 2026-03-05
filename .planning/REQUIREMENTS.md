@@ -33,7 +33,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Skins
 
 - [x] **SKIN-01**: GitHub Primer demo page — all chat components styled with Primer React
-- [ ] **SKIN-02**: Shopify Polaris demo page — all chat components styled with Polaris React
+- [x] **SKIN-02**: Shopify Polaris demo page — all chat components styled with Polaris React
 - [x] **SKIN-03**: IBM Carbon demo page — all chat components styled with Carbon React
 - [ ] **SKIN-04**: Neobrutalism.dev demo page — all chat components styled with neobrutalism components
 - [ ] **SKIN-05**: nes.css demo page — all chat components styled with nes.css classes
@@ -91,7 +91,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHAT-05 | Phase 2 | Complete |
 | CHAT-06 | Phase 2 | Complete |
 | CHAT-07 | Phase 2 | Complete |
-| SKIN-02 | Phase 3 | Pending |
+| SKIN-02 | Phase 3 | Complete |
 | SKIN-03 | Phase 3 | Complete |
 | SKIN-04 | Phase 4 | Pending |
 | SKIN-05 | Phase 4 | Pending |
