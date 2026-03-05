@@ -15,6 +15,7 @@
     "@shopify/polaris": "^13.9.5",
     "@shopify/polaris-icons": "^9.3.1",
     "@tambo-ai/react": "^1.1.0",
+    "@tambo-ai/react-ui-base": "^0.1.0-alpha.8",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
