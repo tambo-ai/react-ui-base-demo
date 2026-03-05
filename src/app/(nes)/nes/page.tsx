@@ -1,3 +1,4 @@
+"use client";
 import { NesSidebar } from "@/skins/nes/NesSidebar";
 import { NesMessageHistory } from "@/skins/nes/NesMessageHistory";
 import { NesMessageInput } from "@/skins/nes/NesMessageInput";

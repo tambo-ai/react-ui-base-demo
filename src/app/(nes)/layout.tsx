@@ -25,7 +25,7 @@ export default function NesLayout({
           height: "100vh",
         }}
       >
-        <TamboProvider apiKey={tamboApiKey}>{children}</TamboProvider>
+        <TamboProvider apiKey={tamboApiKey} userKey="demo-user">{children}</TamboProvider>
       </body>
     </html>
   );

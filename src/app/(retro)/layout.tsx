@@ -19,7 +19,7 @@ export default function RetroLayout({
           fontFamily: "'Courier New', monospace",
         }}
       >
-        <TamboProvider apiKey={tamboApiKey}>{children}</TamboProvider>
+        <TamboProvider apiKey={tamboApiKey} userKey="demo-user">{children}</TamboProvider>
       </body>
     </html>
   );
