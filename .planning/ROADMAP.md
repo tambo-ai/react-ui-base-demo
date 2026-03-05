@@ -30,11 +30,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. All 6 route group paths (`/primer`, `/polaris`, `/carbon`, `/neobrutalism`, `/nes`, `/retro`) resolve in the browser without 404
   4. Each route group has its own layout file that mounts a TamboProvider scoped to that skin
   5. A documented layout contract exists describing the three required panels (sidebar, message history, message input) and their structural arrangement
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: Set up Next.js App Router route groups for all 6 skins with isolated layouts
-- [ ] 01-02: Configure Tambo API key via environment variable and validate CSS isolation
+- [ ] 01-01-PLAN.md — Strip scaffold, install @tambo-ai/react, create Tambo config and env template
+- [ ] 01-02-PLAN.md — Create 6 route groups with TamboProvider layouts and 3-panel skeleton pages
 
 ### Phase 2: Primer Skin
 **Goal**: A fully functional GitHub Primer chat demo page exists that exercises every Tambo hook and proves the 3-panel layout works end-to-end
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/2 | Not started | - |
+| 1. Foundation | 0/2 | Planned | - |
 | 2. Primer Skin | 0/2 | Not started | - |
 | 3. Brand Skins | 0/2 | Not started | - |
 | 4. Aesthetic Skins | 0/3 | Not started | - |
