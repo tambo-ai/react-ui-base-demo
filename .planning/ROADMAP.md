@@ -13,10 +13,10 @@ Build a Next.js demo app that proves `@tambo-ai/react-ui-base` is truly UI-agnos
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Next.js scaffold with route groups, CSS isolation proven, Tambo env configured, and layout contract established (completed 2026-03-05)
-- [ ] **Phase 2: Primer Skin** - GitHub Primer demo page with full chat functionality wired to real Tambo hooks (reference implementation)
-- [ ] **Phase 3: Brand Skins** - Shopify Polaris and IBM Carbon demo pages replicating the reference layout
-- [ ] **Phase 4: Aesthetic Skins** - Neobrutalism, nes.css, and retro-futuristic demo pages with non-standard library setup
-- [ ] **Phase 5: Navigation** - Home page with links to all 6 demos and back-navigation on each demo page
+- [x] **Phase 2: Primer Skin** - GitHub Primer demo page with full chat functionality wired to real Tambo hooks (reference implementation) (completed 2026-03-05)
+- [x] **Phase 3: Brand Skins** - Shopify Polaris and IBM Carbon demo pages replicating the reference layout (completed 2026-03-05)
+- [x] **Phase 4: Aesthetic Skins** - Neobrutalism, nes.css, and retro-futuristic demo pages with non-standard library setup (completed 2026-03-05)
+- [x] **Phase 5: Navigation** - Home page with links to all 6 demos and back-navigation on each demo page (completed 2026-03-05)
 
 ## Phase Details
 
@@ -50,8 +50,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 02-01-PLAN.md — Install Primer React, create 3 skin components wired to Tambo hooks, compose into page
-- [ ] 02-02-PLAN.md — Browser verification of streaming, thread switching, and Primer rendering
+- [x] 02-01-PLAN.md — Install Primer React, create 3 skin components wired to Tambo hooks, compose into page
+- [x] 02-02-PLAN.md — Browser verification of streaming, thread switching, and Primer rendering
 
 ### Phase 3: Brand Skins
 **Goal**: Shopify Polaris and IBM Carbon demo pages exist with the identical 3-panel layout and full Tambo hook wiring as the Primer reference
@@ -64,8 +64,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 03-01-PLAN.md — Install Shopify Polaris (with React 19 npm override), build Polaris skin components and page
-- [ ] 03-02-PLAN.md — Install IBM Carbon (with Dart Sass), build Carbon skin components and page
+- [x] 03-01-PLAN.md — Install Shopify Polaris (with React 19 npm override), build Polaris skin components and page
+- [x] 03-02-PLAN.md — Install IBM Carbon (with Dart Sass), build Carbon skin components and page
 
 ### Phase 4: Aesthetic Skins
 **Goal**: Neobrutalism, nes.css, and retro-futuristic demo pages exist with the identical 3-panel layout and full Tambo hook wiring
@@ -79,9 +79,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Install nes.css, add Press Start 2P font, build NES skin components
-- [ ] 04-02-PLAN.md — Create neobrutalism CSS classes, build Neobrutalism skin components (no Tailwind needed)
-- [ ] 04-03-PLAN.md — Create retro-futuristic CSS, build Retro skin components with amber/phosphor aesthetic
+- [x] 04-01-PLAN.md — Install nes.css, add Press Start 2P font, build NES skin components
+- [x] 04-02-PLAN.md — Create neobrutalism CSS classes, build Neobrutalism skin components (no Tailwind needed)
+- [x] 04-03-PLAN.md — Create retro-futuristic CSS, build Retro skin components with amber/phosphor aesthetic
 
 ### Phase 5: Navigation
 **Goal**: The demo has a coherent entry point — a home page that links to all 6 skins — and every demo page has a visible way back to the home page
@@ -94,7 +94,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 05-01: Build home page with navigation grid linking to all 6 skins, add back-navigation to each demo layout
+- [x] 05-01: Build home page with navigation grid linking to all 6 skins, add back-navigation to each demo layout
 
 ## Progress
 
@@ -103,8 +103,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/2 | Complete   | 2026-03-05 |
-| 2. Primer Skin | 1/2 | In Progress|  |
-| 3. Brand Skins | 0/2 | Not started | - |
-| 4. Aesthetic Skins | 1/3 | In Progress|  |
-| 5. Navigation | 0/1 | Not started | - |
+| 1. Foundation | 2/2 | Complete | 2026-03-05 |
+| 2. Primer Skin | 2/2 | Complete | 2026-03-05 |
+| 3. Brand Skins | 2/2 | Complete | 2026-03-05 |
+| 4. Aesthetic Skins | 3/3 | Complete | 2026-03-05 |
+| 5. Navigation | 1/1 | Complete | 2026-03-05 |
