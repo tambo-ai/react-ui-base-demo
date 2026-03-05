@@ -1,4 +1,6 @@
 "use client";
+// Side-effect import: loads neobrutalism styles scoped to this route group
+import "./neobrutalism-globals.css";
 import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
 
@@ -9,10 +11,15 @@ export default function NeobrutalismLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <TamboProvider apiKey={tamboApiKey}>
-          {children}
-        </TamboProvider>
+      <body
+        style={{
+          backgroundColor: "#FAFAF9",
+          margin: 0,
+          height: "100vh",
+          fontFamily: "system-ui, -apple-system, sans-serif",
+        }}
+      >
+        <TamboProvider apiKey={tamboApiKey}>{children}</TamboProvider>
       </body>
     </html>
   );
