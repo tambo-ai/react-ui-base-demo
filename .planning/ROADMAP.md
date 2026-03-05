@@ -33,8 +33,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 2 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — Strip scaffold, install @tambo-ai/react, create Tambo config and env template
-- [ ] 01-02-PLAN.md — Create 6 route groups with TamboProvider layouts and 3-panel skeleton pages
+- [x] 01-01-PLAN.md — Strip scaffold, install @tambo-ai/react, create Tambo config and env template
+- [x] 01-02-PLAN.md — Create 6 route groups with TamboProvider layouts and 3-panel skeleton pages
 
 ### Phase 2: Primer Skin
 **Goal**: A fully functional GitHub Primer chat demo page exists that exercises every Tambo hook and proves the 3-panel layout works end-to-end
@@ -47,11 +47,11 @@ Plans:
   4. User can type a message and send it; the message appears in the history and an AI response arrives with tokens streaming in visibly
   5. User sees a loading indicator while the AI is generating a response
   6. All UI elements on the Primer page are rendered using Primer React components (no foreign library components)
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 02-01: Install Primer React, build Sidebar/MessageHistory/MessageInput components wired to Tambo hooks
-- [ ] 02-02: Verify streaming, thread switching, and Primer SSR (styled-components hydration) in production build
+- [ ] 02-01-PLAN.md — Install Primer React, create 3 skin components wired to Tambo hooks, compose into page
+- [ ] 02-02-PLAN.md — Browser verification of streaming, thread switching, and Primer rendering
 
 ### Phase 3: Brand Skins
 **Goal**: Shopify Polaris and IBM Carbon demo pages exist with the identical 3-panel layout and full Tambo hook wiring as the Primer reference
