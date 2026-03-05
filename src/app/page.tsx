@@ -1,3 +1,5 @@
+'use client';
+
 const skins = [
   {
     name: "GitHub Primer",

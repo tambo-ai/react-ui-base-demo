@@ -1,9 +1,5 @@
 "use client";
 import { Press_Start_2P } from "next/font/google";
-import { TamboProvider } from "@tambo-ai/react";
-import { tamboApiKey } from "@/lib/tambo";
-import { statusCardComponent } from "@/lib/demo-component";
-import { initialMessages } from "@/lib/initial-messages";
 import "nes.css/css/nes.min.css";
 
 const pressStart2P = Press_Start_2P({
@@ -17,25 +13,15 @@ export default function NesLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body
-        className={pressStart2P.className}
-        style={{
-          backgroundColor: "#212529",
-          color: "#fff",
-          margin: 0,
-          height: "100vh",
-        }}
-      >
-        <TamboProvider
-          apiKey={tamboApiKey}
-          userKey="demo-user"
-          components={[statusCardComponent]}
-          initialMessages={initialMessages}
-        >
-          {children}
-        </TamboProvider>
-      </body>
-    </html>
+    <div
+      className={pressStart2P.className}
+      style={{
+        backgroundColor: "#212529",
+        color: "#fff",
+        height: "100vh",
+      }}
+    >
+      {children}
+    </div>
   );
 }
