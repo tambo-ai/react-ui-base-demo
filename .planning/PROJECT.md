@@ -12,21 +12,22 @@ Prove that Tambo is truly UI-agnostic — the same headless functionality works 
 
 ### Validated
 
-(None yet — ship to validate)
+- ✓ Home page with navigation cards to all 6 demo pages — v1.0
+- ✓ Back-navigation from each demo to home — v1.0
+- ✓ TamboProvider per-skin layout with CSS isolation via route groups — v1.0
+- ✓ 6 demo pages with identical 3-panel chat layout — v1.0
+- ✓ Thread management (create, switch, list) via Tambo hooks — v1.0
+- ✓ Message send, history, streaming, loading indicator — v1.0
+- ✓ GitHub Primer demo page — v1.0
+- ✓ Shopify Polaris demo page — v1.0
+- ✓ IBM Carbon demo page — v1.0
+- ✓ Neobrutalism demo page — v1.0
+- ✓ NES.css demo page — v1.0
+- ✓ Retro-futuristic demo page — v1.0
 
 ### Active
 
-- [ ] Home page with navigation to all 6 demo pages
-- [ ] Shared Tambo provider wrapping the entire app
-- [ ] 6 demo pages, each implementing an identical chat layout using a different UI library
-- [ ] Chat layout: thread selector sidebar (left), message input (bottom), chat history scrolling up
-- [ ] Real Tambo thread management — thread selector switches between separate conversations
-- [ ] GitHub Primer demo page
-- [ ] Shopify Polaris demo page
-- [ ] IBM Carbon demo page
-- [ ] Neobrutalism.dev demo page
-- [ ] nes.css demo page
-- [ ] Retro-futuristic UI demo page
+(None — v1.0 complete. Use `/gsd:new-milestone` for v1.1)
 
 ### Out of Scope
 
@@ -35,30 +36,32 @@ Prove that Tambo is truly UI-agnostic — the same headless functionality works 
 - Mobile-responsive layouts — desktop-first demo
 - Custom AI model configuration UI — use Tambo defaults
 - Performance benchmarking between libraries
+- Dark mode toggle — unnecessary complexity for proving UI-agnostic point
 
 ## Context
 
-- Built on a fresh Next.js scaffold (Create Next App)
-- `@tambo-ai/react-ui-base` is published on npm
-- The 6 UI libraries span three categories:
-  - **Brand design systems:** GitHub Primer, Shopify Polaris, IBM Carbon
-  - **Style libraries:** Neobrutalism.dev, nes.css, retro-futuristic-ui-design
-- Each demo page is self-contained except for the global Tambo provider
-- The retro-futuristic UI library: https://github.com/Imetomi/retro-futuristic-ui-design
+Shipped v1.0 with ~11K LOC TypeScript/CSS across 79 files.
+Tech stack: Next.js App Router, React 19, `@tambo-ai/react` v1.1.0.
+Design systems: @primer/react v38, @shopify/polaris, @carbon/react + sass, nes.css, custom CSS (neobrutalism + retro).
+Architecture: Route groups with separate root layouts (`<html><body>`) for full CSS isolation.
 
 ## Constraints
 
-- **Tech stack**: Next.js (existing scaffold), React, `@tambo-ai/react-ui-base`
-- **Layout consistency**: All 6 demo pages must have the exact same structural layout
-- **Library isolation**: Each page's styling must not leak into other pages
+- **Tech stack**: Next.js App Router, React, `@tambo-ai/react`
+- **Layout consistency**: All 6 demo pages have the exact same structural layout (3-panel flex)
+- **Library isolation**: Each route group has its own root layout preventing CSS bleed
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Headless Tambo + 6 UI skins | Proves "works with anything" message | — Pending |
-| Real thread state via Tambo | Demonstrates actual functionality, not just visual mockup | — Pending |
-| 3 brand systems + 3 style libraries | Shows range from enterprise to creative design systems | — Pending |
+| Headless Tambo + 6 UI skins | Proves "works with anything" message | ✓ Good — all 6 skins work identically |
+| Real thread state via Tambo | Demonstrates actual functionality, not just visual mockup | ✓ Good — full CRUD on threads |
+| Route groups for CSS isolation | Full page reload between skins prevents CSS bleed | ✓ Good — no cross-contamination |
+| Neobrutalism with custom CSS (no Tailwind) | Tailwind preflight would bleed into other skins | ✓ Good — clean isolation |
+| Retro-futuristic with custom CSS | Vendored components don't accept children | ✓ Good — amber/phosphor aesthetic achieved |
+| Polaris React 19 overrides | Polaris locks to React 18 peer deps | ✓ Good — works with override |
+| Carbon + Dart Sass | Carbon requires SCSS compilation | ✓ Good — sassOptions.silenceDeprecations for warnings |
 
 ---
-*Last updated: 2026-03-04 after initialization*
+*Last updated: 2026-03-05 after v1.0 milestone*
