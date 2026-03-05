@@ -1,0 +1,111 @@
+/* Retro-futuristic globals — scoped to (retro) route group only */
+.retro-panel {
+  border: 1px solid #ffb000;
+  box-shadow: 0 0 8px #ffb000, inset 0 0 8px rgba(255, 176, 0, 0.05);
+  background: #050505;
+  position: relative;
+}
+.retro-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.15) 2px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+}
+.retro-text {
+  color: #ffb000;
+  text-shadow: 0 0 5px #ffb000, 0 0 10px #ff8c00;
+  font-family: "Courier New", monospace;
+}
+.retro-btn {
+  background: transparent;
+  border: 1px solid #ffb000;
+  color: #ffb000;
+  padding: 8px 16px;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  cursor: pointer;
+  text-shadow: 0 0 5px #ffb000;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.retro-btn:hover {
+  background: rgba(255, 176, 0, 0.15);
+  box-shadow: 0 0 12px #ffb000;
+}
+.retro-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.retro-btn-primary {
+  background: rgba(255, 176, 0, 0.2);
+  box-shadow: 0 0 6px #ffb000;
+}
+.retro-input {
+  background: #0a0a0a;
+  border: 1px solid #ffb000;
+  color: #ffb000;
+  padding: 12px;
+  font-family: "Courier New", monospace;
+  font-size: 14px;
+  resize: none;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  text-shadow: 0 0 3px #ffb000;
+}
+.retro-input:focus {
+  box-shadow: 0 0 12px #ffb000, inset 0 0 4px rgba(255, 176, 0, 0.1);
+}
+.retro-input::placeholder {
+  color: rgba(255, 176, 0, 0.4);
+}
+.retro-thread-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  border-bottom: 1px solid rgba(255, 176, 0, 0.2);
+  color: #ffb000;
+  font-family: "Courier New", monospace;
+  transition: background 0.15s;
+}
+.retro-thread-item:hover {
+  background: rgba(255, 176, 0, 0.1);
+}
+.retro-thread-item.active {
+  background: rgba(255, 176, 0, 0.2);
+  text-shadow: 0 0 8px #ffb000;
+  border-left: 3px solid #ffb000;
+}
+.retro-bubble-user {
+  background: rgba(255, 176, 0, 0.15);
+  border: 1px solid #ffb000;
+  padding: 10px 14px;
+  max-width: 70%;
+  color: #ffb000;
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 3px #ffb000;
+}
+.retro-bubble-ai {
+  background: rgba(0, 255, 65, 0.08);
+  border: 1px solid #00ff41;
+  padding: 10px 14px;
+  max-width: 70%;
+  color: #00ff41;
+  font-family: "Courier New", monospace;
+  text-shadow: 0 0 3px #00ff41;
+}
+@keyframes retro-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.retro-loading {
+  color: #ffb000;
+  font-family: "Courier New", monospace;
+  animation: retro-blink 1s infinite;
+  text-shadow: 0 0 5px #ffb000;
+}
