@@ -2,6 +2,8 @@
 import { Press_Start_2P } from "next/font/google";
 import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
+import { statusCardComponent } from "@/lib/demo-component";
+import { initialMessages } from "@/lib/initial-messages";
 import "nes.css/css/nes.min.css";
 
 const pressStart2P = Press_Start_2P({
@@ -25,7 +27,14 @@ export default function NesLayout({
           height: "100vh",
         }}
       >
-        <TamboProvider apiKey={tamboApiKey} userKey="demo-user">{children}</TamboProvider>
+        <TamboProvider
+          apiKey={tamboApiKey}
+          userKey="demo-user"
+          components={[statusCardComponent]}
+          initialMessages={initialMessages}
+        >
+          {children}
+        </TamboProvider>
       </body>
     </html>
   );

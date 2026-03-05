@@ -2,6 +2,8 @@
 import "./retro-globals.css";
 import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
+import { statusCardComponent } from "@/lib/demo-component";
+import { initialMessages } from "@/lib/initial-messages";
 
 export default function RetroLayout({
   children,
@@ -19,7 +21,14 @@ export default function RetroLayout({
           fontFamily: "'Courier New', monospace",
         }}
       >
-        <TamboProvider apiKey={tamboApiKey} userKey="demo-user">{children}</TamboProvider>
+        <TamboProvider
+          apiKey={tamboApiKey}
+          userKey="demo-user"
+          components={[statusCardComponent]}
+          initialMessages={initialMessages}
+        >
+          {children}
+        </TamboProvider>
       </body>
     </html>
   );
