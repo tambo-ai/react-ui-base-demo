@@ -76,12 +76,12 @@ Plans:
   2. User can open the nes.css demo page and use all chat functionality with pixel/retro NES styling applied via nes.css classes
   3. User can open the retro-futuristic demo page and use all chat functionality with vendored retro-futuristic components rendering correctly
   4. After adding all three aesthetic skins, navigating back to Primer, Polaris, or Carbon shows their styling is unaffected
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Set up Tailwind v4, add neobrutalism components via shadcn CLI, build Neobrutalism skin
-- [ ] 04-02: Build nes.css skin using imported stylesheet and custom components
-- [ ] 04-03: Vendor retro-futuristic components from GitHub source, adapt asset paths for Next.js, build Retro skin
+- [ ] 04-01-PLAN.md — Install nes.css, add Press Start 2P font, build NES skin components
+- [ ] 04-02-PLAN.md — Create neobrutalism CSS classes, build Neobrutalism skin components (no Tailwind needed)
+- [ ] 04-03-PLAN.md — Create retro-futuristic CSS, build Retro skin components with amber/phosphor aesthetic
 
 ### Phase 5: Navigation
 **Goal**: The demo has a coherent entry point — a home page that links to all 6 skins — and every demo page has a visible way back to the home page
