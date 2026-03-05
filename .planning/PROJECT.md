@@ -27,10 +27,10 @@ Prove that Tambo is truly UI-agnostic — the same headless functionality works 
 
 ### Active
 
-- [ ] All 6 skins use react-ui-base compound components exclusively (no custom hook wiring)
-- [ ] All react-ui-base features showcased: messages, input, thread history, images, elicitation, reasoning, tool calls, rendered components
-- [ ] Seed messages demonstrate features without empty screens
-- [ ] One registered custom component via useTamboComponentRegistration
+- ✓ All 6 skins use react-ui-base compound components exclusively (no custom hook wiring)
+- ✓ All react-ui-base features showcased: messages, input, thread history, images, elicitation, reasoning, tool calls, rendered components
+- ✓ Seed messages demonstrate features without empty screens
+- ✓ One registered custom component via useTamboComponentRegistration
 
 ## Current Milestone: v1.1 react-ui-base Migration
 
@@ -76,7 +76,7 @@ Architecture: Route groups with separate root layouts (`<html><body>`) for full 
 | Polaris React 19 overrides | Polaris locks to React 18 peer deps | ✓ Good — works with override |
 | Carbon + Dart Sass | Carbon requires SCSS compilation | ✓ Good — sassOptions.silenceDeprecations for warnings |
 
-| react-ui-base compound components | Proves library provides everything needed — no custom wiring | — Pending |
+| react-ui-base compound components | Proves library provides everything needed — no custom wiring | ✓ Good |
 
 ---
 *Last updated: 2026-03-05 after v1.1 milestone start*

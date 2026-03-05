@@ -3,7 +3,7 @@
 ## Milestones
 
 - ✅ **v1.0 MVP** — Phases 1-5 (shipped 2026-03-05) — [Archive](milestones/v1.0-ROADMAP.md)
-- 🔄 **v1.1 react-ui-base Migration** — Phases 6-8
+- ✅ **v1.1 react-ui-base Migration** — Phases 6-8 (shipped 2026-03-05)
 
 ## Phases
 
@@ -64,6 +64,6 @@
 | 3. Brand Skins | v1.0 | 2/2 | Complete | 2026-03-05 |
 | 4. Aesthetic Skins | v1.0 | 3/3 | Complete | 2026-03-05 |
 | 5. Navigation | v1.0 | 1/1 | Complete | 2026-03-05 |
-| 6. Reference Migration + Features | v1.1 | 0/0 | Pending | — |
-| 7. Brand Skin Migration | v1.1 | 0/0 | Pending | — |
-| 8. Aesthetic Skin Migration | v1.1 | 0/0 | Pending | — |
+| 6. Reference Migration + Features | v1.1 | 1/1 | Complete | 2026-03-05 |
+| 7. Brand Skin Migration | v1.1 | 1/1 | Complete | 2026-03-05 |
+| 8. Aesthetic Skin Migration | v1.1 | 1/1 | Complete | 2026-03-05 |
