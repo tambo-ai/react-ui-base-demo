@@ -12,7 +12,7 @@ Build a Next.js demo app that proves `@tambo-ai/react-ui-base` is truly UI-agnos
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Next.js scaffold with route groups, CSS isolation proven, Tambo env configured, and layout contract established
+- [x] **Phase 1: Foundation** - Next.js scaffold with route groups, CSS isolation proven, Tambo env configured, and layout contract established (completed 2026-03-05)
 - [ ] **Phase 2: Primer Skin** - GitHub Primer demo page with full chat functionality wired to real Tambo hooks (reference implementation)
 - [ ] **Phase 3: Brand Skins** - Shopify Polaris and IBM Carbon demo pages replicating the reference layout
 - [ ] **Phase 4: Aesthetic Skins** - Neobrutalism, nes.css, and retro-futuristic demo pages with non-standard library setup
@@ -103,7 +103,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/2 | In Progress|  |
+| 1. Foundation | 2/2 | Complete   | 2026-03-05 |
 | 2. Primer Skin | 0/2 | Not started | - |
 | 3. Brand Skins | 0/2 | Not started | - |
 | 4. Aesthetic Skins | 0/3 | Not started | - |
