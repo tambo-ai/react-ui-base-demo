@@ -1,4 +1,5 @@
 "use client";
+import "@carbon/react/index.scss";
 import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
 
@@ -9,8 +10,8 @@ export default function CarbonLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <TamboProvider apiKey={tamboApiKey}>
+      <body className="cds--layer-one">
+        <TamboProvider apiKey={tamboApiKey} userKey="demo-user">
           {children}
         </TamboProvider>
       </body>

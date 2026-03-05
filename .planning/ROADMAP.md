@@ -61,11 +61,11 @@ Plans:
   1. User can open the Polaris demo page and use all chat functionality (create thread, send message, see streaming response) with the UI styled entirely in Polaris components
   2. User can open the Carbon demo page and use all chat functionality with the UI styled entirely in Carbon components
   3. Navigating from Primer to Polaris to Carbon shows visually distinct styling with no cross-contamination between design systems
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: Install Shopify Polaris (with React 19 npm override), build Polaris skin components
-- [ ] 03-02: Install IBM Carbon (with Dart Sass), build Carbon skin components
+- [ ] 03-01-PLAN.md — Install Shopify Polaris (with React 19 npm override), build Polaris skin components and page
+- [ ] 03-02-PLAN.md — Install IBM Carbon (with Dart Sass), build Carbon skin components and page
 
 ### Phase 4: Aesthetic Skins
 **Goal**: Neobrutalism, nes.css, and retro-futuristic demo pages exist with the identical 3-panel layout and full Tambo hook wiring
