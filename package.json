@@ -12,6 +12,8 @@
     "@carbon/react": "^1.102.0",
     "@primer/primitives": "^11.5.1",
     "@primer/react": "^38.14.0",
+    "@shopify/polaris": "^13.9.5",
+    "@shopify/polaris-icons": "^9.3.1",
     "@tambo-ai/react": "^1.1.0",
     "next": "16.1.6",
     "react": "19.2.3",
