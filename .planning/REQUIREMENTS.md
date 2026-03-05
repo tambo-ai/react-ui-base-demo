@@ -15,13 +15,13 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Chat Functionality
 
-- [ ] **CHAT-01**: User can create a new thread via the UI
-- [ ] **CHAT-02**: User can switch between existing threads via the sidebar
-- [ ] **CHAT-03**: User can see a list of all threads in the sidebar
-- [ ] **CHAT-04**: User can type and send a message in the input area
-- [ ] **CHAT-05**: User can see full message history for the selected thread, scrolling up
-- [ ] **CHAT-06**: User can see AI response tokens streaming in real-time as they arrive
-- [ ] **CHAT-07**: User sees a loading indicator while AI is generating a response
+- [x] **CHAT-01**: User can create a new thread via the UI
+- [x] **CHAT-02**: User can switch between existing threads via the sidebar
+- [x] **CHAT-03**: User can see a list of all threads in the sidebar
+- [x] **CHAT-04**: User can type and send a message in the input area
+- [x] **CHAT-05**: User can see full message history for the selected thread, scrolling up
+- [x] **CHAT-06**: User can see AI response tokens streaming in real-time as they arrive
+- [x] **CHAT-07**: User sees a loading indicator while AI is generating a response
 
 ### Layout
 
@@ -32,7 +32,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Skins
 
-- [ ] **SKIN-01**: GitHub Primer demo page — all chat components styled with Primer React
+- [x] **SKIN-01**: GitHub Primer demo page — all chat components styled with Primer React
 - [ ] **SKIN-02**: Shopify Polaris demo page — all chat components styled with Polaris React
 - [ ] **SKIN-03**: IBM Carbon demo page — all chat components styled with Carbon React
 - [ ] **SKIN-04**: Neobrutalism.dev demo page — all chat components styled with neobrutalism components
@@ -83,14 +83,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | LAYOUT-02 | Phase 1 | Complete |
 | LAYOUT-03 | Phase 1 | Complete |
 | LAYOUT-04 | Phase 1 | Complete |
-| SKIN-01 | Phase 2 | Pending |
-| CHAT-01 | Phase 2 | Pending |
-| CHAT-02 | Phase 2 | Pending |
-| CHAT-03 | Phase 2 | Pending |
-| CHAT-04 | Phase 2 | Pending |
-| CHAT-05 | Phase 2 | Pending |
-| CHAT-06 | Phase 2 | Pending |
-| CHAT-07 | Phase 2 | Pending |
+| SKIN-01 | Phase 2 | Complete |
+| CHAT-01 | Phase 2 | Complete |
+| CHAT-02 | Phase 2 | Complete |
+| CHAT-03 | Phase 2 | Complete |
+| CHAT-04 | Phase 2 | Complete |
+| CHAT-05 | Phase 2 | Complete |
+| CHAT-06 | Phase 2 | Complete |
+| CHAT-07 | Phase 2 | Complete |
 | SKIN-02 | Phase 3 | Pending |
 | SKIN-03 | Phase 3 | Pending |
 | SKIN-04 | Phase 4 | Pending |
