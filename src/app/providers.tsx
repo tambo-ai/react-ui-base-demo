@@ -3,25 +3,10 @@ import { TamboProvider } from "@tambo-ai/react";
 import { tamboApiKey } from "@/lib/tambo";
 import { statusCardComponent } from "@/lib/demo-component";
 import { initialMessages } from "@/lib/initial-messages";
-import { useLocalStorage } from "@/lib/use-local-storage";
-
-function getOrCreateId(): string {
-  const key = "tambo-demo-user-key";
-  let id = localStorage.getItem(key);
-  if (!id) {
-    id = crypto.randomUUID();
-    localStorage.setItem(key, id);
-  }
-  return id;
-}
+import { useUserKey } from "@/lib/use-user-key";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [userKey] = useLocalStorage("tambo-demo-user-key", "");
-
-  // Lazily initialize on first client render
-  if (typeof window !== "undefined" && !userKey) {
-    getOrCreateId();
-  }
+  const userKey = useUserKey();
 
   if (!userKey) return null;
 
