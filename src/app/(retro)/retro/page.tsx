@@ -26,14 +26,15 @@ export default function RetroDemo() {
   return (
     <ChatLayout.Root
       style={{ height: "100vh", background: "#050505" }}
-      colors={{ border: "#ffb000" }}
+      colors={{ border: "#ff6a00" }}
     >
-      <ChatLayout.Content>
+      <ChatLayout.Content className="retro-crt retro-flicker">
         <ChatLayout.Breadcrumb
           style={{
-            borderBottom: "1px solid #ffb000",
-            fontFamily: "'Courier New', monospace",
-            fontSize: 13,
+            borderBottom: "1px solid #ff6a00",
+            fontSize: 16,
+            position: "relative",
+            zIndex: 20,
           }}
         >
           <Link
@@ -43,11 +44,14 @@ export default function RetroDemo() {
           >
             ← Home
           </Link>
-          <span style={{ color: "rgba(255,176,0,0.6)", marginLeft: 8 }}>
+          <span className="retro-text-dim" style={{ marginLeft: 8 }}>
             / Retro
           </span>
         </ChatLayout.Breadcrumb>
-        <ChatLayout.MessageArea padding="normal">
+        <ChatLayout.MessageArea
+          padding="normal"
+          style={{ position: "relative", zIndex: 20 }}
+        >
           <ChatLayout.Container size="medium">
             <ThreadContent.Root
               style={{ display: "flex", flexDirection: "column" }}
@@ -65,7 +69,7 @@ export default function RetroDemo() {
                         <ReasoningInfo.Root>
                           <div
                             className="retro-panel"
-                            style={{ padding: "6px 10px", fontSize: 12 }}
+                            style={{ padding: "6px 10px", fontSize: 14 }}
                           >
                             <ReasoningInfo.Trigger
                               render={(props) => (
@@ -80,8 +84,7 @@ export default function RetroDemo() {
                                     border: "none",
                                     cursor: "pointer",
                                     padding: 0,
-                                    fontSize: 12,
-                                    fontFamily: "'Courier New', monospace",
+                                    fontSize: 14,
                                   }}
                                 >
                                   <ReasoningInfo.StatusText />
@@ -89,12 +92,11 @@ export default function RetroDemo() {
                               )}
                             />
                             <ReasoningInfo.Content
+                              className="retro-text-dim"
                               style={{
                                 marginTop: 6,
-                                fontSize: 12,
-                                color: "rgba(255,176,0,0.7)",
+                                fontSize: 14,
                                 lineHeight: 1.5,
-                                fontFamily: "'Courier New', monospace",
                               }}
                             >
                               <ReasoningInfo.Steps />
@@ -105,7 +107,7 @@ export default function RetroDemo() {
                         <ToolcallInfo.Root>
                           <div
                             className="retro-panel"
-                            style={{ padding: "6px 10px", fontSize: 12 }}
+                            style={{ padding: "6px 10px", fontSize: 14 }}
                           >
                             <ToolcallInfo.Trigger
                               render={(props, { state }) => (
@@ -124,12 +126,8 @@ export default function RetroDemo() {
                               )}
                             />
                             <ToolcallInfo.Content
-                              style={{
-                                marginTop: 6,
-                                fontSize: 12,
-                                color: "rgba(255,176,0,0.5)",
-                                fontFamily: "'Courier New', monospace",
-                              }}
+                              className="retro-text-dim"
+                              style={{ marginTop: 6, fontSize: 14 }}
                             >
                               <ToolcallInfo.Parameters
                                 render={<CodeBlock title="Parameters" />}
@@ -155,7 +153,7 @@ export default function RetroDemo() {
 
                         <Message.LoadingIndicator>
                           <span className="retro-loading">
-                            &gt; PROCESSING...
+                            &gt; PROCESSING...<span className="retro-cursor" />
                           </span>
                         </Message.LoadingIndicator>
                       </Message.Root>
@@ -171,35 +169,22 @@ export default function RetroDemo() {
         <ChatLayout.Container size="medium">
           <MessageInput.Root>
             <MessageInput.StagedImages
-              style={{
-                display: "flex",
-                gap: 8,
-                marginBottom: 8,
-                flexWrap: "wrap",
-              }}
+              style={{ display: "flex", gap: 8, marginBottom: 8, flexWrap: "wrap" }}
             />
             <MessageInput.Error
               style={{
                 marginBottom: 8,
                 padding: "6px 10px",
-                fontSize: 12,
+                fontSize: 14,
                 color: "#ff4444",
-                fontFamily: "'Courier New', monospace",
               }}
             />
             <MessageInput.Content
-              style={{
-                display: "flex",
-                gap: 8,
-                alignItems: "flex-end",
-              }}
+              style={{ display: "flex", gap: 8, alignItems: "flex-end" }}
             >
-              <MessageInput.FileButton
-                className="retro-btn"
-                style={{ padding: "5px 8px" }}
-              >
+              <button className="retro-btn" style={{ padding: "5px 8px", fontSize: 16 }}>
                 📎
-              </MessageInput.FileButton>
+              </button>
               <div style={{ flex: 1 }}>
                 <MessageInput.Textarea
                   placeholder="> TYPE COMMAND..."
@@ -210,13 +195,7 @@ export default function RetroDemo() {
               <MessageInput.SubmitButton className="retro-btn retro-btn-primary">
                 SEND
               </MessageInput.SubmitButton>
-              <MessageInput.StopButton
-                className="retro-btn"
-                style={{
-                  color: "#ff4444",
-                  borderColor: "#ff4444",
-                }}
-              >
+              <MessageInput.StopButton className="retro-btn retro-btn-danger">
                 ABORT
               </MessageInput.StopButton>
             </MessageInput.Content>
@@ -230,7 +209,7 @@ export default function RetroDemo() {
         <div
           style={{
             padding: 16,
-            borderBottom: "1px solid #ffb000",
+            borderBottom: "1px solid #ff6a00",
             display: "flex",
             flexDirection: "column",
             gap: 8,
@@ -238,7 +217,7 @@ export default function RetroDemo() {
         >
           <h2
             className="retro-text"
-            style={{ margin: 0, fontSize: 14, fontWeight: 400 }}
+            style={{ margin: 0, fontSize: 16, fontWeight: 400 }}
           >
             &gt; THREADS
           </h2>
@@ -247,9 +226,9 @@ export default function RetroDemo() {
               className="retro-btn retro-btn-primary"
               style={{
                 width: "100%",
-                fontSize: 12,
+                fontSize: 14,
                 color: "#050505",
-                backgroundColor: "#ffb000",
+                backgroundColor: "#ff6a00",
                 textShadow: "none",
               }}
             >
@@ -273,7 +252,6 @@ export default function RetroDemo() {
                           style={{
                             display: "block",
                             width: "100%",
-                            fontSize: 12,
                             textAlign: "left",
                             background: "none",
                             border: "none",
@@ -327,6 +305,7 @@ function CollapsibleTrigger({
 }: PropsWithChildren<{ state: "open" | "closed" }>) {
   return (
     <button
+      className="retro-text-dim"
       style={{
         display: "flex",
         alignItems: "center",
@@ -335,9 +314,7 @@ function CollapsibleTrigger({
         border: "none",
         cursor: "pointer",
         padding: 0,
-        fontSize: 12,
-        color: "rgba(255,176,0,0.7)",
-        fontFamily: "'Courier New', monospace",
+        fontSize: 14,
       }}
       {...props}
     >
@@ -377,26 +354,18 @@ function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
   return (
     <div style={{ marginTop: 4 }}>
       {title && (
-        <div
-          style={{
-            fontSize: 10,
-            color: "rgba(255,176,0,0.5)",
-            fontFamily: "'Courier New', monospace",
-            marginBottom: 2,
-          }}
-        >
+        <div className="retro-text-dim" style={{ fontSize: 12, marginBottom: 2 }}>
           {title}
         </div>
       )}
       <pre
+        className="retro-text-dim"
         style={{
           margin: 0,
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
-          fontSize: 10,
+          fontSize: 12,
           lineHeight: 1.5,
-          color: "rgba(255,176,0,0.6)",
-          fontFamily: "'Courier New', monospace",
         }}
       >
         {children}

@@ -7,13 +7,7 @@ export default function NeobrutalismLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      style={{
-        backgroundColor: "#FAFAF9",
-        height: "100vh",
-        fontFamily: "system-ui, -apple-system, sans-serif",
-      }}
-    >
+    <div className="bg-background text-foreground font-base" style={{ height: "100vh" }}>
       {children}
     </div>
   );

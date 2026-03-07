@@ -10,9 +10,9 @@ export default function RetroLayout({
     <div
       style={{
         backgroundColor: "#050505",
-        color: "#ffb000",
+        color: "#ff6a00",
         height: "100vh",
-        fontFamily: "'Courier New', monospace",
+        fontFamily: "'VT323', 'Courier New', monospace",
       }}
     >
       {children}

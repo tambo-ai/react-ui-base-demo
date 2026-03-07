@@ -1,10 +1,81 @@
-/* Retro-futuristic globals — scoped to (retro) route group only */
+/* Retro-futuristic globals — inspired by Imetomi/retro-futuristic-ui-design */
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Share+Tech+Mono&display=swap');
+
+/* CRT screen container with scanlines and glow */
+.retro-crt {
+  position: relative;
+  background: #0a0a0a;
+  overflow: hidden;
+}
+
+/* Scanline overlay */
+.retro-crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.15) 0px,
+    rgba(0, 0, 0, 0.15) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Vignette effect */
+.retro-crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 90% 90% at center,
+    transparent 0%,
+    transparent 50%,
+    rgba(0, 0, 0, 0.3) 80%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* Amber phosphor text — the CRT terminal look */
+.retro-text {
+  color: #ff6a00;
+  text-shadow:
+    0 0 5px rgba(255, 106, 0, 0.8),
+    0 0 10px rgba(255, 106, 0, 0.5),
+    0 0 20px rgba(255, 106, 0, 0.3);
+  font-family: "VT323", "Courier New", monospace;
+}
+
+.retro-text-dim {
+  color: #994400;
+  text-shadow: 0 0 5px rgba(255, 106, 0, 0.3);
+  font-family: "VT323", "Courier New", monospace;
+}
+
+/* Green phosphor text (for AI responses) */
+.retro-text-green {
+  color: #00ff41;
+  text-shadow:
+    0 0 5px rgba(0, 255, 65, 0.8),
+    0 0 10px rgba(0, 255, 65, 0.5),
+    0 0 20px rgba(0, 255, 65, 0.3);
+  font-family: "VT323", "Courier New", monospace;
+}
+
+/* Panel with glow border */
 .retro-panel {
-  border: 1px solid #ffb000;
-  box-shadow: 0 0 8px #ffb000, inset 0 0 8px rgba(255, 176, 0, 0.05);
+  border: 1px solid #ff6a00;
+  box-shadow:
+    0 0 8px rgba(255, 106, 0, 0.4),
+    inset 0 0 8px rgba(255, 106, 0, 0.05);
   background: #050505;
   position: relative;
 }
+
 .retro-panel::after {
   content: "";
   position: absolute;
@@ -18,94 +89,167 @@
   );
   pointer-events: none;
 }
-.retro-text {
-  color: #ffb000;
-  text-shadow: 0 0 5px #ffb000, 0 0 10px #ff8c00;
-  font-family: "Courier New", monospace;
-}
+
+/* Buttons */
 .retro-btn {
   background: transparent;
-  border: 1px solid #ffb000;
-  color: #ffb000;
+  border: 1px solid #ff6a00;
+  color: #ff6a00;
   padding: 8px 16px;
-  font-family: "Courier New", monospace;
-  font-size: 14px;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
   cursor: pointer;
-  text-shadow: 0 0 5px #ffb000;
+  text-shadow: 0 0 5px rgba(255, 106, 0, 0.5);
   transition: background 0.2s, box-shadow 0.2s;
+  letter-spacing: 1px;
 }
+
 .retro-btn:hover {
-  background: rgba(255, 176, 0, 0.15);
-  box-shadow: 0 0 12px #ffb000;
+  background: rgba(255, 106, 0, 0.15);
+  box-shadow: 0 0 12px rgba(255, 106, 0, 0.6);
 }
+
 .retro-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }
+
 .retro-btn-primary {
-  background: rgba(255, 176, 0, 0.2);
-  box-shadow: 0 0 6px #ffb000;
+  background: rgba(255, 106, 0, 0.2);
+  box-shadow: 0 0 6px rgba(255, 106, 0, 0.4);
 }
+
+.retro-btn-danger {
+  border-color: #ff4444;
+  color: #ff4444;
+  text-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+}
+
+.retro-btn-danger:hover {
+  background: rgba(255, 68, 68, 0.15);
+  box-shadow: 0 0 12px rgba(255, 68, 68, 0.6);
+}
+
+/* Input */
 .retro-input {
   background: #0a0a0a;
-  border: 1px solid #ffb000;
-  color: #ffb000;
+  border: 1px solid #ff6a00;
+  color: #ff6a00;
   padding: 12px;
-  font-family: "Courier New", monospace;
-  font-size: 14px;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
   resize: none;
   outline: none;
   width: 100%;
   box-sizing: border-box;
-  text-shadow: 0 0 3px #ffb000;
+  text-shadow: 0 0 3px rgba(255, 106, 0, 0.5);
+  letter-spacing: 1px;
 }
+
 .retro-input:focus {
-  box-shadow: 0 0 12px #ffb000, inset 0 0 4px rgba(255, 176, 0, 0.1);
+  box-shadow:
+    0 0 12px rgba(255, 106, 0, 0.6),
+    inset 0 0 4px rgba(255, 106, 0, 0.1);
 }
+
 .retro-input::placeholder {
-  color: rgba(255, 176, 0, 0.4);
+  color: rgba(255, 106, 0, 0.4);
 }
+
+/* Thread list items */
 .retro-thread-item {
   padding: 8px 12px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(255, 176, 0, 0.2);
-  color: #ffb000;
-  font-family: "Courier New", monospace;
+  border-bottom: 1px solid rgba(255, 106, 0, 0.2);
+  color: #ff6a00;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
   transition: background 0.15s;
+  letter-spacing: 1px;
 }
+
 .retro-thread-item:hover {
-  background: rgba(255, 176, 0, 0.1);
+  background: rgba(255, 106, 0, 0.1);
 }
+
 .retro-thread-item.active {
-  background: rgba(255, 176, 0, 0.2);
-  text-shadow: 0 0 8px #ffb000;
-  border-left: 3px solid #ffb000;
+  background: rgba(255, 106, 0, 0.2);
+  text-shadow: 0 0 8px rgba(255, 106, 0, 0.8);
+  border-left: 3px solid #ff6a00;
 }
+
+/* Message bubbles */
 .retro-bubble-user {
-  background: rgba(255, 176, 0, 0.15);
-  border: 1px solid #ffb000;
+  background: rgba(255, 106, 0, 0.12);
+  border: 1px solid #ff6a00;
   padding: 10px 14px;
   max-width: 70%;
-  color: #ffb000;
-  font-family: "Courier New", monospace;
-  text-shadow: 0 0 3px #ffb000;
+  color: #ff6a00;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
+  text-shadow: 0 0 3px rgba(255, 106, 0, 0.5);
+  letter-spacing: 0.5px;
 }
+
 .retro-bubble-ai {
-  background: rgba(0, 255, 65, 0.08);
+  background: rgba(0, 255, 65, 0.06);
   border: 1px solid #00ff41;
   padding: 10px 14px;
   max-width: 70%;
   color: #00ff41;
-  font-family: "Courier New", monospace;
-  text-shadow: 0 0 3px #00ff41;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
+  text-shadow: 0 0 3px rgba(0, 255, 65, 0.5);
+  letter-spacing: 0.5px;
 }
+
+/* Loading / blink animation */
 @keyframes retro-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
+
 .retro-loading {
-  color: #ffb000;
-  font-family: "Courier New", monospace;
+  color: #ff6a00;
+  font-family: "VT323", "Courier New", monospace;
+  font-size: 16px;
   animation: retro-blink 1s infinite;
-  text-shadow: 0 0 5px #ffb000;
+  text-shadow: 0 0 5px rgba(255, 106, 0, 0.8);
+}
+
+/* Cursor blink */
+@keyframes retro-cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.retro-cursor {
+  display: inline-block;
+  width: 10px;
+  height: 16px;
+  background: #ff6a00;
+  box-shadow: 0 0 10px rgba(255, 106, 0, 0.8);
+  animation: retro-cursor-blink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+
+/* Flicker effect for the whole screen */
+@keyframes retro-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.98;
+  }
+}
+
+.retro-flicker {
+  animation: retro-flicker 0.15s infinite;
 }

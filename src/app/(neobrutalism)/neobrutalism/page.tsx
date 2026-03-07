@@ -12,6 +12,11 @@ import { useTambo, useTamboThreadList } from "@tambo-ai/react";
 import Link from "next/link";
 import { ChatLayout } from "@/components/chat-layout";
 import { PropsWithChildren, useEffect } from "react";
+import { Button } from "../components/ui/button";
+import { Card, CardContent } from "../components/ui/card";
+import { Textarea } from "../components/ui/textarea";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { Badge } from "../components/ui/badge";
 
 export default function NeobrutalismDemo() {
   const { currentThreadId, switchThread } = useTambo();
@@ -26,20 +31,16 @@ export default function NeobrutalismDemo() {
   return (
     <ChatLayout.Root
       style={{ height: "100vh" }}
-      colors={{ border: "#000" }}
+      colors={{ border: "var(--border)" }}
     >
       <ChatLayout.Content>
         <ChatLayout.Breadcrumb
-          style={{
-            borderBottom: "3px solid #000",
-            fontWeight: 700,
-            fontSize: 13,
-          }}
+          className="border-b-2 border-border font-heading text-sm"
         >
-          <Link href="/" style={{ color: "#000", textDecoration: "none" }}>
+          <Link href="/" className="text-foreground no-underline hover:underline">
             ← Home
           </Link>
-          <span style={{ marginLeft: 8 }}>/ Neobrutalism</span>
+          <span className="ml-2 text-foreground/60">/ Neobrutalism</span>
         </ChatLayout.Breadcrumb>
         <ChatLayout.MessageArea padding="normal">
           <ChatLayout.Container size="medium">
@@ -57,62 +58,66 @@ export default function NeobrutalismDemo() {
                         render={<MessageContent role={msg.role} />}
                       >
                         <ReasoningInfo.Root>
-                          <div className="neo-container" style={{ backgroundColor: "#ffd803", padding: "8px 12px", fontSize: 12 }}>
-                            <ReasoningInfo.Trigger
-                              render={(props) => (
-                                <button
-                                  {...props}
-                                  style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    background: "none",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    padding: 0,
-                                    fontSize: 12,
-                                    fontWeight: 700,
-                                    color: "#000",
-                                  }}
-                                >
-                                  <ReasoningInfo.StatusText />
-                                </button>
-                              )}
-                            />
-                            <ReasoningInfo.Content
-                              style={{
-                                marginTop: 6,
-                                fontSize: 12,
-                                color: "#000",
-                                lineHeight: 1.5,
-                              }}
-                            >
-                              <ReasoningInfo.Steps />
-                            </ReasoningInfo.Content>
-                          </div>
+                          <Card className="bg-main py-3">
+                            <CardContent>
+                              <ReasoningInfo.Trigger
+                                render={(props) => (
+                                  <button
+                                    {...props}
+                                    className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-main-foreground"
+                                  >
+                                    <Badge>💡</Badge>
+                                    <ReasoningInfo.StatusText />
+                                  </button>
+                                )}
+                              />
+                              <ReasoningInfo.Content className="mt-2 text-xs text-main-foreground/80 leading-relaxed">
+                                <ReasoningInfo.Steps />
+                              </ReasoningInfo.Content>
+                            </CardContent>
+                          </Card>
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <div className="neo-container" style={{ backgroundColor: "#e8e4df", padding: "8px 12px", fontSize: 12 }}>
-                            <ToolcallInfo.Trigger
-                              render={(props, { state }) => (
-                                <CollapsibleTrigger state={state} {...props}>
-                                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
-                                    <ToolcallInfo.StatusIcon />
+                          <Card className="py-3">
+                            <CardContent>
+                              <ToolcallInfo.Trigger
+                                render={(props, { state }) => (
+                                  <button
+                                    {...props}
+                                    className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-foreground"
+                                  >
+                                    <ToolcallInfo.StatusIcon
+                                      render={(_p, s) => (
+                                        <Badge variant={s.status === "error" ? "neutral" : "default"}>
+                                          {s.status === "loading" ? "⏳" : s.status === "success" ? "✓" : "✗"}
+                                        </Badge>
+                                      )}
+                                    />
                                     <ToolcallInfo.ToolName />
-                                  </span>
-                                </CollapsibleTrigger>
-                              )}
-                            />
-                            <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#000" }}>
-                              <ToolcallInfo.Parameters
-                                render={<CodeBlock title="Parameters" />}
+                                    <span
+                                      className="inline-block transition-transform"
+                                      style={{
+                                        transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
+                                      }}
+                                    >
+                                      ▼
+                                    </span>
+                                  </button>
+                                )}
                               />
-                              <ToolcallInfo.Result
-                                render={<CodeBlock title="Result" />}
-                              />
-                            </ToolcallInfo.Content>
-                          </div>
+                              <ToolcallInfo.Content className="mt-2">
+                                <div className="flex flex-col gap-2">
+                                  <ToolcallInfo.Parameters
+                                    render={<CodeBlock title="Parameters" />}
+                                  />
+                                  <ToolcallInfo.Result
+                                    render={<CodeBlock title="Result" />}
+                                  />
+                                </div>
+                              </ToolcallInfo.Content>
+                            </CardContent>
+                          </Card>
                         </ToolcallInfo.Root>
 
                         <Message.RenderedComponent>
@@ -127,15 +132,11 @@ export default function NeobrutalismDemo() {
                           )}
                         />
 
-                        <Message.LoadingIndicator
-                          style={{
-                            display: "flex",
-                            gap: 4,
-                            padding: "8px 12px",
-                            backgroundColor: "#ffd803",
-                            border: "3px solid #000",
-                          }}
-                        />
+                        <Message.LoadingIndicator>
+                          <div className="rounded-base border-2 border-border bg-main px-3 py-2 shadow-shadow">
+                            <Badge>⏳</Badge>
+                          </div>
+                        </Message.LoadingIndicator>
                       </Message.Root>
                     ))}
                   </>
@@ -148,50 +149,38 @@ export default function NeobrutalismDemo() {
       <ChatLayout.InputArea padding="normal">
         <ChatLayout.Container size="medium">
           <MessageInput.Root>
-            <MessageInput.StagedImages
-              style={{
-                display: "flex",
-                gap: 8,
-                marginBottom: 8,
-                flexWrap: "wrap",
-              }}
-            />
+            <MessageInput.StagedImages className="flex gap-2 mb-2 flex-wrap" />
             <MessageInput.Error
-              style={{
-                marginBottom: 8,
-                padding: "8px 12px",
-                fontSize: 12,
-                fontWeight: 700,
-                color: "#000",
-                backgroundColor: "#ff6b6b",
-                border: "3px solid #000",
-              }}
+              render={(props) => (
+                <div {...props} className="mb-2">
+                  <Alert variant="destructive">
+                    <AlertDescription>{props.children}</AlertDescription>
+                  </Alert>
+                </div>
+              )}
             />
-            <MessageInput.Content
-              style={{
-                display: "flex",
-                gap: 8,
-                alignItems: "flex-end",
-              }}
-            >
+            <MessageInput.Content className="flex gap-2 items-end">
               <MessageInput.FileButton
-                className="neo-btn"
-                style={{ backgroundColor: "#e8e4df" }}
+                render={<Button variant="neutral" size="icon" />}
               >
                 📎
               </MessageInput.FileButton>
-              <div style={{ flex: 1 }}>
+              <div className="flex-1">
                 <MessageInput.Textarea
                   placeholder="Type a message..."
-                  className="neo-textarea"
+                  render={<Textarea rows={2} />}
                 />
               </div>
-              <MessageInput.SubmitButton className="neo-btn neo-btn-primary">
+              <MessageInput.SubmitButton render={<Button />}>
                 SEND
               </MessageInput.SubmitButton>
               <MessageInput.StopButton
-                className="neo-btn"
-                style={{ backgroundColor: "#ff6b6b" }}
+                render={
+                  <Button
+                    variant="noShadow"
+                    className="bg-red-500 text-white border-border"
+                  />
+                }
               >
                 STOP
               </MessageInput.StopButton>
@@ -201,60 +190,38 @@ export default function NeobrutalismDemo() {
       </ChatLayout.InputArea>
       <ChatLayout.Sidebar
         divider
-        style={{ backgroundColor: "#e8e4df" }}
+        className="bg-background"
       >
-        <div
-          style={{
-            padding: 16,
-            borderBottom: "3px solid #000",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 16,
-              fontWeight: 900,
-              color: "#000",
-              textTransform: "uppercase" as const,
-              letterSpacing: 1,
-            }}
-          >
+        <div className="p-4 border-b-2 border-border flex flex-col gap-2">
+          <h2 className="m-0 text-base font-heading uppercase tracking-wide text-foreground">
             Threads
           </h2>
           <ThreadHistory.Root>
-            <ThreadHistory.NewThreadButton className="neo-btn neo-btn-primary" style={{ width: "100%", textTransform: "uppercase" as const }}>
+            <ThreadHistory.NewThreadButton
+              render={<Button className="w-full uppercase" />}
+            >
               + New thread
             </ThreadHistory.NewThreadButton>
           </ThreadHistory.Root>
         </div>
-        <div style={{ overflowY: "auto", flex: 1, padding: 8 }}>
+        <div className="overflow-y-auto flex-1 p-2">
           <ThreadHistory.Root>
             <ThreadHistory.List
               render={(_props, state) => (
-                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <div className="flex flex-col gap-1">
                   {state.filteredThreads.map((thread) => (
                     <ThreadHistory.Item
                       key={thread.id}
                       thread={thread}
                       render={({ children, ...props }, { isActive }) => (
-                        <button
-                          {...props}
-                          className={`neo-thread-item${isActive ? " active" : ""}`}
-                          style={{
-                            display: "block",
-                            width: "100%",
-                            fontSize: 13,
-                            textAlign: "left",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap" as const,
-                          }}
+                        <Button
+                          {...(props as any)}
+                          variant={isActive ? "default" : "neutral"}
+                          size="sm"
+                          className="w-full justify-start text-left truncate"
                         >
                           {children}
-                        </button>
+                        </Button>
                       )}
                     />
                   ))}
@@ -275,54 +242,16 @@ function MessageContent({
 }: PropsWithChildren<{ role: string }>) {
   return (
     <div
+      className="mb-3 flex flex-col gap-2"
       style={{
-        marginBottom: 12,
-        display: "flex",
         flex: "1 1 auto",
         alignSelf: role === "user" ? "flex-end" : "flex-start",
         maxWidth: "70%",
-        flexDirection: "column",
-        gap: 8,
       }}
       {...props}
     >
       {children}
     </div>
-  );
-}
-
-function CollapsibleTrigger({
-  state,
-  children,
-  ...props
-}: PropsWithChildren<{ state: "open" | "closed" }>) {
-  return (
-    <button
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 6,
-        background: "none",
-        border: "none",
-        cursor: "pointer",
-        padding: 0,
-        fontSize: 12,
-        fontWeight: 700,
-        color: "#000",
-      }}
-      {...props}
-    >
-      {children}
-      <span
-        style={{
-          display: "inline-block",
-          transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
-          transition: "transform 0.2s",
-        }}
-      >
-        ▼
-      </span>
-    </button>
   );
 }
 
@@ -336,7 +265,11 @@ function MessageBubble({
 
   return (
     <div
-      className={role === "user" ? "neo-bubble-user" : "neo-bubble-ai"}
+      className={`rounded-base border-2 border-border shadow-shadow px-3 py-2 text-sm font-base ${
+        role === "user"
+          ? "bg-main text-main-foreground"
+          : "bg-secondary-background text-foreground"
+      }`}
       {...props}
     >
       {children}
@@ -346,23 +279,13 @@ function MessageBubble({
 
 function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
   return (
-    <div style={{ marginTop: 4 }}>
+    <div className="rounded-base border-2 border-border overflow-hidden text-[10px]">
       {title && (
-        <div style={{ fontSize: 10, fontWeight: 700, color: "#000", marginBottom: 2 }}>
+        <div className="px-2 py-1 bg-secondary-background border-b-2 border-border font-heading text-foreground/60">
           {title}
         </div>
       )}
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          fontSize: 10,
-          lineHeight: 1.5,
-          color: "#000",
-          fontFamily: "ui-monospace, monospace",
-        }}
-      >
+      <pre className="m-0 px-3 py-2 whitespace-pre-wrap break-words font-mono text-foreground leading-relaxed">
         {children}
       </pre>
     </div>

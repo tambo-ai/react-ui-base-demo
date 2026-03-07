@@ -12,6 +12,17 @@ import { useTambo, useTamboThreadList } from "@tambo-ai/react";
 import Link from "next/link";
 import { ChatLayout } from "@/components/chat-layout";
 import { PropsWithChildren, useEffect } from "react";
+import {
+  NesButton,
+  NesHeading,
+  NesContainer,
+  NesBalloon,
+  NesNavList,
+  NesNavItem,
+  NesSpinner,
+  NesTimeline,
+  NesTimelineItem,
+} from "../components";
 
 export default function NesDemo() {
   const { currentThreadId, switchThread } = useTambo();
@@ -59,83 +70,109 @@ export default function NesDemo() {
                         render={<MessageContent role={msg.role} />}
                       >
                         <ReasoningInfo.Root>
-                          <div
-                            className="nes-container is-rounded"
+                          <NesContainer
+                            variant="rounded"
                             style={{
                               padding: 8,
                               fontSize: 8,
                               backgroundColor: "#f7dc6f",
                             }}
                           >
-                            <ReasoningInfo.Trigger
-                              render={(props) => (
-                                <button
-                                  {...props}
+                            <NesTimeline>
+                              <NesTimelineItem
+                                icon={
+                                  <ReasoningInfo.StatusText
+                                    render={(_props, state) =>
+                                      state.isLoading ? (
+                                        <NesSpinner size="small" />
+                                      ) : (
+                                        <i className="nes-icon is-small star" />
+                                      )
+                                    }
+                                  />
+                                }
+                              >
+                                <ReasoningInfo.Trigger
+                                  render={(props) => (
+                                    <button
+                                      {...props}
+                                      style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 6,
+                                        background: "none",
+                                        border: "none",
+                                        cursor: "pointer",
+                                        padding: 0,
+                                        fontSize: 8,
+                                        color: "#212529",
+                                      }}
+                                    >
+                                      <ReasoningInfo.StatusText />
+                                    </button>
+                                  )}
+                                />
+                                <ReasoningInfo.Content
                                   style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: 6,
-                                    background: "none",
-                                    border: "none",
-                                    cursor: "pointer",
-                                    padding: 0,
+                                    marginTop: 6,
                                     fontSize: 8,
                                     color: "#212529",
+                                    lineHeight: 1.8,
                                   }}
                                 >
-                                  <ReasoningInfo.StatusText />
-                                </button>
-                              )}
-                            />
-                            <ReasoningInfo.Content
-                              style={{
-                                marginTop: 6,
-                                fontSize: 8,
-                                color: "#212529",
-                                lineHeight: 1.8,
-                              }}
-                            >
-                              <ReasoningInfo.Steps />
-                            </ReasoningInfo.Content>
-                          </div>
+                                  <ReasoningInfo.Steps />
+                                </ReasoningInfo.Content>
+                              </NesTimelineItem>
+                            </NesTimeline>
+                          </NesContainer>
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <div
-                            className="nes-container is-rounded is-dark"
+                          <NesContainer
+                            variant="rounded-dark"
                             style={{ padding: 8, fontSize: 8 }}
                           >
-                            <ToolcallInfo.Trigger
-                              render={(props, { state }) => (
-                                <CollapsibleTrigger state={state} {...props}>
-                                  <span
-                                    style={{
-                                      display: "inline-flex",
-                                      alignItems: "center",
-                                      gap: 6,
+                            <NesTimeline>
+                              <NesTimelineItem
+                                icon={
+                                  <ToolcallInfo.StatusIcon
+                                    render={(_p, s) => {
+                                      switch (s.status) {
+                                        case "loading":
+                                          return <NesSpinner size="small" />;
+                                        case "success":
+                                          return <i className="nes-icon is-small heart" />;
+                                        case "error":
+                                          return <i className="nes-icon is-small close" />;
+                                      }
                                     }}
-                                  >
-                                    <ToolcallInfo.StatusIcon />
-                                    <ToolcallInfo.ToolName />
-                                  </span>
-                                </CollapsibleTrigger>
-                              )}
-                            />
-                            <ToolcallInfo.Content
-                              style={{
-                                marginTop: 6,
-                                fontSize: 8,
-                                color: "#aaa",
-                              }}
-                            >
-                              <ToolcallInfo.Parameters
-                                render={<CodeBlock title="Parameters" />}
-                              />
-                              <ToolcallInfo.Result
-                                render={<CodeBlock title="Result" />}
-                              />
-                            </ToolcallInfo.Content>
-                          </div>
+                                  />
+                                }
+                              >
+                                <ToolcallInfo.Trigger
+                                  render={(props, { state }) => (
+                                    <CollapsibleTrigger state={state} {...props}>
+                                      <ToolcallInfo.ToolName />
+                                    </CollapsibleTrigger>
+                                  )}
+                                />
+                                <ToolcallInfo.Content
+                                  style={{
+                                    marginTop: 6,
+                                    fontSize: 8,
+                                    color: "#aaa",
+                                  }}
+                                >
+                                  <ToolcallInfo.Parameters
+                                    render={<CodeBlock title="Parameters" />}
+                                  />
+                                  <ToolcallInfo.Result
+                                    render={<CodeBlock title="Result" />}
+                                  />
+                                </ToolcallInfo.Content>
+                              </NesTimelineItem>
+                            </NesTimeline>
+                          </NesContainer>
                         </ToolcallInfo.Root>
 
                         <Message.RenderedComponent>
@@ -150,14 +187,9 @@ export default function NesDemo() {
                           )}
                         />
 
-                        <Message.LoadingIndicator
-                          style={{
-                            display: "flex",
-                            gap: 4,
-                            padding: 8,
-                            fontSize: 10,
-                          }}
-                        />
+                        <Message.LoadingIndicator>
+                          <NesSpinner />
+                        </Message.LoadingIndicator>
                       </Message.Root>
                     ))}
                   </>
@@ -196,12 +228,9 @@ export default function NesDemo() {
                 alignItems: "flex-end",
               }}
             >
-              <MessageInput.FileButton
-                className="nes-btn"
-                style={{ fontSize: 10, cursor: "pointer", padding: "4px 8px" }}
-              >
+              <NesButton style={{ fontSize: 10, padding: "4px 8px" }}>
                 📎
-              </MessageInput.FileButton>
+              </NesButton>
               <div style={{ flex: 1 }}>
                 <MessageInput.Textarea
                   placeholder="Type..."
@@ -222,14 +251,16 @@ export default function NesDemo() {
                 />
               </div>
               <MessageInput.SubmitButton
-                className="nes-btn is-primary"
-                style={{ fontSize: 10, cursor: "pointer" }}
+                render={
+                  <NesButton variant="primary" style={{ fontSize: 10 }} />
+                }
               >
                 Send
               </MessageInput.SubmitButton>
               <MessageInput.StopButton
-                className="nes-btn is-error"
-                style={{ fontSize: 10, cursor: "pointer" }}
+                render={
+                  <NesButton variant="error" style={{ fontSize: 10 }} />
+                }
               >
                 Stop
               </MessageInput.StopButton>
@@ -250,20 +281,15 @@ export default function NesDemo() {
             gap: 8,
           }}
         >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 10,
-              fontWeight: 400,
-              color: "#fff",
-            }}
-          >
-            Threads
-          </h2>
+          <NesHeading>Threads</NesHeading>
           <ThreadHistory.Root>
             <ThreadHistory.NewThreadButton
-              className="nes-btn is-primary"
-              style={{ width: "100%", fontSize: 10, cursor: "pointer" }}
+              render={
+                <NesButton
+                  variant="primary"
+                  style={{ width: "100%", fontSize: 10 }}
+                />
+              }
             >
               + New
             </ThreadHistory.NewThreadButton>
@@ -273,35 +299,19 @@ export default function NesDemo() {
           <ThreadHistory.Root>
             <ThreadHistory.List
               render={(_props, state) => (
-                <div>
+                <NesNavList>
                   {state.filteredThreads.map((thread) => (
                     <ThreadHistory.Item
                       key={thread.id}
                       thread={thread}
                       render={({ children, ...props }, { isActive }) => (
-                        <button
-                          {...props}
-                          className={
-                            isActive ? "nes-btn is-warning" : "nes-btn"
-                          }
-                          style={{
-                            display: "block",
-                            width: "100%",
-                            fontSize: 8,
-                            textAlign: "left",
-                            cursor: "pointer",
-                            marginBottom: 4,
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
-                            whiteSpace: "nowrap" as const,
-                          }}
-                        >
+                        <NesNavItem isActive={isActive} {...props}>
                           {children}
-                        </button>
+                        </NesNavItem>
                       )}
                     />
                   ))}
-                </div>
+                </NesNavList>
               )}
             />
           </ThreadHistory.Root>
@@ -377,16 +387,11 @@ function MessageBubble({
   if (!children) return null;
 
   return (
-    <div
-      className={
-        role === "user" ? "nes-balloon from-right" : "nes-balloon from-left"
-      }
-      {...props}
-    >
+    <NesBalloon direction={role === "user" ? "right" : "left"} {...props}>
       <p style={{ fontSize: 10, lineHeight: 1.8, color: "#212529", margin: 0 }}>
         {children}
       </p>
-    </div>
+    </NesBalloon>
   );
 }
 
@@ -394,7 +399,14 @@ function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
   return (
     <div style={{ marginTop: 4 }}>
       {title && (
-        <div style={{ fontSize: 8, fontWeight: 600, color: "#aaa", marginBottom: 2 }}>
+        <div
+          style={{
+            fontSize: 8,
+            fontWeight: 600,
+            color: "#aaa",
+            marginBottom: 2,
+          }}
+        >
           {title}
         </div>
       )}
