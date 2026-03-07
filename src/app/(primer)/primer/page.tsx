@@ -8,393 +8,350 @@ import {
   ReasoningInfo,
   ToolcallInfo,
 } from "@tambo-ai/react-ui-base";
+import { useTambo, useTamboThreadList } from "@tambo-ai/react";
+import { default as NextLink } from "next/link";
+import {
+  Button,
+  Textarea,
+  FormControl,
+  Stack,
+  Spinner,
+  NavList,
+  IconButton,
+  Link,
+  Heading,
+  Timeline,
+} from "@primer/react";
+import "@primer/css/dist/primer.css";
+import {
+  CheckCircleIcon,
+  ChevronDownIcon,
+  ExclamationIcon,
+  LightBulbIcon,
+  PaperAirplaneIcon,
+  PaperclipIcon,
+  StopIcon,
+} from "@primer/octicons-react";
+import { ChatLayout } from "@/components/chat-layout";
+import { PropsWithChildren, useEffect } from "react";
 
 export default function PrimerDemo() {
+  const { currentThreadId, switchThread } = useTambo();
+  const { data } = useTamboThreadList();
+
+  // On initial load, currentThreadId is "placeholder" which doesn't match any
+  // real thread ID in the sidebar list. Auto-switch to the most recent thread
+  // so the sidebar highlights it correctly.
+  useEffect(() => {
+    if (currentThreadId === "placeholder" && data?.threads?.length) {
+      switchThread(data.threads[0].id);
+    }
+  }, [currentThreadId, data?.threads, switchThread]);
+
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-      {/* Sidebar */}
-      <ThreadHistory.Root
-        style={{
-          width: 260,
-          flexShrink: 0,
-          borderRight: "1px solid var(--borderColor-default, #d0d7de)",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          overflow: "hidden",
-        }}
-      >
-        <div
-          style={{
-            padding: 16,
-            borderBottom: "1px solid var(--borderColor-default, #d0d7de)",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <h2
-            style={{
-              margin: 0,
-              fontSize: 14,
-              fontWeight: 600,
-              color: "var(--fgColor-default, #1f2328)",
-            }}
-          >
-            Threads
-          </h2>
-          <ThreadHistory.NewThreadButton
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 6,
-              width: "100%",
-              padding: "5px 12px",
-              fontSize: 12,
-              fontWeight: 500,
-              lineHeight: "20px",
-              color: "#fff",
-              backgroundColor: "var(--bgColor-accent-emphasis, #0969da)",
-              border: "1px solid rgba(27,31,36,0.15)",
-              borderRadius: 6,
-              cursor: "pointer",
-            }}
-          >
+    <ChatLayout.Root
+      style={{ height: "100vh" }}
+      colors={{ border: "var(--borderColor-muted)" }}
+    >
+      <ChatLayout.Content>
+        <ChatLayout.Breadcrumb>
+          <Link as={NextLink} href="/">
+            ← Home
+          </Link>
+          <span> / </span>
+          <Link as={NextLink} href="#" aria-current="page">
+            Primer
+          </Link>
+        </ChatLayout.Breadcrumb>
+        <ChatLayout.MessageArea padding="normal">
+          <ChatLayout.Container size="medium">
+            <ThreadContent.Root
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <ThreadContent.Messages
+                render={(_props, state) => (
+                  <>
+                    {state.filteredMessages.map((msg) => (
+                      <Message.Root
+                        key={msg.id}
+                        message={msg}
+                        role={msg.role as "user" | "assistant"}
+                        render={<MessageContent role={msg.role} />}
+                      >
+                        <ReasoningInfo.Root render={<Timeline clipSidebar />}>
+                          <ReasoningInfo.Trigger render={<Timeline.Item />}>
+                            <Timeline.Badge>
+                              <ReasoningInfo.StatusText
+                                render={(_props, state) =>
+                                  state.isLoading ? (
+                                    <Spinner size="small" />
+                                  ) : (
+                                    <LightBulbIcon size="small" />
+                                  )
+                                }
+                              />
+                            </Timeline.Badge>
+                            <Timeline.Body>
+                              <ReasoningInfo.StatusText />
+                            </Timeline.Body>
+                          </ReasoningInfo.Trigger>
+                          <ReasoningInfo.Content>
+                            <ReasoningInfo.Steps />
+                          </ReasoningInfo.Content>
+                        </ReasoningInfo.Root>
+                        <ToolcallInfo.Root render={<Timeline clipSidebar />}>
+                          <Timeline.Item>
+                            <Timeline.Badge>
+                              <ToolcallInfo.StatusIcon
+                                render={(props, state) => {
+                                  switch (state.status) {
+                                    case "loading":
+                                      return <Spinner size="small" />;
+                                    case "success":
+                                      return <CheckCircleIcon size="small" />;
+                                    case "error":
+                                      return <ExclamationIcon size="small" />;
+                                  }
+                                }}
+                              />
+                            </Timeline.Badge>
+                            <Timeline.Body>
+                              <ToolcallInfo.Trigger
+                                render={(props, { state }) => (
+                                  <CollapsibleTrigger state={state} {...props}>
+                                    <ToolcallInfo.ToolName />
+                                  </CollapsibleTrigger>
+                                )}
+                              />
+                              <ToolcallInfo.Content
+                                render={<Stack style={{ marginTop: 8 }} />}
+                              >
+                                <ToolcallInfo.Parameters
+                                  render={<CodeBlock title="Parameters" />}
+                                />
+                                <ToolcallInfo.Result
+                                  render={<CodeBlock title="Result" />}
+                                />
+                              </ToolcallInfo.Content>
+                            </Timeline.Body>
+                          </Timeline.Item>
+                        </ToolcallInfo.Root>
+
+                        <Message.RenderedComponent>
+                          <Message.RenderedComponentContent />
+                        </Message.RenderedComponent>
+
+                        <Message.Content
+                          render={(props, { contentAsMarkdownString }) => (
+                            <MessageBubble role={msg.role} {...props}>
+                              {contentAsMarkdownString}
+                            </MessageBubble>
+                          )}
+                        />
+
+                        <Message.LoadingIndicator
+                          render={<Spinner size="small" />}
+                        />
+                      </Message.Root>
+                    ))}
+                  </>
+                )}
+              />
+            </ThreadContent.Root>
+          </ChatLayout.Container>
+        </ChatLayout.MessageArea>
+      </ChatLayout.Content>
+      <ChatLayout.InputArea padding="normal">
+        <ChatLayout.Container size="medium">
+          <MessageInput.Root>
+            <MessageInput.StagedImages />
+            <MessageInput.Content
+              render={<Stack direction="horizontal" align="start" />}
+            >
+              <FormControl style={{ flex: "1 1 auto" }}>
+                <FormControl.Label visuallyHidden>Message</FormControl.Label>
+                <MessageInput.Error
+                  render={<FormControl.Validation variant="error" />}
+                />
+                <MessageInput.Textarea
+                  placeholder="Type a message..."
+                  render={<Textarea resize="none" rows={2} block />}
+                />
+              </FormControl>
+              <Stack direction="horizontal" align="center">
+                <MessageInput.FileButton
+                  render={
+                    <IconButton icon={PaperclipIcon} aria-label="Attach File" />
+                  }
+                />
+                <MessageInput.SubmitButton
+                  render={
+                    <IconButton
+                      icon={PaperAirplaneIcon}
+                      variant="primary"
+                      type="submit"
+                      aria-label="Send"
+                    />
+                  }
+                />
+                <MessageInput.StopButton
+                  render={
+                    <IconButton
+                      icon={StopIcon}
+                      variant="danger"
+                      aria-label="Stop"
+                    />
+                  }
+                />
+              </Stack>
+            </MessageInput.Content>
+          </MessageInput.Root>
+        </ChatLayout.Container>
+      </ChatLayout.InputArea>
+      <ChatLayout.Sidebar divider>
+        <ThreadHistory.Root>
+          <Heading variant="small">Threads</Heading>
+          <ThreadHistory.NewThreadButton render={<Button size="small" />}>
             + New thread
           </ThreadHistory.NewThreadButton>
-        </div>
-        <div style={{ overflowY: "auto", flex: 1, padding: 8 }}>
           <ThreadHistory.List
-            render={(_props, state) => (
-              <nav>
+            render={(props, state) => (
+              <NavList {...props}>
                 {state.filteredThreads.map((thread) => (
                   <ThreadHistory.Item
                     key={thread.id}
                     thread={thread}
-                    render={(_itemProps, itemState) => (
-                      <button
-                        {..._itemProps}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          padding: "6px 8px",
-                          fontSize: 14,
-                          textAlign: "left",
-                          color: "var(--fgColor-default, #1f2328)",
-                          backgroundColor: itemState.isActive
-                            ? "var(--bgColor-muted, #f6f8fa)"
-                            : "transparent",
-                          border: "none",
-                          borderRadius: 6,
-                          cursor: "pointer",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap" as const,
-                          fontWeight: itemState.isActive ? 600 : 400,
-                        }}
+                    render={({ children, ...props }, { isActive }) => (
+                      <NavList.Item
+                        aria-current={isActive ? "page" : undefined}
+                        {...props}
                       >
-                        {thread.name ?? thread.id.slice(0, 8)}
-                      </button>
+                        {children}
+                      </NavList.Item>
                     )}
                   />
                 ))}
-              </nav>
+              </NavList>
             )}
           />
-        </div>
-      </ThreadHistory.Root>
+        </ThreadHistory.Root>
+      </ChatLayout.Sidebar>
+    </ChatLayout.Root>
+  );
+}
 
-      {/* Main area */}
+function MessageContent({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  return (
+    <div
+      style={{
+        marginBottom: 12,
+        display: "flex",
+        flex: "1 1 auto",
+        alignSelf: role === "user" ? "flex-end" : "flex-start",
+        maxWidth: "70%",
+        flexDirection: "column",
+        gap: 8,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CollapsibleTrigger({
+  state,
+  children,
+  ...props
+}: PropsWithChildren<{ state: "open" | "closed" }>) {
+  return (
+    <pre {...props}>
+      {children}
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          flex: 1,
-          overflow: "hidden",
+          display: "inline-block",
+          marginLeft: 8,
+          padding: 2,
+          transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
         }}
       >
-        {/* Breadcrumb */}
+        <ChevronDownIcon size="small" />
+      </div>
+    </pre>
+  );
+}
+
+function MessageBubble({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  if (typeof children === "string" && children.trim() === "") return null;
+  if (!children) return null;
+
+  return (
+    <div
+      style={{
+        padding: "8px 12px",
+        borderRadius: 6,
+        backgroundColor:
+          role === "user"
+            ? "var(--bgColor-accent-emphasis, #0969da)"
+            : "var(--bgColor-muted, #f6f8fa)",
+        color:
+          role === "user"
+            ? "var(--fgColor-onEmphasis, #ffffff)"
+            : "var(--fgColor-default, #1f2328)",
+        fontSize: 14,
+        lineHeight: 1.5,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
+  return (
+    <div
+      style={{
+        borderRadius: 6,
+        border: "1px solid var(--borderColor-default, #d0d7de)",
+        overflow: "hidden",
+        fontSize: 10,
+      }}
+    >
+      {title && (
         <div
           style={{
-            padding: "8px 16px",
+            padding: "2px 8px",
+            backgroundColor: "var(--bgColor-muted, #f6f8fa)",
             borderBottom: "1px solid var(--borderColor-default, #d0d7de)",
-            fontSize: 13,
-            flexShrink: 0,
+            fontWeight: 600,
+            color: "var(--fgColor-muted, #656d76)",
           }}
         >
-          <a
-            href="/"
-            style={{
-              color: "var(--fgColor-accent, #0969da)",
-              textDecoration: "none",
-            }}
-          >
-            ← Home
-          </a>
-          <span style={{ color: "var(--fgColor-muted, #656d76)", marginLeft: 8 }}>
-            / Primer
-          </span>
+          {title}
         </div>
-
-        {/* Messages */}
-        <ThreadContent.Root style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-          <ThreadContent.Empty
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              height: "100%",
-              color: "var(--fgColor-muted, #656d76)",
-              fontSize: 14,
-            }}
-          >
-            Send a message to get started
-          </ThreadContent.Empty>
-          <ThreadContent.Messages
-            render={(_props, state) => (
-              <div>
-                {state.filteredMessages.map((msg) => (
-                  <Message.Root
-                    key={msg.id}
-                    message={msg}
-                    role={msg.role as "user" | "assistant"}
-                    style={{
-                      marginBottom: 12,
-                      display: "flex",
-                      justifyContent:
-                        msg.role === "user" ? "flex-end" : "flex-start",
-                    }}
-                  >
-                    <div
-                      style={{
-                        maxWidth: "70%",
-                        display: "flex",
-                        flexDirection: "column",
-                        gap: 8,
-                      }}
-                    >
-                      <ReasoningInfo.Root>
-                        <div
-                          style={{
-                            padding: "6px 10px",
-                            borderRadius: 6,
-                            backgroundColor: "var(--bgColor-attention-muted, #fff8c5)",
-                            border: "1px solid var(--borderColor-attention-muted, #d4a72c66)",
-                            fontSize: 12,
-                          }}
-                        >
-                          <ReasoningInfo.Trigger
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 6,
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              padding: 0,
-                              fontSize: 12,
-                              color: "var(--fgColor-attention, #9a6700)",
-                            }}
-                          >
-                            <ReasoningInfo.StatusText />
-                          </ReasoningInfo.Trigger>
-                          <ReasoningInfo.Content
-                            style={{
-                              marginTop: 6,
-                              fontSize: 12,
-                              color: "var(--fgColor-muted, #656d76)",
-                              lineHeight: 1.5,
-                            }}
-                          >
-                            <ReasoningInfo.Steps />
-                          </ReasoningInfo.Content>
-                        </div>
-                      </ReasoningInfo.Root>
-
-                      <Message.Content
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: 6,
-                          backgroundColor:
-                            msg.role === "user"
-                              ? "var(--bgColor-accent-emphasis, #0969da)"
-                              : "var(--bgColor-muted, #f6f8fa)",
-                          color:
-                            msg.role === "user"
-                              ? "var(--fgColor-onEmphasis, #ffffff)"
-                              : "var(--fgColor-default, #1f2328)",
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                        }}
-                      />
-
-                      <ToolcallInfo.Root>
-                        <div
-                          style={{
-                            padding: "6px 10px",
-                            borderRadius: 6,
-                            backgroundColor: "var(--bgColor-muted, #f6f8fa)",
-                            border: "1px solid var(--borderColor-default, #d0d7de)",
-                            fontSize: 12,
-                          }}
-                        >
-                          <ToolcallInfo.Trigger
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: 6,
-                              background: "none",
-                              border: "none",
-                              cursor: "pointer",
-                              padding: 0,
-                              fontSize: 12,
-                              color: "var(--fgColor-muted, #656d76)",
-                            }}
-                          >
-                            <ToolcallInfo.StatusIcon />
-                            <ToolcallInfo.ToolName />
-                            <ToolcallInfo.StatusText />
-                          </ToolcallInfo.Trigger>
-                          <ToolcallInfo.Content
-                            style={{
-                              marginTop: 6,
-                              fontSize: 12,
-                              color: "var(--fgColor-muted, #656d76)",
-                            }}
-                          >
-                            <ToolcallInfo.Parameters />
-                            <ToolcallInfo.Result />
-                          </ToolcallInfo.Content>
-                        </div>
-                      </ToolcallInfo.Root>
-
-                      <Message.RenderedComponent>
-                        <Message.RenderedComponentContent
-                          style={{ marginTop: 4 }}
-                        />
-                      </Message.RenderedComponent>
-
-                      <Message.LoadingIndicator
-                        style={{
-                          display: "flex",
-                          gap: 4,
-                          padding: "8px 12px",
-                          borderRadius: 6,
-                          backgroundColor: "var(--bgColor-muted, #f6f8fa)",
-                        }}
-                      />
-                    </div>
-                  </Message.Root>
-                ))}
-              </div>
-            )}
-          />
-        </ThreadContent.Root>
-
-        {/* Input */}
-        <MessageInput.Root
-          style={{
-            flexShrink: 0,
-            borderTop: "1px solid var(--borderColor-default, #d0d7de)",
-          }}
-        >
-          <MessageInput.Error
-            style={{
-              margin: "8px 12px 0",
-              padding: "6px 10px",
-              fontSize: 12,
-              color: "var(--fgColor-danger, #d1242f)",
-              backgroundColor: "var(--bgColor-danger-muted, #ffebe9)",
-              borderRadius: 6,
-            }}
-          />
-          <MessageInput.StagedImages
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: "8px 12px 0",
-              flexWrap: "wrap",
-            }}
-          />
-          <MessageInput.Elicitation
-            style={{
-              margin: "8px 12px",
-              padding: 12,
-              borderRadius: 6,
-              backgroundColor: "var(--bgColor-muted, #f6f8fa)",
-              border: "1px solid var(--borderColor-default, #d0d7de)",
-            }}
-          />
-          <MessageInput.Content
-            style={{
-              display: "flex",
-              gap: 8,
-              padding: 12,
-              alignItems: "flex-end",
-            }}
-          >
-            <MessageInput.FileButton
-              style={{
-                padding: "5px 8px",
-                fontSize: 14,
-                backgroundColor: "var(--bgColor-muted, #f6f8fa)",
-                border: "1px solid var(--borderColor-default, #d0d7de)",
-                borderRadius: 6,
-                cursor: "pointer",
-                color: "var(--fgColor-muted, #656d76)",
-              }}
-            >
-              📎
-            </MessageInput.FileButton>
-            <div style={{ flex: 1 }}>
-              <MessageInput.Textarea
-                placeholder="Type a message..."
-                style={{
-                  minHeight: 40,
-                  maxHeight: 120,
-                  padding: "8px 12px",
-                  fontSize: 14,
-                  border: "1px solid var(--borderColor-default, #d0d7de)",
-                  borderRadius: 6,
-                  outline: "none",
-                  width: "100%",
-                  boxSizing: "border-box",
-                  lineHeight: 1.5,
-                }}
-              />
-            </div>
-            <MessageInput.SubmitButton
-              style={{
-                padding: "5px 12px",
-                fontSize: 12,
-                fontWeight: 500,
-                color: "#fff",
-                backgroundColor: "var(--bgColor-accent-emphasis, #0969da)",
-                border: "1px solid rgba(27,31,36,0.15)",
-                borderRadius: 6,
-                cursor: "pointer",
-              }}
-            >
-              Send
-            </MessageInput.SubmitButton>
-            <MessageInput.StopButton
-              style={{
-                padding: "5px 12px",
-                fontSize: 12,
-                fontWeight: 500,
-                color: "#fff",
-                backgroundColor: "var(--bgColor-danger-emphasis, #cf222e)",
-                border: "1px solid rgba(27,31,36,0.15)",
-                borderRadius: 6,
-                cursor: "pointer",
-              }}
-            >
-              Stop
-            </MessageInput.StopButton>
-          </MessageInput.Content>
-        </MessageInput.Root>
-      </div>
+      )}
+      <pre
+        style={{
+          margin: 0,
+          padding: "8px 12px",
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace",
+          color: "var(--fgColor-default, #1f2328)",
+          lineHeight: 1.5,
+        }}
+      >
+        {children}
+      </pre>
     </div>
   );
 }
