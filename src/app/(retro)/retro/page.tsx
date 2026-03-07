@@ -8,21 +8,224 @@ import {
   ReasoningInfo,
   ToolcallInfo,
 } from "@tambo-ai/react-ui-base";
+import { useTambo, useTamboThreadList } from "@tambo-ai/react";
+import Link from "next/link";
+import { ChatLayout } from "@/components/chat-layout";
+import { PropsWithChildren, useEffect } from "react";
 
 export default function RetroDemo() {
+  const { currentThreadId, switchThread } = useTambo();
+  const { data } = useTamboThreadList();
+
+  useEffect(() => {
+    if (currentThreadId === "placeholder" && data?.threads?.length) {
+      switchThread(data.threads[0].id);
+    }
+  }, [currentThreadId, data?.threads, switchThread]);
+
   return (
-    <div style={{ display: "flex", height: "100vh", background: "#050505" }}>
-      <ThreadHistory.Root
-        style={{
-          width: 260,
-          flexShrink: 0,
-          borderRight: "1px solid #ffb000",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          overflow: "hidden",
-          backgroundColor: "#0a0a0a",
-        }}
+    <ChatLayout.Root
+      style={{ height: "100vh", background: "#050505" }}
+      colors={{ border: "#ffb000" }}
+    >
+      <ChatLayout.Content>
+        <ChatLayout.Breadcrumb
+          style={{
+            borderBottom: "1px solid #ffb000",
+            fontFamily: "'Courier New', monospace",
+            fontSize: 13,
+          }}
+        >
+          <Link
+            href="/"
+            className="retro-text"
+            style={{ textDecoration: "none" }}
+          >
+            ← Home
+          </Link>
+          <span style={{ color: "rgba(255,176,0,0.6)", marginLeft: 8 }}>
+            / Retro
+          </span>
+        </ChatLayout.Breadcrumb>
+        <ChatLayout.MessageArea padding="normal">
+          <ChatLayout.Container size="medium">
+            <ThreadContent.Root
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <ThreadContent.Messages
+                render={(_props, state) => (
+                  <>
+                    {state.filteredMessages.map((msg) => (
+                      <Message.Root
+                        key={msg.id}
+                        message={msg}
+                        role={msg.role as "user" | "assistant"}
+                        render={<MessageContent role={msg.role} />}
+                      >
+                        <ReasoningInfo.Root>
+                          <div
+                            className="retro-panel"
+                            style={{ padding: "6px 10px", fontSize: 12 }}
+                          >
+                            <ReasoningInfo.Trigger
+                              render={(props) => (
+                                <button
+                                  {...props}
+                                  className="retro-text"
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    padding: 0,
+                                    fontSize: 12,
+                                    fontFamily: "'Courier New', monospace",
+                                  }}
+                                >
+                                  <ReasoningInfo.StatusText />
+                                </button>
+                              )}
+                            />
+                            <ReasoningInfo.Content
+                              style={{
+                                marginTop: 6,
+                                fontSize: 12,
+                                color: "rgba(255,176,0,0.7)",
+                                lineHeight: 1.5,
+                                fontFamily: "'Courier New', monospace",
+                              }}
+                            >
+                              <ReasoningInfo.Steps />
+                            </ReasoningInfo.Content>
+                          </div>
+                        </ReasoningInfo.Root>
+
+                        <ToolcallInfo.Root>
+                          <div
+                            className="retro-panel"
+                            style={{ padding: "6px 10px", fontSize: 12 }}
+                          >
+                            <ToolcallInfo.Trigger
+                              render={(props, { state }) => (
+                                <CollapsibleTrigger state={state} {...props}>
+                                  <span
+                                    style={{
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 6,
+                                    }}
+                                  >
+                                    <ToolcallInfo.StatusIcon />
+                                    <ToolcallInfo.ToolName />
+                                  </span>
+                                </CollapsibleTrigger>
+                              )}
+                            />
+                            <ToolcallInfo.Content
+                              style={{
+                                marginTop: 6,
+                                fontSize: 12,
+                                color: "rgba(255,176,0,0.5)",
+                                fontFamily: "'Courier New', monospace",
+                              }}
+                            >
+                              <ToolcallInfo.Parameters
+                                render={<CodeBlock title="Parameters" />}
+                              />
+                              <ToolcallInfo.Result
+                                render={<CodeBlock title="Result" />}
+                              />
+                            </ToolcallInfo.Content>
+                          </div>
+                        </ToolcallInfo.Root>
+
+                        <Message.RenderedComponent>
+                          <Message.RenderedComponentContent />
+                        </Message.RenderedComponent>
+
+                        <Message.Content
+                          render={(props, { contentAsMarkdownString }) => (
+                            <MessageBubble role={msg.role} {...props}>
+                              {contentAsMarkdownString}
+                            </MessageBubble>
+                          )}
+                        />
+
+                        <Message.LoadingIndicator>
+                          <span className="retro-loading">
+                            &gt; PROCESSING...
+                          </span>
+                        </Message.LoadingIndicator>
+                      </Message.Root>
+                    ))}
+                  </>
+                )}
+              />
+            </ThreadContent.Root>
+          </ChatLayout.Container>
+        </ChatLayout.MessageArea>
+      </ChatLayout.Content>
+      <ChatLayout.InputArea padding="normal">
+        <ChatLayout.Container size="medium">
+          <MessageInput.Root>
+            <MessageInput.StagedImages
+              style={{
+                display: "flex",
+                gap: 8,
+                marginBottom: 8,
+                flexWrap: "wrap",
+              }}
+            />
+            <MessageInput.Error
+              style={{
+                marginBottom: 8,
+                padding: "6px 10px",
+                fontSize: 12,
+                color: "#ff4444",
+                fontFamily: "'Courier New', monospace",
+              }}
+            />
+            <MessageInput.Content
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "flex-end",
+              }}
+            >
+              <MessageInput.FileButton
+                className="retro-btn"
+                style={{ padding: "5px 8px" }}
+              >
+                📎
+              </MessageInput.FileButton>
+              <div style={{ flex: 1 }}>
+                <MessageInput.Textarea
+                  placeholder="> TYPE COMMAND..."
+                  className="retro-input"
+                  style={{ minHeight: 40, maxHeight: 120 }}
+                />
+              </div>
+              <MessageInput.SubmitButton className="retro-btn retro-btn-primary">
+                SEND
+              </MessageInput.SubmitButton>
+              <MessageInput.StopButton
+                className="retro-btn"
+                style={{
+                  color: "#ff4444",
+                  borderColor: "#ff4444",
+                }}
+              >
+                ABORT
+              </MessageInput.StopButton>
+            </MessageInput.Content>
+          </MessageInput.Root>
+        </ChatLayout.Container>
+      </ChatLayout.InputArea>
+      <ChatLayout.Sidebar
+        divider
+        style={{ backgroundColor: "#0a0a0a" }}
       >
         <div
           style={{
@@ -33,185 +236,171 @@ export default function RetroDemo() {
             gap: 8,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 14, fontWeight: 400, color: "#ffb000", textShadow: "0 0 5px #ffb000", fontFamily: "'Courier New', monospace" }}>
+          <h2
+            className="retro-text"
+            style={{ margin: 0, fontSize: 14, fontWeight: 400 }}
+          >
             &gt; THREADS
           </h2>
-          <ThreadHistory.NewThreadButton
-            style={{
-              width: "100%",
-              padding: "6px 12px",
-              fontSize: 12,
-              fontFamily: "'Courier New', monospace",
-              color: "#050505",
-              backgroundColor: "#ffb000",
-              border: "1px solid #ffb000",
-              cursor: "pointer",
-              textShadow: "none",
-            }}
-          >
-            + NEW THREAD
-          </ThreadHistory.NewThreadButton>
+          <ThreadHistory.Root>
+            <ThreadHistory.NewThreadButton
+              className="retro-btn retro-btn-primary"
+              style={{
+                width: "100%",
+                fontSize: 12,
+                color: "#050505",
+                backgroundColor: "#ffb000",
+                textShadow: "none",
+              }}
+            >
+              + NEW THREAD
+            </ThreadHistory.NewThreadButton>
+          </ThreadHistory.Root>
         </div>
         <div style={{ overflowY: "auto", flex: 1, padding: 8 }}>
-          <ThreadHistory.List
-            render={(_props, state) => (
-              <div>
-                {state.filteredThreads.map((thread) => (
-                  <ThreadHistory.Item
-                    key={thread.id}
-                    thread={thread}
-                    render={(_itemProps, itemState) => (
-                      <button
-                        {..._itemProps}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          padding: "6px 8px",
-                          fontSize: 12,
-                          fontFamily: "'Courier New', monospace",
-                          textAlign: "left",
-                          color: itemState.isActive ? "#050505" : "#ffb000",
-                          backgroundColor: itemState.isActive ? "#ffb000" : "transparent",
-                          border: "none",
-                          cursor: "pointer",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap" as const,
-                          textShadow: itemState.isActive ? "none" : "0 0 3px #ffb000",
-                        }}
-                      >
-                        &gt; {thread.name ?? thread.id.slice(0, 8)}
-                      </button>
-                    )}
-                  />
-                ))}
-              </div>
-            )}
-          />
-        </div>
-      </ThreadHistory.Root>
-
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "8px 16px", borderBottom: "1px solid #ffb000", fontSize: 13, flexShrink: 0, fontFamily: "'Courier New', monospace" }}>
-          <a href="/" style={{ color: "#ffb000", textDecoration: "none", textShadow: "0 0 5px #ffb000" }}>← Home</a>
-          <span style={{ color: "rgba(255,176,0,0.6)", marginLeft: 8 }}>/ Retro</span>
-        </div>
-
-        <ThreadContent.Root style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-          <ThreadContent.Empty
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#ffb000", fontSize: 14, fontFamily: "'Courier New', monospace", textShadow: "0 0 5px #ffb000" }}
-          >
-            &gt; AWAITING INPUT...
-          </ThreadContent.Empty>
-          <ThreadContent.Messages
-            render={(_props, state) => (
-              <div>
-                {state.filteredMessages.map((msg) => (
-                  <Message.Root
-                    key={msg.id}
-                    message={msg}
-                    role={msg.role as "user" | "assistant"}
-                    style={{ marginBottom: 12, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}
-                  >
-                    <div style={{ maxWidth: "70%", display: "flex", flexDirection: "column", gap: 8 }}>
-                      <ReasoningInfo.Root>
-                        <div
+          <ThreadHistory.Root>
+            <ThreadHistory.List
+              render={(_props, state) => (
+                <div>
+                  {state.filteredThreads.map((thread) => (
+                    <ThreadHistory.Item
+                      key={thread.id}
+                      thread={thread}
+                      render={({ children, ...props }, { isActive }) => (
+                        <button
+                          {...props}
+                          className={`retro-thread-item${isActive ? " active" : ""}`}
                           style={{
-                            padding: "6px 10px",
-                            backgroundColor: "rgba(255,176,0,0.1)",
-                            border: "1px solid rgba(255,176,0,0.3)",
+                            display: "block",
+                            width: "100%",
                             fontSize: 12,
-                            fontFamily: "'Courier New', monospace",
+                            textAlign: "left",
+                            background: "none",
+                            border: "none",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap" as const,
                           }}
                         >
-                          <ReasoningInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#ffb000", textShadow: "0 0 3px #ffb000", fontFamily: "'Courier New', monospace" }}
-                          >
-                            <ReasoningInfo.StatusText />
-                          </ReasoningInfo.Trigger>
-                          <ReasoningInfo.Content style={{ marginTop: 6, fontSize: 12, color: "rgba(255,176,0,0.7)", lineHeight: 1.5, fontFamily: "'Courier New', monospace" }}>
-                            <ReasoningInfo.Steps />
-                          </ReasoningInfo.Content>
-                        </div>
-                      </ReasoningInfo.Root>
+                          &gt; {children}
+                        </button>
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+            />
+          </ThreadHistory.Root>
+        </div>
+      </ChatLayout.Sidebar>
+    </ChatLayout.Root>
+  );
+}
 
-                      <Message.Content
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: msg.role === "user" ? "rgba(255,176,0,0.15)" : "rgba(255,176,0,0.05)",
-                          color: "#ffb000",
-                          border: "1px solid rgba(255,176,0,0.3)",
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                          fontFamily: "'Courier New', monospace",
-                          textShadow: "0 0 3px rgba(255,176,0,0.5)",
-                        }}
-                      />
+function MessageContent({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  return (
+    <div
+      style={{
+        marginBottom: 12,
+        display: "flex",
+        flex: "1 1 auto",
+        alignSelf: role === "user" ? "flex-end" : "flex-start",
+        maxWidth: "70%",
+        flexDirection: "column",
+        gap: 8,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
 
-                      <ToolcallInfo.Root>
-                        <div style={{ padding: "6px 10px", backgroundColor: "rgba(255,176,0,0.05)", border: "1px solid rgba(255,176,0,0.3)", fontSize: 12, fontFamily: "'Courier New', monospace" }}>
-                          <ToolcallInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "rgba(255,176,0,0.7)", fontFamily: "'Courier New', monospace" }}
-                          >
-                            <ToolcallInfo.StatusIcon />
-                            <ToolcallInfo.ToolName />
-                            <ToolcallInfo.StatusText />
-                          </ToolcallInfo.Trigger>
-                          <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 12, color: "rgba(255,176,0,0.5)", fontFamily: "'Courier New', monospace" }}>
-                            <ToolcallInfo.Parameters />
-                            <ToolcallInfo.Result />
-                          </ToolcallInfo.Content>
-                        </div>
-                      </ToolcallInfo.Root>
+function CollapsibleTrigger({
+  state,
+  children,
+  ...props
+}: PropsWithChildren<{ state: "open" | "closed" }>) {
+  return (
+    <button
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+        fontSize: 12,
+        color: "rgba(255,176,0,0.7)",
+        fontFamily: "'Courier New', monospace",
+      }}
+      {...props}
+    >
+      {children}
+      <span
+        style={{
+          display: "inline-block",
+          transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
+          transition: "transform 0.2s",
+        }}
+      >
+        ▼
+      </span>
+    </button>
+  );
+}
 
-                      <Message.RenderedComponent>
-                        <Message.RenderedComponentContent style={{ marginTop: 4 }} />
-                      </Message.RenderedComponent>
+function MessageBubble({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  if (typeof children === "string" && children.trim() === "") return null;
+  if (!children) return null;
 
-                      <Message.LoadingIndicator
-                        style={{ display: "flex", gap: 4, padding: "8px 12px", color: "#ffb000", textShadow: "0 0 5px #ffb000" }}
-                      />
-                    </div>
-                  </Message.Root>
-                ))}
-              </div>
-            )}
-          />
-        </ThreadContent.Root>
+  return (
+    <div
+      className={role === "user" ? "retro-bubble-user" : "retro-bubble-ai"}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
 
-        <MessageInput.Root style={{ flexShrink: 0, borderTop: "1px solid #ffb000" }}>
-          <MessageInput.Error
-            style={{ margin: "8px 12px 0", padding: "6px 10px", fontSize: 12, color: "#ff4444", fontFamily: "'Courier New', monospace" }}
-          />
-          <MessageInput.StagedImages style={{ display: "flex", gap: 8, padding: "8px 12px 0", flexWrap: "wrap" }} />
-          <MessageInput.Elicitation
-            style={{ margin: "8px 12px", padding: 12, backgroundColor: "rgba(255,176,0,0.05)", border: "1px solid rgba(255,176,0,0.3)", fontFamily: "'Courier New', monospace" }}
-          />
-          <MessageInput.Content style={{ display: "flex", gap: 8, padding: 12, alignItems: "flex-end" }}>
-            <MessageInput.FileButton
-              style={{ padding: "5px 8px", fontSize: 14, backgroundColor: "transparent", border: "1px solid #ffb000", cursor: "pointer", color: "#ffb000", fontFamily: "'Courier New', monospace" }}
-            >
-              📎
-            </MessageInput.FileButton>
-            <div style={{ flex: 1 }}>
-              <MessageInput.Textarea
-                placeholder="> TYPE COMMAND..."
-                style={{ minHeight: 40, maxHeight: 120, padding: "8px 12px", fontSize: 14, border: "1px solid #ffb000", outline: "none", width: "100%", boxSizing: "border-box", lineHeight: 1.5, backgroundColor: "#0a0a0a", color: "#ffb000", fontFamily: "'Courier New', monospace", textShadow: "0 0 3px rgba(255,176,0,0.5)" }}
-              />
-            </div>
-            <MessageInput.SubmitButton
-              style={{ padding: "5px 12px", fontSize: 12, fontFamily: "'Courier New', monospace", color: "#050505", backgroundColor: "#ffb000", border: "1px solid #ffb000", cursor: "pointer" }}
-            >
-              SEND
-            </MessageInput.SubmitButton>
-            <MessageInput.StopButton
-              style={{ padding: "5px 12px", fontSize: 12, fontFamily: "'Courier New', monospace", color: "#ff4444", backgroundColor: "transparent", border: "1px solid #ff4444", cursor: "pointer" }}
-            >
-              ABORT
-            </MessageInput.StopButton>
-          </MessageInput.Content>
-        </MessageInput.Root>
-      </div>
+function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
+  return (
+    <div style={{ marginTop: 4 }}>
+      {title && (
+        <div
+          style={{
+            fontSize: 10,
+            color: "rgba(255,176,0,0.5)",
+            fontFamily: "'Courier New', monospace",
+            marginBottom: 2,
+          }}
+        >
+          {title}
+        </div>
+      )}
+      <pre
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontSize: 10,
+          lineHeight: 1.5,
+          color: "rgba(255,176,0,0.6)",
+          fontFamily: "'Courier New', monospace",
+        }}
+      >
+        {children}
+      </pre>
     </div>
   );
 }

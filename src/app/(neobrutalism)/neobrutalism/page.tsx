@@ -8,21 +8,200 @@ import {
   ReasoningInfo,
   ToolcallInfo,
 } from "@tambo-ai/react-ui-base";
+import { useTambo, useTamboThreadList } from "@tambo-ai/react";
+import Link from "next/link";
+import { ChatLayout } from "@/components/chat-layout";
+import { PropsWithChildren, useEffect } from "react";
 
 export default function NeobrutalismDemo() {
+  const { currentThreadId, switchThread } = useTambo();
+  const { data } = useTamboThreadList();
+
+  useEffect(() => {
+    if (currentThreadId === "placeholder" && data?.threads?.length) {
+      switchThread(data.threads[0].id);
+    }
+  }, [currentThreadId, data?.threads, switchThread]);
+
   return (
-    <div style={{ display: "flex", height: "100vh" }}>
-      <ThreadHistory.Root
-        style={{
-          width: 260,
-          flexShrink: 0,
-          borderRight: "3px solid #000",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          overflow: "hidden",
-          backgroundColor: "#e8e4df",
-        }}
+    <ChatLayout.Root
+      style={{ height: "100vh" }}
+      colors={{ border: "#000" }}
+    >
+      <ChatLayout.Content>
+        <ChatLayout.Breadcrumb
+          style={{
+            borderBottom: "3px solid #000",
+            fontWeight: 700,
+            fontSize: 13,
+          }}
+        >
+          <Link href="/" style={{ color: "#000", textDecoration: "none" }}>
+            ← Home
+          </Link>
+          <span style={{ marginLeft: 8 }}>/ Neobrutalism</span>
+        </ChatLayout.Breadcrumb>
+        <ChatLayout.MessageArea padding="normal">
+          <ChatLayout.Container size="medium">
+            <ThreadContent.Root
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <ThreadContent.Messages
+                render={(_props, state) => (
+                  <>
+                    {state.filteredMessages.map((msg) => (
+                      <Message.Root
+                        key={msg.id}
+                        message={msg}
+                        role={msg.role as "user" | "assistant"}
+                        render={<MessageContent role={msg.role} />}
+                      >
+                        <ReasoningInfo.Root>
+                          <div className="neo-container" style={{ backgroundColor: "#ffd803", padding: "8px 12px", fontSize: 12 }}>
+                            <ReasoningInfo.Trigger
+                              render={(props) => (
+                                <button
+                                  {...props}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: 6,
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    padding: 0,
+                                    fontSize: 12,
+                                    fontWeight: 700,
+                                    color: "#000",
+                                  }}
+                                >
+                                  <ReasoningInfo.StatusText />
+                                </button>
+                              )}
+                            />
+                            <ReasoningInfo.Content
+                              style={{
+                                marginTop: 6,
+                                fontSize: 12,
+                                color: "#000",
+                                lineHeight: 1.5,
+                              }}
+                            >
+                              <ReasoningInfo.Steps />
+                            </ReasoningInfo.Content>
+                          </div>
+                        </ReasoningInfo.Root>
+
+                        <ToolcallInfo.Root>
+                          <div className="neo-container" style={{ backgroundColor: "#e8e4df", padding: "8px 12px", fontSize: 12 }}>
+                            <ToolcallInfo.Trigger
+                              render={(props, { state }) => (
+                                <CollapsibleTrigger state={state} {...props}>
+                                  <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                                    <ToolcallInfo.StatusIcon />
+                                    <ToolcallInfo.ToolName />
+                                  </span>
+                                </CollapsibleTrigger>
+                              )}
+                            />
+                            <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#000" }}>
+                              <ToolcallInfo.Parameters
+                                render={<CodeBlock title="Parameters" />}
+                              />
+                              <ToolcallInfo.Result
+                                render={<CodeBlock title="Result" />}
+                              />
+                            </ToolcallInfo.Content>
+                          </div>
+                        </ToolcallInfo.Root>
+
+                        <Message.RenderedComponent>
+                          <Message.RenderedComponentContent />
+                        </Message.RenderedComponent>
+
+                        <Message.Content
+                          render={(props, { contentAsMarkdownString }) => (
+                            <MessageBubble role={msg.role} {...props}>
+                              {contentAsMarkdownString}
+                            </MessageBubble>
+                          )}
+                        />
+
+                        <Message.LoadingIndicator
+                          style={{
+                            display: "flex",
+                            gap: 4,
+                            padding: "8px 12px",
+                            backgroundColor: "#ffd803",
+                            border: "3px solid #000",
+                          }}
+                        />
+                      </Message.Root>
+                    ))}
+                  </>
+                )}
+              />
+            </ThreadContent.Root>
+          </ChatLayout.Container>
+        </ChatLayout.MessageArea>
+      </ChatLayout.Content>
+      <ChatLayout.InputArea padding="normal">
+        <ChatLayout.Container size="medium">
+          <MessageInput.Root>
+            <MessageInput.StagedImages
+              style={{
+                display: "flex",
+                gap: 8,
+                marginBottom: 8,
+                flexWrap: "wrap",
+              }}
+            />
+            <MessageInput.Error
+              style={{
+                marginBottom: 8,
+                padding: "8px 12px",
+                fontSize: 12,
+                fontWeight: 700,
+                color: "#000",
+                backgroundColor: "#ff6b6b",
+                border: "3px solid #000",
+              }}
+            />
+            <MessageInput.Content
+              style={{
+                display: "flex",
+                gap: 8,
+                alignItems: "flex-end",
+              }}
+            >
+              <MessageInput.FileButton
+                className="neo-btn"
+                style={{ backgroundColor: "#e8e4df" }}
+              >
+                📎
+              </MessageInput.FileButton>
+              <div style={{ flex: 1 }}>
+                <MessageInput.Textarea
+                  placeholder="Type a message..."
+                  className="neo-textarea"
+                />
+              </div>
+              <MessageInput.SubmitButton className="neo-btn neo-btn-primary">
+                SEND
+              </MessageInput.SubmitButton>
+              <MessageInput.StopButton
+                className="neo-btn"
+                style={{ backgroundColor: "#ff6b6b" }}
+              >
+                STOP
+              </MessageInput.StopButton>
+            </MessageInput.Content>
+          </MessageInput.Root>
+        </ChatLayout.Container>
+      </ChatLayout.InputArea>
+      <ChatLayout.Sidebar
+        divider
+        style={{ backgroundColor: "#e8e4df" }}
       >
         <div
           style={{
@@ -33,186 +212,159 @@ export default function NeobrutalismDemo() {
             gap: 8,
           }}
         >
-          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 900, color: "#000", textTransform: "uppercase" as const, letterSpacing: 1 }}>
-            Threads
-          </h2>
-          <ThreadHistory.NewThreadButton
+          <h2
             style={{
-              width: "100%",
-              padding: "8px 16px",
-              fontSize: 14,
-              fontWeight: 700,
+              margin: 0,
+              fontSize: 16,
+              fontWeight: 900,
               color: "#000",
-              backgroundColor: "#a388ee",
-              border: "3px solid #000",
-              boxShadow: "4px 4px 0 #000",
-              cursor: "pointer",
               textTransform: "uppercase" as const,
+              letterSpacing: 1,
             }}
           >
-            + New thread
-          </ThreadHistory.NewThreadButton>
+            Threads
+          </h2>
+          <ThreadHistory.Root>
+            <ThreadHistory.NewThreadButton className="neo-btn neo-btn-primary" style={{ width: "100%", textTransform: "uppercase" as const }}>
+              + New thread
+            </ThreadHistory.NewThreadButton>
+          </ThreadHistory.Root>
         </div>
         <div style={{ overflowY: "auto", flex: 1, padding: 8 }}>
-          <ThreadHistory.List
-            render={(_props, state) => (
-              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                {state.filteredThreads.map((thread) => (
-                  <ThreadHistory.Item
-                    key={thread.id}
-                    thread={thread}
-                    render={(_itemProps, itemState) => (
-                      <button
-                        {..._itemProps}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          padding: "6px 12px",
-                          fontSize: 13,
-                          fontWeight: 700,
-                          textAlign: "left",
-                          color: "#000",
-                          backgroundColor: itemState.isActive ? "#ffd803" : "transparent",
-                          border: itemState.isActive ? "2px solid #000" : "2px solid transparent",
-                          boxShadow: itemState.isActive ? "2px 2px 0 #000" : "none",
-                          cursor: "pointer",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap" as const,
-                        }}
-                      >
-                        {thread.name ?? thread.id.slice(0, 8)}
-                      </button>
-                    )}
-                  />
-                ))}
-              </div>
-            )}
-          />
-        </div>
-      </ThreadHistory.Root>
-
-      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-        <div style={{ padding: "8px 16px", borderBottom: "3px solid #000", fontSize: 13, fontWeight: 700, flexShrink: 0 }}>
-          <a href="/" style={{ color: "#000", textDecoration: "none" }}>← Home</a>
-          <span style={{ marginLeft: 8 }}>/ Neobrutalism</span>
-        </div>
-
-        <ThreadContent.Root style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-          <ThreadContent.Empty
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#000", fontSize: 16, fontWeight: 900 }}
-          >
-            Send a message to get started
-          </ThreadContent.Empty>
-          <ThreadContent.Messages
-            render={(_props, state) => (
-              <div>
-                {state.filteredMessages.map((msg) => (
-                  <Message.Root
-                    key={msg.id}
-                    message={msg}
-                    role={msg.role as "user" | "assistant"}
-                    style={{ marginBottom: 12, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}
-                  >
-                    <div style={{ maxWidth: "70%", display: "flex", flexDirection: "column", gap: 8 }}>
-                      <ReasoningInfo.Root>
-                        <div
+          <ThreadHistory.Root>
+            <ThreadHistory.List
+              render={(_props, state) => (
+                <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                  {state.filteredThreads.map((thread) => (
+                    <ThreadHistory.Item
+                      key={thread.id}
+                      thread={thread}
+                      render={({ children, ...props }, { isActive }) => (
+                        <button
+                          {...props}
+                          className={`neo-thread-item${isActive ? " active" : ""}`}
                           style={{
-                            padding: "8px 12px",
-                            backgroundColor: "#ffd803",
-                            border: "3px solid #000",
-                            boxShadow: "3px 3px 0 #000",
-                            fontSize: 12,
+                            display: "block",
+                            width: "100%",
+                            fontSize: 13,
+                            textAlign: "left",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                            whiteSpace: "nowrap" as const,
                           }}
                         >
-                          <ReasoningInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, fontWeight: 700, color: "#000" }}
-                          >
-                            <ReasoningInfo.StatusText />
-                          </ReasoningInfo.Trigger>
-                          <ReasoningInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#000", lineHeight: 1.5 }}>
-                            <ReasoningInfo.Steps />
-                          </ReasoningInfo.Content>
-                        </div>
-                      </ReasoningInfo.Root>
+                          {children}
+                        </button>
+                      )}
+                    />
+                  ))}
+                </div>
+              )}
+            />
+          </ThreadHistory.Root>
+        </div>
+      </ChatLayout.Sidebar>
+    </ChatLayout.Root>
+  );
+}
 
-                      <Message.Content
-                        style={{
-                          padding: "8px 12px",
-                          backgroundColor: msg.role === "user" ? "#a388ee" : "#fff",
-                          color: "#000",
-                          border: "3px solid #000",
-                          boxShadow: "4px 4px 0 #000",
-                          fontSize: 14,
-                          fontWeight: 500,
-                          lineHeight: 1.5,
-                        }}
-                      />
+function MessageContent({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  return (
+    <div
+      style={{
+        marginBottom: 12,
+        display: "flex",
+        flex: "1 1 auto",
+        alignSelf: role === "user" ? "flex-end" : "flex-start",
+        maxWidth: "70%",
+        flexDirection: "column",
+        gap: 8,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
 
-                      <ToolcallInfo.Root>
-                        <div style={{ padding: "8px 12px", backgroundColor: "#e8e4df", border: "3px solid #000", boxShadow: "3px 3px 0 #000", fontSize: 12 }}>
-                          <ToolcallInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, fontWeight: 700, color: "#000" }}
-                          >
-                            <ToolcallInfo.StatusIcon />
-                            <ToolcallInfo.ToolName />
-                            <ToolcallInfo.StatusText />
-                          </ToolcallInfo.Trigger>
-                          <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#000" }}>
-                            <ToolcallInfo.Parameters />
-                            <ToolcallInfo.Result />
-                          </ToolcallInfo.Content>
-                        </div>
-                      </ToolcallInfo.Root>
+function CollapsibleTrigger({
+  state,
+  children,
+  ...props
+}: PropsWithChildren<{ state: "open" | "closed" }>) {
+  return (
+    <button
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+        fontSize: 12,
+        fontWeight: 700,
+        color: "#000",
+      }}
+      {...props}
+    >
+      {children}
+      <span
+        style={{
+          display: "inline-block",
+          transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
+          transition: "transform 0.2s",
+        }}
+      >
+        ▼
+      </span>
+    </button>
+  );
+}
 
-                      <Message.RenderedComponent>
-                        <Message.RenderedComponentContent style={{ marginTop: 4 }} />
-                      </Message.RenderedComponent>
+function MessageBubble({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  if (typeof children === "string" && children.trim() === "") return null;
+  if (!children) return null;
 
-                      <Message.LoadingIndicator
-                        style={{ display: "flex", gap: 4, padding: "8px 12px", backgroundColor: "#ffd803", border: "3px solid #000" }}
-                      />
-                    </div>
-                  </Message.Root>
-                ))}
-              </div>
-            )}
-          />
-        </ThreadContent.Root>
+  return (
+    <div
+      className={role === "user" ? "neo-bubble-user" : "neo-bubble-ai"}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
 
-        <MessageInput.Root style={{ flexShrink: 0, borderTop: "3px solid #000" }}>
-          <MessageInput.Error
-            style={{ margin: "8px 12px 0", padding: "8px 12px", fontSize: 12, fontWeight: 700, color: "#000", backgroundColor: "#ff6b6b", border: "3px solid #000" }}
-          />
-          <MessageInput.StagedImages style={{ display: "flex", gap: 8, padding: "8px 12px 0", flexWrap: "wrap" }} />
-          <MessageInput.Elicitation
-            style={{ margin: "8px 12px", padding: 12, backgroundColor: "#e8e4df", border: "3px solid #000", boxShadow: "3px 3px 0 #000" }}
-          />
-          <MessageInput.Content style={{ display: "flex", gap: 8, padding: 12, alignItems: "flex-end" }}>
-            <MessageInput.FileButton
-              style={{ padding: "6px 10px", fontSize: 14, backgroundColor: "#e8e4df", border: "3px solid #000", boxShadow: "2px 2px 0 #000", cursor: "pointer", color: "#000", fontWeight: 700 }}
-            >
-              📎
-            </MessageInput.FileButton>
-            <div style={{ flex: 1 }}>
-              <MessageInput.Textarea
-                placeholder="Type a message..."
-                style={{ minHeight: 40, maxHeight: 120, padding: "8px 12px", fontSize: 14, border: "3px solid #000", outline: "none", width: "100%", boxSizing: "border-box", lineHeight: 1.5, fontWeight: 500 }}
-              />
-            </div>
-            <MessageInput.SubmitButton
-              style={{ padding: "8px 16px", fontSize: 14, fontWeight: 700, color: "#000", backgroundColor: "#a388ee", border: "3px solid #000", boxShadow: "4px 4px 0 #000", cursor: "pointer", textTransform: "uppercase" as const }}
-            >
-              Send
-            </MessageInput.SubmitButton>
-            <MessageInput.StopButton
-              style={{ padding: "8px 16px", fontSize: 14, fontWeight: 700, color: "#000", backgroundColor: "#ff6b6b", border: "3px solid #000", boxShadow: "4px 4px 0 #000", cursor: "pointer", textTransform: "uppercase" as const }}
-            >
-              Stop
-            </MessageInput.StopButton>
-          </MessageInput.Content>
-        </MessageInput.Root>
-      </div>
+function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
+  return (
+    <div style={{ marginTop: 4 }}>
+      {title && (
+        <div style={{ fontSize: 10, fontWeight: 700, color: "#000", marginBottom: 2 }}>
+          {title}
+        </div>
+      )}
+      <pre
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontSize: 10,
+          lineHeight: 1.5,
+          color: "#000",
+          fontFamily: "ui-monospace, monospace",
+        }}
+      >
+        {children}
+      </pre>
     </div>
   );
 }

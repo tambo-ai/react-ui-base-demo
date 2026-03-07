@@ -8,200 +8,397 @@ import {
   ReasoningInfo,
   ToolcallInfo,
 } from "@tambo-ai/react-ui-base";
+import { useTambo, useTamboThreadList } from "@tambo-ai/react";
+import Link from "next/link";
+import {
+  Button,
+  TextField,
+  BlockStack,
+  InlineStack,
+  Box,
+  Card,
+  Text,
+  Spinner,
+  Banner,
+  Icon,
+} from "@shopify/polaris";
+import {
+  SendIcon,
+  AttachmentIcon,
+  StopCircleIcon,
+  ChevronDownIcon,
+  CheckIcon,
+  AlertCircleIcon,
+  LightbulbIcon,
+} from "@shopify/polaris-icons";
+import { ChatLayout } from "@/components/chat-layout";
+import { PropsWithChildren, useEffect } from "react";
 
 export default function PolarisDemo() {
+  const { currentThreadId, switchThread } = useTambo();
+  const { data } = useTamboThreadList();
+
+  useEffect(() => {
+    if (currentThreadId === "placeholder" && data?.threads?.length) {
+      switchThread(data.threads[0].id);
+    }
+  }, [currentThreadId, data?.threads, switchThread]);
+
   return (
-    <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-      <ThreadHistory.Root
+    <ChatLayout.Root
+      style={{ height: "100vh" }}
+      colors={{ border: "#e1e3e5" }}
+    >
+      <ChatLayout.Content>
+        <ChatLayout.Breadcrumb>
+          <InlineStack gap="200" blockAlign="center">
+            <Link
+              href="/"
+              style={{ color: "#008060", textDecoration: "none", fontSize: 13 }}
+            >
+              ← Home
+            </Link>
+            <Text as="span" variant="bodySm" tone="subdued">
+              / Polaris
+            </Text>
+          </InlineStack>
+        </ChatLayout.Breadcrumb>
+        <ChatLayout.MessageArea padding="normal">
+          <ChatLayout.Container size="medium">
+            <ThreadContent.Root
+              style={{ display: "flex", flexDirection: "column" }}
+            >
+              <ThreadContent.Messages
+                render={(_props, state) => (
+                  <>
+                    {state.filteredMessages.map((msg) => (
+                      <Message.Root
+                        key={msg.id}
+                        message={msg}
+                        role={msg.role as "user" | "assistant"}
+                        render={<MessageContent role={msg.role} />}
+                      >
+                        <ReasoningInfo.Root>
+                          <Card>
+                            <BlockStack gap="200">
+                              <ReasoningInfo.Trigger
+                                render={(props) => (
+                                  <button
+                                    {...props}
+                                    style={{
+                                      display: "flex",
+                                      alignItems: "center",
+                                      gap: 6,
+                                      background: "none",
+                                      border: "none",
+                                      cursor: "pointer",
+                                      padding: 0,
+                                      fontSize: 12,
+                                      color: "#8a6b0f",
+                                    }}
+                                  >
+                                    <ReasoningInfo.StatusText
+                                      render={(_props, state) =>
+                                        state.isLoading ? (
+                                          <Spinner size="small" />
+                                        ) : (
+                                          <Icon source={LightbulbIcon} />
+                                        )
+                                      }
+                                    />
+                                    <ReasoningInfo.StatusText />
+                                  </button>
+                                )}
+                              />
+                              <ReasoningInfo.Content>
+                                <Box
+                                  paddingBlockStart="200"
+                                  color="text-secondary"
+                                >
+                                  <ReasoningInfo.Steps />
+                                </Box>
+                              </ReasoningInfo.Content>
+                            </BlockStack>
+                          </Card>
+                        </ReasoningInfo.Root>
+
+                        <ToolcallInfo.Root>
+                          <Card>
+                            <BlockStack gap="200">
+                              <ToolcallInfo.Trigger
+                                render={(props, { state }) => (
+                                  <CollapsibleTrigger
+                                    state={state}
+                                    {...props}
+                                  >
+                                    <InlineStack gap="200" blockAlign="center">
+                                      <ToolcallInfo.StatusIcon
+                                        render={(_p, s) => {
+                                          switch (s.status) {
+                                            case "loading":
+                                              return <Spinner size="small" />;
+                                            case "success":
+                                              return (
+                                                <Icon source={CheckIcon} />
+                                              );
+                                            case "error":
+                                              return (
+                                                <Icon
+                                                  source={AlertCircleIcon}
+                                                />
+                                              );
+                                          }
+                                        }}
+                                      />
+                                      <ToolcallInfo.ToolName />
+                                    </InlineStack>
+                                  </CollapsibleTrigger>
+                                )}
+                              />
+                              <ToolcallInfo.Content>
+                                <BlockStack gap="200">
+                                  <ToolcallInfo.Parameters
+                                    render={<CodeBlock title="Parameters" />}
+                                  />
+                                  <ToolcallInfo.Result
+                                    render={<CodeBlock title="Result" />}
+                                  />
+                                </BlockStack>
+                              </ToolcallInfo.Content>
+                            </BlockStack>
+                          </Card>
+                        </ToolcallInfo.Root>
+
+                        <Message.RenderedComponent>
+                          <Message.RenderedComponentContent />
+                        </Message.RenderedComponent>
+
+                        <Message.Content
+                          render={(props, { contentAsMarkdownString }) => (
+                            <MessageBubble role={msg.role} {...props}>
+                              {contentAsMarkdownString}
+                            </MessageBubble>
+                          )}
+                        />
+
+                        <Message.LoadingIndicator
+                          render={<Spinner size="small" />}
+                        />
+                      </Message.Root>
+                    ))}
+                  </>
+                )}
+              />
+            </ThreadContent.Root>
+          </ChatLayout.Container>
+        </ChatLayout.MessageArea>
+      </ChatLayout.Content>
+      <ChatLayout.InputArea padding="normal">
+        <ChatLayout.Container size="medium">
+          <MessageInput.Root>
+            <MessageInput.StagedImages />
+            <MessageInput.Error
+              render={(props) => (
+                <div {...props}>
+                  <Banner tone="critical">{props.children}</Banner>
+                </div>
+              )}
+            />
+            <MessageInput.Content
+              render={
+                <InlineStack gap="200" blockAlign="end" wrap={false} />
+              }
+            >
+              <div style={{ flex: "1 1 auto" }}>
+                <MessageInput.Textarea
+                  placeholder="Type a message..."
+                  render={
+                    <TextField
+                      label=""
+                      labelHidden
+                      multiline={2}
+                      autoComplete="off"
+                    />
+                  }
+                />
+              </div>
+              <InlineStack gap="100" blockAlign="center">
+                <MessageInput.FileButton
+                  render={
+                    <Button icon={AttachmentIcon} accessibilityLabel="Attach" />
+                  }
+                />
+                <MessageInput.SubmitButton
+                  render={
+                    <Button
+                      variant="primary"
+                      icon={SendIcon}
+                      accessibilityLabel="Send"
+                    />
+                  }
+                />
+                <MessageInput.StopButton
+                  render={
+                    <Button
+                      tone="critical"
+                      icon={StopCircleIcon}
+                      accessibilityLabel="Stop"
+                    />
+                  }
+                />
+              </InlineStack>
+            </MessageInput.Content>
+          </MessageInput.Root>
+        </ChatLayout.Container>
+      </ChatLayout.InputArea>
+      <ChatLayout.Sidebar divider>
+        <Box padding="400">
+          <BlockStack gap="300">
+            <Text as="h2" variant="headingSm">
+              Threads
+            </Text>
+            <ThreadHistory.Root>
+              <ThreadHistory.NewThreadButton
+                render={<Button variant="primary" fullWidth />}
+              >
+                + New thread
+              </ThreadHistory.NewThreadButton>
+            </ThreadHistory.Root>
+          </BlockStack>
+        </Box>
+        <Box padding="200" overflowY="scroll">
+          <ThreadHistory.Root>
+            <ThreadHistory.List
+              render={(_props, state) => (
+                <BlockStack gap="100">
+                  {state.filteredThreads.map((thread) => (
+                    <ThreadHistory.Item
+                      key={thread.id}
+                      thread={thread}
+                      render={({ children, ...props }, { isActive }) => (
+                        <Button
+                          {...(props as any)}
+                          fullWidth
+                          textAlign="start"
+                          variant={isActive ? "primary" : "tertiary"}
+                        >
+                          {children}
+                        </Button>
+                      )}
+                    />
+                  ))}
+                </BlockStack>
+              )}
+            />
+          </ThreadHistory.Root>
+        </Box>
+      </ChatLayout.Sidebar>
+    </ChatLayout.Root>
+  );
+}
+
+function MessageContent({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  return (
+    <div
+      style={{
+        marginBottom: 12,
+        display: "flex",
+        flex: "1 1 auto",
+        alignSelf: role === "user" ? "flex-end" : "flex-start",
+        maxWidth: "70%",
+        flexDirection: "column",
+        gap: 8,
+      }}
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+function CollapsibleTrigger({
+  state,
+  children,
+  ...props
+}: PropsWithChildren<{ state: "open" | "closed" }>) {
+  return (
+    <button
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: 6,
+        background: "none",
+        border: "none",
+        cursor: "pointer",
+        padding: 0,
+        fontSize: 12,
+        color: "#6d7175",
+      }}
+      {...props}
+    >
+      {children}
+      <span
         style={{
-          width: 260,
-          flexShrink: 0,
-          borderRight: "1px solid #e1e3e5",
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
-          overflow: "hidden",
-          backgroundColor: "#f6f6f7",
+          display: "inline-flex",
+          transform: state === "open" ? "rotate(-180deg)" : "rotate(0deg)",
+          transition: "transform 0.2s",
         }}
       >
-        <div
-          style={{
-            padding: 16,
-            borderBottom: "1px solid #e1e3e5",
-            display: "flex",
-            flexDirection: "column",
-            gap: 8,
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#202223" }}>
-            Threads
-          </h2>
-          <ThreadHistory.NewThreadButton
-            style={{
-              width: "100%",
-              padding: "6px 12px",
-              fontSize: 14,
-              fontWeight: 500,
-              color: "#fff",
-              backgroundColor: "#008060",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-            }}
-          >
-            + New thread
-          </ThreadHistory.NewThreadButton>
-        </div>
-        <div style={{ overflowY: "auto", flex: 1, padding: 8 }}>
-          <ThreadHistory.List
-            render={(_props, state) => (
-              <div>
-                {state.filteredThreads.map((thread) => (
-                  <ThreadHistory.Item
-                    key={thread.id}
-                    thread={thread}
-                    render={(_itemProps, itemState) => (
-                      <button
-                        {..._itemProps}
-                        style={{
-                          display: "block",
-                          width: "100%",
-                          padding: "8px 12px",
-                          fontSize: 14,
-                          textAlign: "left",
-                          color: "#202223",
-                          backgroundColor: itemState.isActive ? "#e1e3e5" : "transparent",
-                          border: "none",
-                          borderRadius: 8,
-                          cursor: "pointer",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
-                          whiteSpace: "nowrap" as const,
-                          fontWeight: itemState.isActive ? 600 : 400,
-                        }}
-                      >
-                        {thread.name ?? thread.id.slice(0, 8)}
-                      </button>
-                    )}
-                  />
-                ))}
-              </div>
-            )}
-          />
-        </div>
-      </ThreadHistory.Root>
+        <Icon source={ChevronDownIcon} />
+      </span>
+    </button>
+  );
+}
 
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        <div style={{ padding: "8px 16px", borderBottom: "1px solid #e1e3e5", fontSize: 13, flexShrink: 0 }}>
-          <a href="/" style={{ color: "#008060", textDecoration: "none" }}>← Home</a>
-          <span style={{ color: "#6d7175", marginLeft: 8 }}>/ Polaris</span>
-        </div>
+function MessageBubble({
+  role,
+  children,
+  ...props
+}: PropsWithChildren<{ role: string }>) {
+  if (typeof children === "string" && children.trim() === "") return null;
+  if (!children) return null;
 
-        <ThreadContent.Root style={{ flex: 1, overflowY: "auto", padding: 16 }}>
-          <ThreadContent.Empty
-            style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", color: "#6d7175", fontSize: 14 }}
-          >
-            Send a message to get started
-          </ThreadContent.Empty>
-          <ThreadContent.Messages
-            render={(_props, state) => (
-              <div>
-                {state.filteredMessages.map((msg) => (
-                  <Message.Root
-                    key={msg.id}
-                    message={msg}
-                    role={msg.role as "user" | "assistant"}
-                    style={{ marginBottom: 12, display: "flex", justifyContent: msg.role === "user" ? "flex-end" : "flex-start" }}
-                  >
-                    <div style={{ maxWidth: "70%", display: "flex", flexDirection: "column", gap: 8 }}>
-                      <ReasoningInfo.Root>
-                        <div style={{ padding: "8px 12px", borderRadius: 8, backgroundColor: "#fef8e8", border: "1px solid #f1c40f", fontSize: 12 }}>
-                          <ReasoningInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#8a6b0f" }}
-                          >
-                            <ReasoningInfo.StatusText />
-                          </ReasoningInfo.Trigger>
-                          <ReasoningInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#6d7175", lineHeight: 1.5 }}>
-                            <ReasoningInfo.Steps />
-                          </ReasoningInfo.Content>
-                        </div>
-                      </ReasoningInfo.Root>
+  return (
+    <Box
+      padding="300"
+      borderRadius="200"
+      background={role === "user" ? "bg-fill-success" : "bg-surface-secondary"}
+      color={role === "user" ? "text-inverse" : "text"}
+      {...(props as any)}
+    >
+      <Text as="p" variant="bodyMd">
+        {children}
+      </Text>
+    </Box>
+  );
+}
 
-                      <Message.Content
-                        style={{
-                          padding: "8px 12px",
-                          borderRadius: 8,
-                          backgroundColor: msg.role === "user" ? "#008060" : "#f6f6f7",
-                          color: msg.role === "user" ? "#fff" : "#202223",
-                          fontSize: 14,
-                          lineHeight: 1.5,
-                        }}
-                      />
-
-                      <ToolcallInfo.Root>
-                        <div style={{ padding: "8px 12px", borderRadius: 8, backgroundColor: "#f6f6f7", border: "1px solid #e1e3e5", fontSize: 12 }}>
-                          <ToolcallInfo.Trigger
-                            style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", cursor: "pointer", padding: 0, fontSize: 12, color: "#6d7175" }}
-                          >
-                            <ToolcallInfo.StatusIcon />
-                            <ToolcallInfo.ToolName />
-                            <ToolcallInfo.StatusText />
-                          </ToolcallInfo.Trigger>
-                          <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 12, color: "#6d7175" }}>
-                            <ToolcallInfo.Parameters />
-                            <ToolcallInfo.Result />
-                          </ToolcallInfo.Content>
-                        </div>
-                      </ToolcallInfo.Root>
-
-                      <Message.RenderedComponent>
-                        <Message.RenderedComponentContent style={{ marginTop: 4 }} />
-                      </Message.RenderedComponent>
-
-                      <Message.LoadingIndicator
-                        style={{ display: "flex", gap: 4, padding: "8px 12px", borderRadius: 8, backgroundColor: "#f6f6f7" }}
-                      />
-                    </div>
-                  </Message.Root>
-                ))}
-              </div>
-            )}
-          />
-        </ThreadContent.Root>
-
-        <MessageInput.Root style={{ flexShrink: 0, borderTop: "1px solid #e1e3e5" }}>
-          <MessageInput.Error
-            style={{ margin: "8px 12px 0", padding: "8px 12px", fontSize: 12, color: "#d72c0d", backgroundColor: "#fef6f6", borderRadius: 8 }}
-          />
-          <MessageInput.StagedImages style={{ display: "flex", gap: 8, padding: "8px 12px 0", flexWrap: "wrap" }} />
-          <MessageInput.Elicitation
-            style={{ margin: "8px 12px", padding: 12, borderRadius: 8, backgroundColor: "#f6f6f7", border: "1px solid #e1e3e5" }}
-          />
-          <MessageInput.Content style={{ display: "flex", gap: 8, padding: 12, alignItems: "flex-end" }}>
-            <MessageInput.FileButton
-              style={{ padding: "6px 10px", fontSize: 14, backgroundColor: "#f6f6f7", border: "1px solid #e1e3e5", borderRadius: 8, cursor: "pointer", color: "#6d7175" }}
-            >
-              📎
-            </MessageInput.FileButton>
-            <div style={{ flex: 1 }}>
-              <MessageInput.Textarea
-                placeholder="Type a message..."
-                style={{ minHeight: 40, maxHeight: 120, padding: "8px 12px", fontSize: 14, border: "1px solid #e1e3e5", borderRadius: 8, outline: "none", width: "100%", boxSizing: "border-box", lineHeight: 1.5 }}
-              />
-            </div>
-            <MessageInput.SubmitButton
-              style={{ padding: "6px 12px", fontSize: 14, fontWeight: 500, color: "#fff", backgroundColor: "#008060", border: "none", borderRadius: 8, cursor: "pointer" }}
-            >
-              Send
-            </MessageInput.SubmitButton>
-            <MessageInput.StopButton
-              style={{ padding: "6px 12px", fontSize: 14, fontWeight: 500, color: "#fff", backgroundColor: "#d72c0d", border: "none", borderRadius: 8, cursor: "pointer" }}
-            >
-              Stop
-            </MessageInput.StopButton>
-          </MessageInput.Content>
-        </MessageInput.Root>
-      </div>
-    </div>
+function CodeBlock({ children, title }: PropsWithChildren<{ title?: string }>) {
+  return (
+    <Card>
+      {title && (
+        <Box paddingBlockEnd="100">
+          <Text as="span" variant="bodySm" fontWeight="semibold" tone="subdued">
+            {title}
+          </Text>
+        </Box>
+      )}
+      <pre
+        style={{
+          margin: 0,
+          whiteSpace: "pre-wrap",
+          wordBreak: "break-word",
+          fontFamily: "ui-monospace, SFMono-Regular, SF Mono, Menlo, monospace",
+          fontSize: 10,
+          lineHeight: 1.5,
+        }}
+      >
+        {children}
+      </pre>
+    </Card>
   );
 }
