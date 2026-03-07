@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+:root {
+  /* Use cyberpunk theme */
+}
+
+[data-theme="cyberpunk"] {
+  /* DaisyUI cyberpunk theme will be applied via data attribute */
+}

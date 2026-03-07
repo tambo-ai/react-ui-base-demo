@@ -23,11 +23,39 @@ const skins = [
     bg: "#edf5ff",
   },
   {
+    name: "Ant Design",
+    href: "/antd",
+    description: "The world's most popular React UI library — enterprise-grade",
+    color: "#1677ff",
+    bg: "#e6f4ff",
+  },
+  {
+    name: "Mantine",
+    href: "/mantine",
+    description: "Modern React components — polished and developer-friendly",
+    color: "#228be6",
+    bg: "#e7f5ff",
+  },
+  {
+    name: "Chakra UI",
+    href: "/chakra",
+    description: "Composable React components — accessible and flexible",
+    color: "#319795",
+    bg: "#e6fffa",
+  },
+  {
     name: "Neobrutalism",
     href: "/neobrutalism",
-    description: "Bold borders, chunky shadows, playful chaos",
+    description: "Bold borders, chunky shadows, playful chaos — neobrutalism.dev",
     color: "#000000",
     bg: "#FFF8DC",
+  },
+  {
+    name: "DaisyUI",
+    href: "/daisyui",
+    description: "Tailwind component classes — cyberpunk theme",
+    color: "#ff00ff",
+    bg: "#1a103c",
   },
   {
     name: "NES.css",
@@ -37,10 +65,38 @@ const skins = [
     bg: "#fff",
   },
   {
+    name: "Windows 98",
+    href: "/win98",
+    description: "Faithful recreation of the classic Win98 interface — 98.css",
+    color: "#000080",
+    bg: "#c0c0c0",
+  },
+  {
+    name: "Windows XP",
+    href: "/winxp",
+    description: "Luna blue theme from the golden age of Windows — XP.css",
+    color: "#003c74",
+    bg: "#ECE9D8",
+  },
+  {
+    name: "Paper CSS",
+    href: "/papercss",
+    description: "Hand-drawn, sketchy borders — everything looks handmade",
+    color: "#41403e",
+    bg: "#fff",
+  },
+  {
+    name: "Pico CSS",
+    href: "/pico",
+    description: "Classless semantic CSS — beautiful with zero classes",
+    color: "#546b78",
+    bg: "#f8f9fa",
+  },
+  {
     name: "Retro-Futuristic",
     href: "/retro",
-    description: "Amber phosphor terminal with scanline effects",
-    color: "#ffb000",
+    description: "Amber phosphor CRT terminal — cassette futurism aesthetic",
+    color: "#ff6a00",
     bg: "#050505",
   },
 ];
@@ -60,7 +116,7 @@ export default function Home() {
         Tambo UI Demo
       </h1>
       <p style={{ fontSize: 18, color: "#666", marginBottom: 40 }}>
-        The same headless AI chat — six different design systems. Pick a skin to
+        The same headless AI chat — {skins.length} different design systems. Pick a skin to
         see it in action.
       </p>
       <div
@@ -108,7 +164,7 @@ export default function Home() {
                 fontSize: 20,
                 fontWeight: 600,
                 margin: "0 0 8px",
-                color: skin.color === "#ffb000" ? "#333" : skin.color,
+                color: ["#ff6a00", "#ff00ff"].includes(skin.color) ? "#333" : skin.color,
               }}
             >
               {skin.name}
@@ -116,7 +172,7 @@ export default function Home() {
             <p
               style={{
                 fontSize: 14,
-                color: "#666",
+                color: skin.bg === "#050505" || skin.bg === "#1a103c" ? "#999" : "#666",
                 margin: 0,
                 lineHeight: 1.5,
               }}
