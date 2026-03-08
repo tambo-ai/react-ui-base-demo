@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "record": "npx tsx scripts/record-demos.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.1.0",
@@ -44,6 +45,7 @@
     "xp.css": "^0.2.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
