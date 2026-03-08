@@ -255,6 +255,7 @@ export default function MantineDemo() {
       {/* ---------- Floating chat bubble ---------- */}
       {!chatOpen && (
         <ActionIcon
+          data-testid="chat-bubble"
           size={56}
           radius="xl"
           variant="filled"

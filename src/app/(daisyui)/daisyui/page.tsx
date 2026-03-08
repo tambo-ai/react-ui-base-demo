@@ -324,6 +324,7 @@ export default function DaisyUIDemo() {
       {/* ── Floating chat bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           className="btn btn-primary btn-circle fixed bottom-6 right-6 z-40 shadow-lg text-lg"
           onClick={() => setChatOpen(true)}
           aria-label="Open chat"

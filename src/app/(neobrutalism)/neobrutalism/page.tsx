@@ -250,6 +250,7 @@ export default function NeobrutalismDemo() {
       {/* FLOATING CHAT BUBBLE */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-base border-2 border-border bg-main text-main-foreground shadow-shadow flex items-center justify-center text-2xl font-heading cursor-pointer hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none transition-all"
         >

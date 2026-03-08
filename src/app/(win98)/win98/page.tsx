@@ -147,6 +147,7 @@ export default function Win98Demo() {
       {/* Chat Bubble */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           style={{
             position: "fixed",

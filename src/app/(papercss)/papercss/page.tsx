@@ -318,6 +318,7 @@ export default function PaperCSSDemo() {
       {/* ── Floating Chat Bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           className="btn btn-primary paper"
           onClick={() => setChatOpen(true)}
           style={{

@@ -211,7 +211,7 @@ export default function RetroDemo() {
 
       {/* Chat Bubble */}
       {!chatOpen && (
-        <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
+        <div data-testid="chat-bubble" style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
           <button
             className="retro-btn retro-btn-primary"
             onClick={() => setChatOpen(true)}

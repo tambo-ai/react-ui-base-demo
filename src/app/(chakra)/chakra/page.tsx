@@ -278,6 +278,7 @@ export default function ChakraDemo() {
           right="24px"
           zIndex={25}
           boxShadow="lg"
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
         >
           💬

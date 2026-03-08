@@ -334,6 +334,7 @@ function Chat() {
       {/* ── Floating Chat Bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           ref={chatButtonRef}
           onClick={() => setChatOpen(true)}
           style={{

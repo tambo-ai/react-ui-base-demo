@@ -311,7 +311,7 @@ export default function PolarisDemo() {
 
       {/* Floating chat bubble */}
       {!chatOpen && (
-        <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 900 }}>
+        <div data-testid="chat-bubble" style={{ position: "fixed", bottom: 24, right: 24, zIndex: 900 }}>
           <Button
             variant="primary"
             icon={ChatIcon}

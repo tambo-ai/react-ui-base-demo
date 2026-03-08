@@ -251,7 +251,7 @@ export default function NesDemo() {
 
       {/* Chat Bubble */}
       {!chatOpen && (
-        <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
+        <div data-testid="chat-bubble" style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
           <NesButton
             variant="primary"
             onClick={() => setChatOpen(true)}

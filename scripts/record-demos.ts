@@ -45,24 +45,8 @@ const RECORDINGS_DIR = path.resolve(__dirname, "..", "recordings");
  * Returns null if none found (e.g. landing page).
  */
 async function findChatBubble(page: Page) {
-  // Strategy 1: inline style with position: fixed + bottom (most pages)
-  const inlineFixed = page.locator(
-    'button[style*="position: fixed"][style*="bottom"]'
-  );
-  if ((await inlineFixed.count()) > 0) return inlineFixed.first();
-
-  // Strategy 2: Tailwind utility classes (neobrutalism)
-  const tailwindFixed = page.locator("button.fixed");
-  if ((await tailwindFixed.count()) > 0) return tailwindFixed.first();
-
-  // Strategy 3: parent div with fixed positioning wrapping a button
-  const parentFixed = page.locator(
-    'div[style*="position: fixed"][style*="bottom"] button'
-  );
-  if ((await parentFixed.count()) > 0) return parentFixed.first();
-
-  // Strategy 4: coordinate-based click as last resort
-  // Chat bubbles are always bottom-right, roughly 40px from edges
+  const bubble = page.locator('[data-testid="chat-bubble"]');
+  if ((await bubble.count()) > 0) return bubble.first();
   return null;
 }
 

@@ -388,6 +388,7 @@ export default function PrimerDemo() {
       {/* Chat Bubble */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           style={{
             position: "fixed",

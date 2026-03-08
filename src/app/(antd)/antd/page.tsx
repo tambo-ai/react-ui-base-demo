@@ -467,6 +467,7 @@ export default function AntdDemo() {
       {/* ===== FLOATING CHAT BUBBLE ===== */}
       {!chatOpen && (
         <Button
+          data-testid="chat-bubble"
           type="primary"
           shape="circle"
           size="large"

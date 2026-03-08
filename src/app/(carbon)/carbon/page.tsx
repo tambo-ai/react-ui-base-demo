@@ -410,6 +410,7 @@ export default function CarbonPage() {
       {/* ---------- Floating chat bubble ---------- */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           aria-label="Open chat"
           style={{
