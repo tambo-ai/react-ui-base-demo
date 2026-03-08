@@ -17,7 +17,12 @@ import * as fs from "fs";
 import * as path from "path";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
-const VIEWPORT = { width: 1440, height: 900 };
+
+const SIZE = process.env.RECORD_SIZE ?? "large"; // "large" (1440x900) or "small" (960x600)
+const VIEWPORT =
+  SIZE === "small"
+    ? { width: 960, height: 600 }
+    : { width: 1440, height: 900 };
 
 // Ordered per storyboard — maximum visual contrast between adjacent cuts
 const routes = [
@@ -38,7 +43,11 @@ const routes = [
   { name: "antd", path: "/antd", hasChat: true },
 ];
 
-const RECORDINGS_DIR = path.resolve(__dirname, "..", "recordings");
+const RECORDINGS_DIR = path.resolve(
+  __dirname,
+  "..",
+  SIZE === "small" ? "recordings-sm" : "recordings"
+);
 
 /**
  * Try multiple selector strategies to find the chat bubble button.
