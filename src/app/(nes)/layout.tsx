@@ -1,10 +1,11 @@
 "use client";
-import { Press_Start_2P } from "next/font/google";
+import localFont from "next/font/local";
 import "nes.css/css/nes.min.css";
 
-const pressStart2P = Press_Start_2P({
+const pressStart2P = localFont({
+  src: "./PressStart2P-Regular.ttf",
   weight: "400",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export default function NesLayout({
