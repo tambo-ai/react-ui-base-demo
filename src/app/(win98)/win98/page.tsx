@@ -233,7 +233,7 @@ export default function Win98Demo() {
             }}
           >
             <ThreadContent.Root
-              style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <ThreadContent.Messages
                 render={(_props, state) => (

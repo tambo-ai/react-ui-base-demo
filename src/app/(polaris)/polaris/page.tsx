@@ -531,11 +531,23 @@ export default function PolarisDemo() {
                   <MessageInput.Textarea
                     placeholder="Type a message..."
                     render={
-                      <TextField
-                        label=""
-                        labelHidden
-                        multiline={2}
-                        autoComplete="off"
+                      <textarea
+                        rows={2}
+                        style={{
+                          width: "100%",
+                          resize: "none",
+                          border: "1px solid var(--p-color-border)",
+                          borderRadius: "var(--p-border-radius-200)",
+                          padding:
+                            "var(--p-space-200) var(--p-space-300)",
+                          fontSize: "var(--p-font-size-325)",
+                          lineHeight: "var(--p-font-line-height-500)",
+                          fontFamily: "var(--p-font-family-sans)",
+                          color: "var(--p-color-text)",
+                          background: "var(--p-color-bg-surface)",
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
                       />
                     }
                   />
@@ -548,11 +560,23 @@ export default function PolarisDemo() {
                   />
                   <MessageInput.SubmitButton
                     render={
-                      <Button
-                        variant="primary"
-                        icon={SendIcon}
-                        accessibilityLabel="Send"
-                      />
+                      <button
+                        type="submit"
+                        aria-label="Send"
+                        style={{
+                          border: "none",
+                          borderRadius: "var(--p-border-radius-200)",
+                          padding: "6px 8px",
+                          background: "var(--p-color-bg-fill-brand)",
+                          color: "var(--p-color-text-brand-on-bg-fill)",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <SendIcon />
+                      </button>
                     }
                   />
                   <MessageInput.StopButton

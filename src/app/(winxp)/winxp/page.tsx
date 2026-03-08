@@ -241,7 +241,7 @@ export default function WinXPDemo() {
             }}
           >
             <ThreadContent.Root
-              style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <ThreadContent.Messages
                 render={(_props, state) => (

@@ -16,6 +16,32 @@ import { chromium, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
 
+/** Hide the Next.js dev tools overlay so it doesn't appear in recordings. */
+async function hideNextDevTools(page: Page) {
+  await page.evaluate(() => {
+    const selectors = [
+      "nextjs-portal",
+      "[data-nextjs-dialog-overlay]",
+      "[data-nextjs-toast]",
+      "#__next-build-indicator",
+      "#__next-build-watcher",
+    ];
+    for (const sel of selectors) {
+      document.querySelectorAll(sel).forEach((el) => {
+        (el as HTMLElement).style.display = "none";
+      });
+    }
+    document.querySelectorAll("*").forEach((el) => {
+      if (
+        el.shadowRoot &&
+        el.tagName.toLowerCase().startsWith("nextjs-portal")
+      ) {
+        (el as HTMLElement).style.display = "none";
+      }
+    });
+  });
+}
+
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
 
 const SIZE = process.env.RECORD_SIZE ?? "large"; // "large" (1440x900) or "small" (960x600)
@@ -81,6 +107,7 @@ async function recordRoute(
 
   // Let fonts, images, and animations settle
   await page.waitForTimeout(1500);
+  await hideNextDevTools(page);
 
   // Screenshot: dashboard only
   await page.screenshot({
@@ -103,6 +130,7 @@ async function recordRoute(
 
     // Wait for chat window open animation
     await page.waitForTimeout(1000);
+    await hideNextDevTools(page);
 
     // Screenshot: with chat open
     await page.screenshot({

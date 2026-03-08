@@ -14,10 +14,4 @@ export const initialMessages: InitialInputMessage[] = [
       },
     ],
   },
-  {
-    role: "user",
-    content: [
-      { type: "text", text: "Give me the top posts from Hacker News" },
-    ],
-  },
 ];
