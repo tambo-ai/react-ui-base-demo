@@ -132,15 +132,8 @@ export default function MantineDemo() {
       >
         <Group justify="space-between">
           <Group gap="sm">
-            <ThemeIcon
-              size="lg"
-              radius="md"
-              variant="gradient"
-              gradient={{ from: "indigo", to: "cyan" }}
-            >
-              <Text size="sm" fw={700}>
-                T
-              </Text>
+            <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: "indigo", to: "cyan" }}>
+              <Text size="sm" fw={700}>T</Text>
             </ThemeIcon>
             <Title order={3}>Tambo Projects</Title>
           </Group>
@@ -218,13 +211,7 @@ export default function MantineDemo() {
                   {p.status}
                 </Badge>
               </Group>
-              <Progress
-                value={p.progress}
-                size="sm"
-                radius="xl"
-                mb="sm"
-                color={p.statusColor}
-              />
+              <Progress value={p.progress} size="sm" radius="xl" mb="sm" color={p.statusColor} />
               <Group justify="space-between">
                 <Text size="sm" c="dimmed">
                   Tasks: {p.tasks}
@@ -250,14 +237,7 @@ export default function MantineDemo() {
         </Title>
         <SimpleGrid cols={{ base: 2, sm: 3, md: 5 }} spacing="md">
           {teamMembers.map((m) => (
-            <Card
-              key={m.initials}
-              shadow="sm"
-              radius="md"
-              withBorder
-              padding="md"
-              style={{ textAlign: "center" }}
-            >
+            <Card key={m.initials} shadow="sm" radius="md" withBorder padding="md" style={{ textAlign: "center" }}>
               <Avatar size="lg" radius="xl" mx="auto" mb="xs" color={m.color}>
                 {m.initials}
               </Avatar>
@@ -318,11 +298,7 @@ export default function MantineDemo() {
             style={{ borderBottom: "1px solid #dee2e6", flexShrink: 0 }}
           >
             <Text fw={600}>Chat</Text>
-            <ActionIcon
-              variant="subtle"
-              onClick={() => setChatOpen(false)}
-              aria-label="Close chat"
-            >
+            <ActionIcon variant="subtle" onClick={() => setChatOpen(false)} aria-label="Close chat">
               ✕
             </ActionIcon>
           </Group>
@@ -461,13 +437,7 @@ export default function MantineDemo() {
           </div>
 
           {/* Input area */}
-          <div
-            style={{
-              borderTop: "1px solid #dee2e6",
-              padding: 8,
-              flexShrink: 0,
-            }}
-          >
+          <div style={{ borderTop: "1px solid #dee2e6", padding: 8, flexShrink: 0 }}>
             <MessageInput.Root>
               <MessageInput.StagedImages />
               <MessageInput.Content render={<Group align="start" gap="sm" />}>
