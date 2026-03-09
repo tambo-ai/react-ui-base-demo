@@ -21,7 +21,7 @@ export default function DaisyUIDemo() {
 
   const threadsRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   // Auto-switch to most recent thread on initial load
   useEffect(() => {

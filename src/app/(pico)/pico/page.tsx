@@ -24,7 +24,7 @@ export default function PicoDemo() {
   const threadsButtonRef = useRef<HTMLButtonElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
   const chatButtonRef = useRef<HTMLButtonElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   // Auto-switch to the most recent thread on initial load
   useEffect(() => {

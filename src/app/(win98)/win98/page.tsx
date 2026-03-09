@@ -23,7 +23,7 @@ export default function Win98Demo() {
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [notepadOpen, setNotepadOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {

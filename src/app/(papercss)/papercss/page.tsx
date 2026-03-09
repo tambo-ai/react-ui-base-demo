@@ -20,7 +20,7 @@ export default function PaperCSSDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {

@@ -118,7 +118,7 @@ export default function AntdDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
   const threadsButtonRef = useRef<HTMLButtonElement>(null);
-  const { ref: chatScrollRef } = useScrollToBottom(500);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
   // Auto-switch to the most recent thread on initial load
   useEffect(() => {

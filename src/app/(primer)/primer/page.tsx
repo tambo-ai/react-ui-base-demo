@@ -103,7 +103,7 @@ export default function PrimerDemo() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {

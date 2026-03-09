@@ -22,7 +22,7 @@ export default function WinXPDemo() {
   const [explorerOpen, setExplorerOpen] = useState(true);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {

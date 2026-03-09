@@ -282,7 +282,7 @@ function ChatWindow({
   threadsOpen: boolean;
   setThreadsOpen: (v: boolean) => void;
 }) {
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // Click outside to close threads overlay

@@ -146,7 +146,7 @@ export default function CarbonPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
-  const { ref: chatScrollRef } = useScrollToBottom(500);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {

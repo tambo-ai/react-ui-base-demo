@@ -64,7 +64,7 @@ export default function ChakraDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
 
   const threadsRef = useRef<HTMLDivElement>(null);
-  const { ref: scrollRef, scrollToBottom } = useScrollToBottom(500);
+  const { ref: scrollRef, scrollToBottom } = useScrollToBottom();
 
   // auto-switch to most recent thread on load
   useEffect(() => {
