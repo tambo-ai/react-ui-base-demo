@@ -15,6 +15,7 @@
 import { chromium, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
+import { routes, type Route } from "./routes";
 
 /** Hide the Next.js dev tools overlay so it doesn't appear in recordings. */
 async function hideNextDevTools(page: Page) {
@@ -50,24 +51,6 @@ const VIEWPORT =
     ? { width: 960, height: 600 }
     : { width: 1440, height: 900 };
 
-// Ordered per storyboard — maximum visual contrast between adjacent cuts
-const routes = [
-  { name: "landing", path: "/", hasChat: false },
-  { name: "primer", path: "/primer", hasChat: true },
-  { name: "neobrutalism", path: "/neobrutalism", hasChat: true },
-  { name: "carbon", path: "/carbon", hasChat: true },
-  { name: "nes", path: "/nes", hasChat: true },
-  { name: "polaris", path: "/polaris", hasChat: true },
-  { name: "retro", path: "/retro", hasChat: true },
-  { name: "daisyui", path: "/daisyui", hasChat: true },
-  { name: "mantine", path: "/mantine", hasChat: true },
-  { name: "win98", path: "/win98", hasChat: true },
-  { name: "chakra", path: "/chakra", hasChat: true },
-  { name: "winxp", path: "/winxp", hasChat: true },
-  { name: "papercss", path: "/papercss", hasChat: true },
-  { name: "pico", path: "/pico", hasChat: true },
-  { name: "antd", path: "/antd", hasChat: true },
-];
 
 const RECORDINGS_DIR = path.resolve(
   __dirname,
@@ -87,7 +70,7 @@ async function findChatBubble(page: Page) {
 
 async function recordRoute(
   browser: Awaited<ReturnType<typeof chromium.launch>>,
-  route: (typeof routes)[number]
+  route: Route
 ) {
   const outDir = path.join(RECORDINGS_DIR, route.name);
   fs.mkdirSync(outDir, { recursive: true });

@@ -1,17 +1,12 @@
 /**
- * Record a chat conversation demo for every UI framework page.
+ * Record chat conversation demos for UI framework pages.
  *
- * Flow per page:
- *   1. Load page, wait for settle
- *   2. Open chat bubble
- *   3. Type "show me hn posts" and submit
- *   4. Wait for the LLM response + HN component to render
- *   5. Wait 20s for response to settle
- *   6. Scroll through chat for video, take screenshots, then stop
+ * By default records all chat routes. Use ROUTES env var to record specific ones.
  *
  * Usage:
- *   RECORD_SIZE=small npx tsx scripts/record-chat.ts   # 960x600
- *   npx tsx scripts/record-chat.ts                      # 1440x900
+ *   npx tsx scripts/record-chat.ts                      # all routes, 1440x900
+ *   RECORD_SIZE=small npx tsx scripts/record-chat.ts    # all routes, 960x600
+ *   ROUTES=nes,antd npx tsx scripts/record-chat.ts      # specific routes only
  *
  * Output: recordings-chat/<name>/  (or recordings-chat-sm/)
  */
@@ -19,31 +14,21 @@
 import { chromium, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
+import { chatRoutes } from "./routes";
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
-
 const SIZE = process.env.RECORD_SIZE ?? "large";
 const VIEWPORT =
   SIZE === "small"
     ? { width: 960, height: 600 }
     : { width: 1440, height: 900 };
 
-const routes = [
-  { name: "primer", path: "/primer" },
-  { name: "neobrutalism", path: "/neobrutalism" },
-  { name: "carbon", path: "/carbon" },
-  { name: "nes", path: "/nes" },
-  { name: "polaris", path: "/polaris" },
-  { name: "retro", path: "/retro" },
-  { name: "daisyui", path: "/daisyui" },
-  { name: "mantine", path: "/mantine" },
-  { name: "win98", path: "/win98" },
-  { name: "chakra", path: "/chakra" },
-  { name: "winxp", path: "/winxp" },
-  { name: "papercss", path: "/papercss" },
-  { name: "pico", path: "/pico" },
-  { name: "antd", path: "/antd" },
-];
+const routes = process.env.ROUTES
+  ? process.env.ROUTES.split(",").map((name) => ({
+      name: name.trim(),
+      path: `/${name.trim()}`,
+    }))
+  : chatRoutes;
 
 const OUT_DIR = path.resolve(
   __dirname,
@@ -51,7 +36,6 @@ const OUT_DIR = path.resolve(
   SIZE === "small" ? "recordings-chat-sm" : "recordings-chat"
 );
 
-/** Hide the Next.js dev tools overlay so it doesn't appear in recordings. */
 async function hideNextDevTools(page: Page) {
   await page.evaluate(() => {
     document
@@ -60,61 +44,66 @@ async function hideNextDevTools(page: Page) {
       )
       .forEach((el) => ((el as HTMLElement).style.display = "none"));
     document.querySelectorAll("*").forEach((el) => {
-      if (
-        el.shadowRoot &&
-        el.tagName.toLowerCase().startsWith("nextjs-portal")
-      )
+      if (el.shadowRoot && el.tagName.toLowerCase().startsWith("nextjs-portal"))
         (el as HTMLElement).style.display = "none";
     });
   });
 }
 
-/** Find the scrollable chat container ancestor of thread-content. */
-function scrollChatJS(action: "top" | "bottom" | "down20") {
-  return `(() => {
-    const tc = document.querySelector('[data-slot="thread-content"]');
-    if (!tc) return false;
-    let el = tc;
+/**
+ * Scroll the chat message container down in steps, taking a screenshot
+ * at each position. Also scrolls in the video for the recording.
+ */
+async function scrollAndScreenshot(page: Page, outDir: string) {
+  const scrolled = await page.evaluate(() => {
+    const threadContent = document.querySelector('[data-slot="thread-content"]');
+    if (!threadContent) return false;
+    let el: HTMLElement | null = threadContent as HTMLElement;
     while (el) {
       const style = getComputedStyle(el);
-      if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
-        ${
-          action === "top"
-            ? "el.scrollTop = 0; return true;"
-            : action === "bottom"
-              ? "el.scrollTop = el.scrollHeight; return true;"
-              : "el.scrollTop += 20; return el.scrollTop + el.clientHeight >= el.scrollHeight - 5;"
-        }
+      if (
+        (style.overflowY === "auto" || style.overflowY === "scroll") &&
+        el.scrollHeight > el.clientHeight
+      ) {
+        el.scrollTop = el.scrollHeight;
+        return true;
       }
       el = el.parentElement;
     }
     return false;
-  })()`;
-}
+  });
 
-async function scrollAndScreenshot(page: Page, outDir: string) {
-  // Scroll to bottom first
-  await page.evaluate(scrollChatJS("bottom"));
+  if (scrolled) {
+    console.log(`    -> scrolled chat to bottom`);
+  }
+
   await page.waitForTimeout(1000);
   await hideNextDevTools(page);
 
-  // Main screenshot (at bottom showing HN component)
+  // Take the main screenshot
   await page.screenshot({
     path: path.join(outDir, "chat-response.png"),
     fullPage: false,
   });
   console.log(`    -> chat-response.png`);
 
-  // Scroll up in steps, capturing additional screenshots
+  // Take additional screenshots scrolling up through the chat
+  // to capture the full conversation
   let shotIndex = 1;
-  for (let i = 0; i < 10; i++) {
-    const didScroll = await page.evaluate(`(() => {
-      const tc = document.querySelector('[data-slot="thread-content"]');
-      if (!tc) return false;
-      let el = tc;
+  let keepScrolling = true;
+  while (keepScrolling) {
+    const didScroll = await page.evaluate(() => {
+      const threadContent = document.querySelector(
+        '[data-slot="thread-content"]'
+      );
+      if (!threadContent) return false;
+      let el: HTMLElement | null = threadContent as HTMLElement;
       while (el) {
         const style = getComputedStyle(el);
-        if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+        if (
+          (style.overflowY === "auto" || style.overflowY === "scroll") &&
+          el.scrollHeight > el.clientHeight
+        ) {
           const prev = el.scrollTop;
           el.scrollTop = Math.max(0, el.scrollTop - 200);
           return el.scrollTop < prev;
@@ -122,7 +111,8 @@ async function scrollAndScreenshot(page: Page, outDir: string) {
         el = el.parentElement;
       }
       return false;
-    })()`);
+    });
+
     if (!didScroll) break;
 
     await page.waitForTimeout(300);
@@ -133,10 +123,28 @@ async function scrollAndScreenshot(page: Page, outDir: string) {
     });
     console.log(`    -> chat-scroll-${shotIndex}.png`);
     shotIndex++;
+    if (shotIndex > 10) break; // safety limit
   }
 
-  // Scroll back to bottom
-  await page.evaluate(scrollChatJS("bottom"));
+  // Scroll back to bottom for the video
+  await page.evaluate(() => {
+    const threadContent = document.querySelector(
+      '[data-slot="thread-content"]'
+    );
+    if (!threadContent) return;
+    let el: HTMLElement | null = threadContent as HTMLElement;
+    while (el) {
+      const style = getComputedStyle(el);
+      if (
+        (style.overflowY === "auto" || style.overflowY === "scroll") &&
+        el.scrollHeight > el.clientHeight
+      ) {
+        el.scrollTop = el.scrollHeight;
+        return;
+      }
+      el = el.parentElement;
+    }
+  });
 }
 
 /** Type a message character by character with a delay between each keystroke. */
@@ -160,7 +168,6 @@ async function recordChat(
     deviceScaleFactor: 4,
     recordVideo: { dir: outDir, size: VIEWPORT },
   });
-
   const page = await context.newPage();
 
   console.log(`  Loading ${route.name} (${route.path})...`);
@@ -168,13 +175,12 @@ async function recordChat(
   await page.waitForTimeout(1500);
   await hideNextDevTools(page);
 
-  // Open chat
   const bubble = page.locator('[data-testid="chat-bubble"]');
   if ((await bubble.count()) > 0) {
     await bubble.first().click();
     console.log(`    -> opened chat`);
   } else {
-    console.log(`    -> ERROR: no chat bubble found, skipping`);
+    console.log(`    -> ERROR: no chat bubble found`);
     await context.close();
     return;
   }
@@ -186,7 +192,7 @@ async function recordChat(
   await page.mouse.move(VIEWPORT.width / 2, VIEWPORT.height / 2);
   await page.waitForTimeout(300);
 
-  // Type the message — prefer data-slot, fall back to generic textarea
+  // Type — prefer data-slot, fall back to generic textarea
   let textarea = page.locator('[data-slot="message-input-textarea"]');
   if ((await textarea.count()) === 0) {
     textarea = page
@@ -232,8 +238,8 @@ async function recordChat(
   }
   console.log(`    -> submitted`);
 
-  // Wait for the actual HN component to render (look for "pts" + "comments"
-  // which only appear in the rendered HackerNewsPosts component)
+  // Wait for the actual HN component to render (look for "pts" which only
+  // appears in the rendered HackerNewsPosts component, not in thinking text)
   try {
     await page.waitForFunction(
       () => {
@@ -253,27 +259,60 @@ async function recordChat(
 
   await hideNextDevTools(page);
 
-  // Scroll through chat and take screenshots
+  // Scroll through the chat and take screenshots
   await scrollAndScreenshot(page, outDir);
 
-  // Slowly scroll through entire chat for the video
+  // Slowly scroll through the entire chat in the video
   console.log(`    -> scrolling chat for video...`);
-  await page.evaluate(scrollChatJS("top"));
+
+  // First scroll to top
+  await page.evaluate(() => {
+    const tc = document.querySelector('[data-slot="thread-content"]');
+    if (!tc) return;
+    let el: HTMLElement | null = tc as HTMLElement;
+    while (el) {
+      const style = getComputedStyle(el);
+      if (
+        (style.overflowY === "auto" || style.overflowY === "scroll") &&
+        el.scrollHeight > el.clientHeight
+      ) {
+        el.scrollTop = 0;
+        return;
+      }
+      el = el.parentElement;
+    }
+  });
   await page.waitForTimeout(1000);
 
+  // Then scroll down slowly (20px per step) for the video
   for (let i = 0; i < 50; i++) {
-    const atBottom = await page.evaluate(scrollChatJS("down20"));
+    const atBottom = await page.evaluate(() => {
+      const tc = document.querySelector('[data-slot="thread-content"]');
+      if (!tc) return true;
+      let el: HTMLElement | null = tc as HTMLElement;
+      while (el) {
+        const style = getComputedStyle(el);
+        if (
+          (style.overflowY === "auto" || style.overflowY === "scroll") &&
+          el.scrollHeight > el.clientHeight
+        ) {
+          el.scrollTop += 20;
+          return el.scrollTop + el.clientHeight >= el.scrollHeight - 5;
+        }
+        el = el.parentElement;
+      }
+      return true;
+    });
     await page.waitForTimeout(100);
     if (atBottom) break;
   }
 
-  // Hold at bottom
+  // Hold at bottom for a few seconds
   await page.waitForTimeout(3000);
 
   // Close context to finalize video
   await context.close();
 
-  // Rename video
   const videoFiles = fs.readdirSync(outDir).filter((f) => f.endsWith(".webm"));
   if (videoFiles.length > 0) {
     const src = path.join(outDir, videoFiles[0]);
@@ -284,12 +323,7 @@ async function recordChat(
 }
 
 async function main() {
-  console.log(
-    `\nRecording chat demos for ${routes.length} pages to ${OUT_DIR}\n`
-  );
-  console.log(`Viewport: ${VIEWPORT.width}x${VIEWPORT.height}\n`);
-  console.log(`Make sure the dev server is running at ${BASE_URL}\n`);
-
+  console.log(`Recording ${routes.length} pages to ${OUT_DIR}\n`);
   const browser = await chromium.launch({
     headless: true,
     args: ["--disable-web-security"],
@@ -305,7 +339,6 @@ async function main() {
   }
 
   await browser.close();
-  console.log(`\nAll chat recordings saved to ${OUT_DIR}\n`);
 }
 
 main().catch(console.error);
