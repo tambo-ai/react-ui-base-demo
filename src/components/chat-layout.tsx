@@ -191,7 +191,7 @@ export function useScrollToBottom() {
 
     if (!el) return;
 
-    const BOTTOM_THRESHOLD = 40;
+    const BOTTOM_THRESHOLD = 500;
 
     const checkIfNearBottom = () => {
       return el.scrollTop + el.clientHeight >= el.scrollHeight - BOTTOM_THRESHOLD;
@@ -242,15 +242,6 @@ export function useScrollToBottom() {
     };
     observeChildren();
 
-    // Poll as a final fallback — only scroll if near bottom
-    const interval = setInterval(() => {
-      if (isNearBottomRef.current && el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
-        el.scrollTop = el.scrollHeight;
-      }
-      // Re-observe any new children the ResizeObserver might have missed
-      observeChildren();
-    }, 120);
-
     // Initial scroll
     isNearBottomRef.current = true;
     scheduleScroll();
@@ -259,7 +250,6 @@ export function useScrollToBottom() {
       el.removeEventListener("scroll", onScroll);
       mutationObserver.disconnect();
       resizeObserver.disconnect();
-      clearInterval(interval);
     };
   }, []);
 
