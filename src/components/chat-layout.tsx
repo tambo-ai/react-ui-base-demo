@@ -167,6 +167,7 @@ function ChatLayoutContent({
 /**
  * Auto-scrolls a container to the bottom whenever content changes.
  * Uses a callback ref so it works with conditionally rendered elements.
+ * Combines MutationObserver, ResizeObserver, and polling for reliability.
  */
 export function useScrollToBottom() {
   const elRef = useRef<HTMLDivElement | null>(null);
@@ -187,35 +188,54 @@ export function useScrollToBottom() {
 
     if (!el) return;
 
-    let lastScrollHeight = 0;
-
     const doScroll = () => {
       el.scrollTop = el.scrollHeight;
-      lastScrollHeight = el.scrollHeight;
     };
 
-    const observer = new MutationObserver(() => {
-      requestAnimationFrame(doScroll);
-    });
+    // Scroll multiple times to handle layout timing issues with React 19
+    const scheduleScroll = () => {
+      doScroll();
+      requestAnimationFrame(() => {
+        doScroll();
+        requestAnimationFrame(doScroll);
+      });
+    };
 
-    observer.observe(el, {
+    // MutationObserver catches DOM additions (new messages, text changes)
+    const mutationObserver = new MutationObserver(scheduleScroll);
+    mutationObserver.observe(el, {
       childList: true,
       subtree: true,
       characterData: true,
     });
 
-    // Poll for scrollHeight changes that MutationObserver may miss
+    // ResizeObserver fires after layout when content size changes
+    const resizeObserver = new ResizeObserver(doScroll);
+    resizeObserver.observe(el);
+
+    // Also observe direct children so we catch when inner content grows
+    const observeChildren = () => {
+      for (const child of Array.from(el.children)) {
+        resizeObserver.observe(child);
+      }
+    };
+    observeChildren();
+
+    // Poll as a final fallback
     const interval = setInterval(() => {
-      if (el.scrollHeight !== lastScrollHeight) {
+      if (el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
         doScroll();
       }
-    }, 200);
+      // Re-observe any new children the ResizeObserver might have missed
+      observeChildren();
+    }, 120);
 
     // Initial scroll
-    doScroll();
+    scheduleScroll();
 
     cleanupRef.current = () => {
-      observer.disconnect();
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
       clearInterval(interval);
     };
   }, []);
