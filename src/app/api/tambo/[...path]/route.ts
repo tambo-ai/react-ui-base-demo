@@ -81,7 +81,7 @@ async function handler(
       responseHeaders.set(key, value);
     }
 
-    return new Response(res.body, {
+    return new Response(new Uint8Array(res.body), {
       status: res.status,
       headers: responseHeaders,
     });
