@@ -168,15 +168,18 @@ function ChatLayoutContent({
  * Auto-scrolls a container to the bottom whenever content changes.
  * Uses a callback ref so it works with conditionally rendered elements.
  * Combines MutationObserver, ResizeObserver, and polling for reliability.
+ * Respects user scroll position — stops auto-scrolling when the user scrolls up.
  */
 export function useScrollToBottom() {
   const elRef = useRef<HTMLDivElement | null>(null);
   const cleanupRef = useRef<(() => void) | null>(null);
+  const isNearBottomRef = useRef(true);
 
   const scrollToBottom = useCallback(() => {
     const el = elRef.current;
     if (el) {
       el.scrollTop = el.scrollHeight;
+      isNearBottomRef.current = true;
     }
   }, []);
 
@@ -188,18 +191,36 @@ export function useScrollToBottom() {
 
     if (!el) return;
 
+    const BOTTOM_THRESHOLD = 40;
+
+    const checkIfNearBottom = () => {
+      return el.scrollTop + el.clientHeight >= el.scrollHeight - BOTTOM_THRESHOLD;
+    };
+
     const doScroll = () => {
+      if (!isNearBottomRef.current) return;
       el.scrollTop = el.scrollHeight;
     };
 
     // Scroll multiple times to handle layout timing issues with React 19
     const scheduleScroll = () => {
-      doScroll();
+      if (!isNearBottomRef.current) return;
+      el.scrollTop = el.scrollHeight;
       requestAnimationFrame(() => {
-        doScroll();
-        requestAnimationFrame(doScroll);
+        if (!isNearBottomRef.current) return;
+        el.scrollTop = el.scrollHeight;
+        requestAnimationFrame(() => {
+          if (!isNearBottomRef.current) return;
+          el.scrollTop = el.scrollHeight;
+        });
       });
     };
+
+    // Track user scroll position
+    const onScroll = () => {
+      isNearBottomRef.current = checkIfNearBottom();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
 
     // MutationObserver catches DOM additions (new messages, text changes)
     const mutationObserver = new MutationObserver(scheduleScroll);
@@ -221,19 +242,21 @@ export function useScrollToBottom() {
     };
     observeChildren();
 
-    // Poll as a final fallback
+    // Poll as a final fallback — only scroll if near bottom
     const interval = setInterval(() => {
-      if (el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
-        doScroll();
+      if (isNearBottomRef.current && el.scrollTop + el.clientHeight < el.scrollHeight - 1) {
+        el.scrollTop = el.scrollHeight;
       }
       // Re-observe any new children the ResizeObserver might have missed
       observeChildren();
     }, 120);
 
     // Initial scroll
+    isNearBottomRef.current = true;
     scheduleScroll();
 
     cleanupRef.current = () => {
+      el.removeEventListener("scroll", onScroll);
       mutationObserver.disconnect();
       resizeObserver.disconnect();
       clearInterval(interval);
