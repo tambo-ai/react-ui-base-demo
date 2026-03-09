@@ -166,23 +166,36 @@ function ChatLayoutContent({
 
 /**
  * Auto-scrolls a container to the bottom whenever content changes.
+ * Uses a callback ref so it works with conditionally rendered elements.
  */
 export function useScrollToBottom() {
-  const ref = useRef<HTMLDivElement>(null);
+  const elRef = useRef<HTMLDivElement | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
   const scrollToBottom = useCallback(() => {
-    const el = ref.current;
+    const el = elRef.current;
     if (el) {
       el.scrollTop = el.scrollHeight;
     }
   }, []);
 
-  useEffect(() => {
-    const el = ref.current;
+  const ref = useCallback((el: HTMLDivElement | null) => {
+    // Cleanup previous observer
+    cleanupRef.current?.();
+    cleanupRef.current = null;
+    elRef.current = el;
+
     if (!el) return;
 
-    const observer = new MutationObserver(() => {
+    let lastScrollHeight = 0;
+
+    const doScroll = () => {
       el.scrollTop = el.scrollHeight;
+      lastScrollHeight = el.scrollHeight;
+    };
+
+    const observer = new MutationObserver(() => {
+      requestAnimationFrame(doScroll);
     });
 
     observer.observe(el, {
@@ -190,7 +203,28 @@ export function useScrollToBottom() {
       subtree: true,
       characterData: true,
     });
-    return () => observer.disconnect();
+
+    // Poll for scrollHeight changes that MutationObserver may miss
+    const interval = setInterval(() => {
+      if (el.scrollHeight !== lastScrollHeight) {
+        doScroll();
+      }
+    }, 200);
+
+    // Initial scroll
+    doScroll();
+
+    cleanupRef.current = () => {
+      observer.disconnect();
+      clearInterval(interval);
+    };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.();
+    };
   }, []);
 
   return { ref, scrollToBottom };
