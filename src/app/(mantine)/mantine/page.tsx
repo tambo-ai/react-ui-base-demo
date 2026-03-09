@@ -332,7 +332,7 @@ export default function MantineDemo() {
                               withBorder
                               p="xs"
                               radius="sm"
-                              style={{ marginBottom: 4 }}
+                              style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}
                             />
                           }
                         >
@@ -369,7 +369,7 @@ export default function MantineDemo() {
                               withBorder
                               p="xs"
                               radius="sm"
-                              style={{ marginBottom: 4 }}
+                              style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}
                             />
                           }
                         >

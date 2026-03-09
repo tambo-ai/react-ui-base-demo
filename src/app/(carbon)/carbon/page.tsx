@@ -509,8 +509,9 @@ export default function CarbonPage() {
                         <ReasoningInfo.Root>
                           <Tile
                             style={{
-                              borderLeft: "3px solid #f1c21b",
-                              backgroundColor: "#fff1d6",
+                              borderLeft: "3px solid #198038",
+                              backgroundColor: "#defbe6",
+                              opacity: 0.85,
                             }}
                           >
                             <ReasoningInfo.Trigger
@@ -558,7 +559,9 @@ export default function CarbonPage() {
                         <ToolcallInfo.Root>
                           <Tile
                             style={{
-                              borderLeft: "3px solid #0f62fe",
+                              borderLeft: "3px solid #198038",
+                              backgroundColor: "#defbe6",
+                              opacity: 0.85,
                             }}
                           >
                             <ToolcallInfo.Trigger
@@ -656,17 +659,6 @@ export default function CarbonPage() {
                   alignItems: "flex-end",
                 }}
               >
-                <MessageInput.FileButton
-                  render={
-                    <Button
-                      kind="ghost"
-                      size="md"
-                      renderIcon={Attachment}
-                      hasIconOnly
-                      iconDescription="Attach file"
-                    />
-                  }
-                />
                 <div style={{ flex: 1 }}>
                   <MessageInput.Textarea
                     placeholder="Type a message..."
@@ -679,6 +671,17 @@ export default function CarbonPage() {
                     }
                   />
                 </div>
+                <MessageInput.FileButton
+                  render={
+                    <Button
+                      kind="ghost"
+                      size="md"
+                      renderIcon={Attachment}
+                      hasIconOnly
+                      iconDescription="Attach file"
+                    />
+                  }
+                />
                 <MessageInput.SubmitButton
                   render={
                     <Button

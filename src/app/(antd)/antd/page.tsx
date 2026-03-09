@@ -554,7 +554,7 @@ export default function AntdDemo() {
                             render={(props) => (
                               <Card
                                 size="small"
-                                style={{ marginBottom: 4 }}
+                                style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}
                                 {...props}
                               >
                                 <Flex align="center" gap={8}>
@@ -577,7 +577,7 @@ export default function AntdDemo() {
                           </ReasoningInfo.Content>
                         </ReasoningInfo.Root>
                         <ToolcallInfo.Root>
-                          <Card size="small" style={{ marginBottom: 4 }}>
+                          <Card size="small" style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                             <Flex align="center" gap={8}>
                               <ToolcallInfo.StatusIcon
                                 render={(_props, state) => {

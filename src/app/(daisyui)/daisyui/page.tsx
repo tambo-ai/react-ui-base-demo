@@ -373,7 +373,7 @@ export default function DaisyUIDemo() {
                         render={<MessageContent role={msg.role} />}
                       >
                         <ReasoningInfo.Root>
-                          <div className="collapse collapse-arrow bg-warning/20 mb-2">
+                          <div className="collapse collapse-arrow bg-success/20 mb-2 opacity-85">
                             <ReasoningInfo.Trigger
                               render={(props) => (
                                 <CollapsibleTrigger {...props}>
@@ -401,7 +401,7 @@ export default function DaisyUIDemo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <div className="collapse collapse-arrow bg-info/20 mb-2">
+                          <div className="collapse collapse-arrow bg-success/20 mb-2 opacity-85">
                             <ToolcallInfo.Trigger
                               render={(props, { state }) => (
                                 <CollapsibleTrigger {...props}>

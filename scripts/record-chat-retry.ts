@@ -142,6 +142,15 @@ async function scrollAndScreenshot(page: Page, outDir: string) {
   });
 }
 
+/** Type a message character by character with a delay between each keystroke. */
+async function typeCharByChar(page: Page, locator: ReturnType<Page["locator"]>, text: string, delayMs = 80) {
+  await locator.click();
+  for (const char of text) {
+    await page.keyboard.type(char, { delay: 0 });
+    await page.waitForTimeout(delayMs);
+  }
+}
+
 async function recordChat(
   browser: Awaited<ReturnType<typeof chromium.launch>>,
   route: (typeof routes)[number]
@@ -151,6 +160,7 @@ async function recordChat(
 
   const context = await browser.newContext({
     viewport: VIEWPORT,
+    deviceScaleFactor: 4,
     recordVideo: { dir: outDir, size: VIEWPORT },
   });
   const page = await context.newPage();
@@ -173,6 +183,10 @@ async function recordChat(
   await page.waitForTimeout(1000);
   await hideNextDevTools(page);
 
+  // Move mouse cursor away from the send button to a neutral spot
+  await page.mouse.move(VIEWPORT.width / 2, VIEWPORT.height / 2);
+  await page.waitForTimeout(300);
+
   // Type — prefer data-slot, fall back to generic textarea
   let textarea = page.locator('[data-slot="message-input-textarea"]');
   if ((await textarea.count()) === 0) {
@@ -183,7 +197,7 @@ async function recordChat(
   if ((await textarea.count()) === 0) {
     textarea = page.locator("textarea").first();
   }
-  await textarea.fill("show me hn posts");
+  await typeCharByChar(page, textarea, "show me hn posts");
   console.log(`    -> typed message`);
   await page.waitForTimeout(500);
 

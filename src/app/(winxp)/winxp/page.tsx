@@ -256,7 +256,7 @@ export default function WinXPDemo() {
                         <ReasoningInfo.Root>
                           <ReasoningInfo.Trigger
                             render={({ children, ...props }, { state }) => (
-                              <fieldset {...props}>
+                              <fieldset {...props} style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                                 <legend>
                                   <CollapsibleTrigger
                                     state={state as "open" | "closed"}
@@ -274,7 +274,7 @@ export default function WinXPDemo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <fieldset>
+                          <fieldset style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                             <legend>
                               <ToolcallInfo.StatusIcon
                                 render={(_props, state) => {
@@ -364,6 +364,9 @@ export default function WinXPDemo() {
                       style={{ flex: "1 1 auto", resize: "none", fontSize: 11 }}
                     />
                   )}
+                />
+                <MessageInput.FileButton
+                  render={(props) => <button {...props} type="button">File</button>}
                 />
                 <MessageInput.SubmitButton
                   render={(props) => <button {...props}>Send</button>}

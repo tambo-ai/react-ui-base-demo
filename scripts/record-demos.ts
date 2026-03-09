@@ -94,6 +94,7 @@ async function recordRoute(
 
   const context = await browser.newContext({
     viewport: VIEWPORT,
+    deviceScaleFactor: 4,
     recordVideo: {
       dir: outDir,
       size: VIEWPORT,

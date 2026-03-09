@@ -248,7 +248,7 @@ export default function Win98Demo() {
                         <ReasoningInfo.Root>
                           <ReasoningInfo.Trigger
                             render={(props, state) => (
-                              <fieldset style={{ marginBottom: 4 }}>
+                              <fieldset style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                                 <legend>
                                   <ReasoningInfo.StatusText
                                     render={(_props, st) =>
@@ -286,7 +286,7 @@ export default function Win98Demo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <fieldset style={{ marginBottom: 4 }}>
+                          <fieldset style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                             <legend>Tool Call</legend>
                             <ToolcallInfo.Trigger
                               render={(props, { state }) => (
@@ -377,6 +377,9 @@ export default function Win98Demo() {
                       style={{ flex: "1 1 auto", resize: "none", fontSize: 11 }}
                     />
                   }
+                />
+                <MessageInput.FileButton
+                  render={<button type="button">File</button>}
                 />
                 <MessageInput.SubmitButton
                   render={<button>Send</button>}

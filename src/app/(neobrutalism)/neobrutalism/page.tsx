@@ -400,13 +400,14 @@ function ChatWindow({
                     render={<MessageContent role={msg.role} />}
                   >
                     <ReasoningInfo.Root>
-                      <Card className="bg-main py-3">
+                      <Card className="py-3 opacity-85" style={{ backgroundColor: "#c8e6c9" }}>
                         <CardContent>
                           <ReasoningInfo.Trigger
                             render={(props) => (
                               <button
                                 {...props}
-                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-main-foreground"
+                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading"
+                                style={{ color: "#2e7d32" }}
                               >
                                 <Badge>💡</Badge>
                                 <ReasoningInfo.StatusText />
@@ -421,13 +422,14 @@ function ChatWindow({
                     </ReasoningInfo.Root>
 
                     <ToolcallInfo.Root>
-                      <Card className="py-3">
+                      <Card className="py-3 opacity-85" style={{ backgroundColor: "#c8e6c9" }}>
                         <CardContent>
                           <ToolcallInfo.Trigger
                             render={(props, { state }) => (
                               <button
                                 {...props}
-                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-foreground"
+                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading"
+                                style={{ color: "#2e7d32" }}
                               >
                                 <ToolcallInfo.StatusIcon
                                   render={(_p, s) => (
@@ -501,17 +503,17 @@ function ChatWindow({
             )}
           />
           <MessageInput.Content className="flex gap-2 items-end">
-            <MessageInput.FileButton
-              render={<Button variant="neutral" size="icon" className="shrink-0" />}
-            >
-              📎
-            </MessageInput.FileButton>
             <div className="flex-1">
               <MessageInput.Textarea
                 placeholder="Type a message..."
                 render={<Textarea rows={2} />}
               />
             </div>
+            <MessageInput.FileButton
+              render={<Button variant="neutral" size="icon" className="shrink-0" />}
+            >
+              📎
+            </MessageInput.FileButton>
             <MessageInput.SubmitButton render={<Button className="shrink-0" />}>
               SEND
             </MessageInput.SubmitButton>

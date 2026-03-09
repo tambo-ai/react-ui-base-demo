@@ -440,6 +440,8 @@ function Chat() {
                                   style={{
                                     marginBottom: 4,
                                     padding: "8px 12px",
+                                    backgroundColor: "rgba(46, 125, 50, 0.08)",
+                                    opacity: 0.85,
                                   }}
                                 >
                                   <details>
@@ -470,6 +472,8 @@ function Chat() {
                               style={{
                                 marginBottom: 4,
                                 padding: "8px 12px",
+                                backgroundColor: "rgba(46, 125, 50, 0.08)",
+                                opacity: 0.85,
                               }}
                             >
                               <details>
@@ -530,7 +534,7 @@ function Chat() {
             </div>
 
             {/* Chat Input */}
-            <footer style={{ padding: 0 }}>
+            <footer style={{ padding: "8px 12px" }}>
               <MessageInput.Root>
                 <MessageInput.StagedImages />
                 <MessageInput.Content
@@ -572,17 +576,17 @@ function Chat() {
                   >
                     <MessageInput.FileButton
                       render={
-                        <button className="outline" type="button">
+                        <button className="outline" type="button" style={{ marginBottom: 0 }}>
                           File
                         </button>
                       }
                     />
                     <MessageInput.SubmitButton
-                      render={<button type="submit">Send</button>}
+                      render={<button type="submit" style={{ marginBottom: 0 }}>Send</button>}
                     />
                     <MessageInput.StopButton
                       render={
-                        <button className="secondary" type="button">
+                        <button className="secondary" type="button" style={{ marginBottom: 0 }}>
                           Stop
                         </button>
                       }

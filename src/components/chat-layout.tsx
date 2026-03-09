@@ -167,9 +167,11 @@ function ChatLayoutContent({
 /**
  * Auto-scrolls a container to the bottom when content changes,
  * but only if the user is already near the bottom (within `threshold` px).
+ * Also scrolls to bottom on initial content load.
  */
 export function useScrollToBottom(threshold = 80) {
   const ref = useRef<HTMLDivElement>(null);
+  const hasScrolledInitially = useRef(false);
 
   const scrollToBottom = useCallback(() => {
     const el = ref.current;
@@ -183,6 +185,12 @@ export function useScrollToBottom(threshold = 80) {
     if (!el) return;
 
     const observer = new MutationObserver(() => {
+      // Always scroll to bottom on first content change (initial load)
+      if (!hasScrolledInitially.current) {
+        hasScrolledInitially.current = true;
+        el.scrollTop = el.scrollHeight;
+        return;
+      }
       const nearBottom =
         el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
       if (nearBottom) {

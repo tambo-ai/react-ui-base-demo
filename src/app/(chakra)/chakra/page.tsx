@@ -353,6 +353,7 @@ export default function ChakraDemo() {
                                 size="sm"
                                 variant="outline"
                                 mb={2}
+                                style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}
                                 {...props}
                               >
                                 <Card.Body>
@@ -382,7 +383,7 @@ export default function ChakraDemo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <Card.Root size="sm" variant="outline" mb={2}>
+                          <Card.Root size="sm" variant="outline" mb={2} style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}>
                             <Card.Body>
                               <HStack mb={1}>
                                 <ToolcallInfo.StatusIcon

@@ -296,12 +296,12 @@ export default function RetroDemo() {
                           render={<MessageContent role={msg.role} />}
                         >
                           <ReasoningInfo.Root>
-                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative" }}>
+                            <div style={{ padding: "6px 10px", fontSize: 14, position: "relative", border: "1px solid #00ff41", boxShadow: "0 0 8px rgba(0,255,65,0.3), inset 0 0 8px rgba(0,255,65,0.05)", background: "#050505", opacity: 0.75 }}>
                               <ReasoningInfo.Trigger
                                 render={(props) => (
                                   <button
                                     {...props}
-                                    className="retro-text"
+                                    className="retro-text-green"
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
@@ -311,6 +311,7 @@ export default function RetroDemo() {
                                       cursor: "pointer",
                                       padding: 0,
                                       fontSize: 14,
+                                      opacity: 0.7,
                                     }}
                                   >
                                     <ReasoningInfo.StatusText />
@@ -318,8 +319,7 @@ export default function RetroDemo() {
                                 )}
                               />
                               <ReasoningInfo.Content
-                                className="retro-text-dim"
-                                style={{ marginTop: 6, fontSize: 14, lineHeight: 1.5 }}
+                                style={{ marginTop: 6, fontSize: 14, lineHeight: 1.5, color: "#00cc33", fontFamily: '"VT323", "Courier New", monospace', opacity: 0.6 }}
                               >
                                 <ReasoningInfo.Steps />
                               </ReasoningInfo.Content>
@@ -327,18 +327,18 @@ export default function RetroDemo() {
                           </ReasoningInfo.Root>
 
                           <ToolcallInfo.Root>
-                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative" }}>
+                            <div style={{ padding: "6px 10px", fontSize: 14, position: "relative", border: "1px solid #00ff41", boxShadow: "0 0 8px rgba(0,255,65,0.3), inset 0 0 8px rgba(0,255,65,0.05)", background: "#050505", opacity: 0.75 }}>
                               <ToolcallInfo.Trigger
                                 render={(props, { state }) => (
                                   <CollapsibleTrigger state={state} {...props}>
-                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                                    <span className="retro-text-green" style={{ display: "inline-flex", alignItems: "center", gap: 6, opacity: 0.7 }}>
                                       <ToolcallInfo.StatusIcon />
                                       <ToolcallInfo.ToolName />
                                     </span>
                                   </CollapsibleTrigger>
                                 )}
                               />
-                              <ToolcallInfo.Content className="retro-text-dim" style={{ marginTop: 6, fontSize: 14 }}>
+                              <ToolcallInfo.Content style={{ marginTop: 6, fontSize: 14, color: "#00cc33", fontFamily: '"VT323", "Courier New", monospace', opacity: 0.6 }}>
                                 <ToolcallInfo.Parameters render={<CodeBlock title="Parameters" />} />
                                 <ToolcallInfo.Result render={<CodeBlock title="Result" />} />
                               </ToolcallInfo.Content>
@@ -383,6 +383,9 @@ export default function RetroDemo() {
                       style={{ minHeight: 36, maxHeight: 80, fontSize: 14 }}
                     />
                   </div>
+                  <MessageInput.FileButton className="retro-btn" style={{ fontSize: 14 }}>
+                    FILE
+                  </MessageInput.FileButton>
                   <MessageInput.SubmitButton className="retro-btn retro-btn-primary" style={{ fontSize: 14 }}>
                     SEND
                   </MessageInput.SubmitButton>

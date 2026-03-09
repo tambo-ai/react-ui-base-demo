@@ -392,6 +392,7 @@ export default function PolarisDemo() {
                       >
                         <ReasoningInfo.Root>
                           <Card>
+                            <div style={{ opacity: 0.85 }}>
                             <BlockStack gap="200">
                               <ReasoningInfo.Trigger
                                 render={(props) => (
@@ -406,7 +407,7 @@ export default function PolarisDemo() {
                                       cursor: "pointer",
                                       padding: 0,
                                       fontSize: 12,
-                                      color: "#8a6b0f",
+                                      color: "#2e7d32",
                                     }}
                                   >
                                     <ReasoningInfo.StatusText
@@ -431,11 +432,13 @@ export default function PolarisDemo() {
                                 </Box>
                               </ReasoningInfo.Content>
                             </BlockStack>
+                            </div>
                           </Card>
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
                           <Card>
+                            <div style={{ opacity: 0.85 }}>
                             <BlockStack gap="200">
                               <ToolcallInfo.Trigger
                                 render={(props, { state }) => (
@@ -478,6 +481,7 @@ export default function PolarisDemo() {
                                 </BlockStack>
                               </ToolcallInfo.Content>
                             </BlockStack>
+                            </div>
                           </Card>
                         </ToolcallInfo.Root>
 
@@ -560,23 +564,11 @@ export default function PolarisDemo() {
                   />
                   <MessageInput.SubmitButton
                     render={
-                      <button
-                        type="submit"
-                        aria-label="Send"
-                        style={{
-                          border: "none",
-                          borderRadius: "var(--p-border-radius-200)",
-                          padding: "6px 8px",
-                          background: "var(--p-color-bg-fill-brand)",
-                          color: "var(--p-color-text-brand-on-bg-fill)",
-                          cursor: "pointer",
-                          display: "inline-flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <SendIcon />
-                      </button>
+                      <Button
+                        variant="primary"
+                        icon={SendIcon}
+                        accessibilityLabel="Send"
+                      />
                     }
                   />
                   <MessageInput.StopButton
@@ -637,7 +629,7 @@ function CollapsibleTrigger({
         cursor: "pointer",
         padding: 0,
         fontSize: 12,
-        color: "#6d7175",
+        color: "#2e7d32",
       }}
       {...props}
     >
