@@ -253,9 +253,9 @@ async function recordChat(
     console.log(`    -> WARNING: timed out waiting for HN component`);
   }
 
-  // Wait 20s for the response to fully settle
-  console.log(`    -> waiting 20s for response to settle...`);
-  await page.waitForTimeout(20000);
+  // Wait 10s for the response to fully settle
+  console.log(`    -> waiting 10s for response to settle...`);
+  await page.waitForTimeout(10000);
 
   await hideNextDevTools(page);
 
