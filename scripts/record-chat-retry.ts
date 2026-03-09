@@ -201,16 +201,36 @@ async function recordChat(
   console.log(`    -> typed message`);
   await page.waitForTimeout(500);
 
-  // Submit — prefer data-slot, fall back
-  let sendBtn = page.locator('[data-slot="message-input-submit"]');
-  if ((await sendBtn.count()) === 0) {
-    sendBtn = page
+  // Submit — try button click first, fall back to Ctrl+Enter
+  let submitted = false;
+  const sendBtn = page.locator('[data-slot="message-input-submit"]');
+  if ((await sendBtn.count()) > 0) {
+    await sendBtn.click();
+    submitted = true;
+  }
+  if (!submitted) {
+    const fallbackBtn = page
       .locator(
         '[data-slot="message-input-root"] button[aria-label="Send"], [data-slot="message-input-root"] button[type="submit"]'
       )
       .first();
+    if ((await fallbackBtn.count()) > 0) {
+      await fallbackBtn.click();
+      // Check if the message was actually sent (textarea should clear)
+      await page.waitForTimeout(1000);
+      const val = await textarea.inputValue().catch(() => "");
+      if (val === "" || val === "\n") {
+        submitted = true;
+      }
+    }
   }
-  await sendBtn.click();
+  if (!submitted) {
+    // Use Ctrl+Enter as a universal submit fallback
+    await textarea.focus();
+    await page.keyboard.down("Control");
+    await page.keyboard.press("Enter");
+    await page.keyboard.up("Control");
+  }
   console.log(`    -> submitted`);
 
   // Wait for the actual HN component to render (look for "pts" which only
