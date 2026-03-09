@@ -408,7 +408,7 @@ export default function PaperCSSDemo() {
                           render={
                             <div
                               className="card border"
-                              style={{ marginBottom: 8, backgroundColor: "#e8f5e9", opacity: 0.85 }}
+                              style={{ marginBottom: 8 }}
                             />
                           }
                         >
@@ -452,7 +452,7 @@ export default function PaperCSSDemo() {
                           render={
                             <div
                               className="card border"
-                              style={{ marginBottom: 8, backgroundColor: "#e8f5e9", opacity: 0.85 }}
+                              style={{ marginBottom: 8 }}
                             />
                           }
                         >

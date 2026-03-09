@@ -256,7 +256,7 @@ export default function WinXPDemo() {
                         <ReasoningInfo.Root>
                           <ReasoningInfo.Trigger
                             render={({ children, ...props }, { state }) => (
-                              <fieldset {...props} style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}>
+                              <fieldset {...props}>
                                 <legend>
                                   <CollapsibleTrigger
                                     state={state as "open" | "closed"}
@@ -274,7 +274,7 @@ export default function WinXPDemo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <fieldset style={{ backgroundColor: '#e8f5e9', opacity: 0.85 }}>
+                          <fieldset>
                             <legend>
                               <ToolcallInfo.StatusIcon
                                 render={(_props, state) => {

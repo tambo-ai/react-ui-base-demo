@@ -440,8 +440,6 @@ function Chat() {
                                   style={{
                                     marginBottom: 4,
                                     padding: "8px 12px",
-                                    backgroundColor: "rgba(46, 125, 50, 0.08)",
-                                    opacity: 0.85,
                                   }}
                                 >
                                   <details>
@@ -472,8 +470,6 @@ function Chat() {
                               style={{
                                 marginBottom: 4,
                                 padding: "8px 12px",
-                                backgroundColor: "rgba(46, 125, 50, 0.08)",
-                                opacity: 0.85,
                               }}
                             >
                               <details>

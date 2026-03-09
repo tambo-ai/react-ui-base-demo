@@ -248,7 +248,7 @@ export default function Win98Demo() {
                         <ReasoningInfo.Root>
                           <ReasoningInfo.Trigger
                             render={(props, state) => (
-                              <fieldset style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}>
+                              <fieldset style={{ marginBottom: 4 }}>
                                 <legend>
                                   <ReasoningInfo.StatusText
                                     render={(_props, st) =>
@@ -286,7 +286,7 @@ export default function Win98Demo() {
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
-                          <fieldset style={{ marginBottom: 4, backgroundColor: '#e8f5e9', opacity: 0.85 }}>
+                          <fieldset style={{ marginBottom: 4 }}>
                             <legend>Tool Call</legend>
                             <ToolcallInfo.Trigger
                               render={(props, { state }) => (

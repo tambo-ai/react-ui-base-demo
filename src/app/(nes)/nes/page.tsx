@@ -334,7 +334,7 @@ export default function NesDemo() {
                           <ReasoningInfo.Root>
                             <NesContainer
                               variant="rounded"
-                              style={{ padding: 8, fontSize: 8, backgroundColor: "#c8e6c9", opacity: 0.85 }}
+                              style={{ padding: 8, fontSize: 8, backgroundColor: "#f7dc6f" }}
                             >
                               <NesTimeline>
                                 <NesTimelineItem
@@ -381,7 +381,7 @@ export default function NesDemo() {
                           </ReasoningInfo.Root>
 
                           <ToolcallInfo.Root>
-                            <NesContainer variant="rounded" style={{ padding: 8, fontSize: 8, backgroundColor: "#c8e6c9", opacity: 0.85 }}>
+                            <NesContainer variant="rounded-dark" style={{ padding: 8, fontSize: 8 }}>
                               <NesTimeline>
                                 <NesTimelineItem
                                   icon={

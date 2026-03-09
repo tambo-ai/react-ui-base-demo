@@ -483,7 +483,7 @@ export default function PrimerDemo() {
                         role={msg.role as "user" | "assistant"}
                         render={<MessageContent role={msg.role} />}
                       >
-                        <ReasoningInfo.Root render={<Timeline clipSidebar style={{ backgroundColor: '#e8f5e9', opacity: 0.85, borderRadius: 6, padding: 4 }} />}>
+                        <ReasoningInfo.Root render={<Timeline clipSidebar />}>
                           <ReasoningInfo.Trigger render={<Timeline.Item />}>
                             <Timeline.Badge>
                               <ReasoningInfo.StatusText
@@ -504,7 +504,7 @@ export default function PrimerDemo() {
                             <ReasoningInfo.Steps />
                           </ReasoningInfo.Content>
                         </ReasoningInfo.Root>
-                        <ToolcallInfo.Root render={<Timeline clipSidebar style={{ backgroundColor: '#e8f5e9', opacity: 0.85, borderRadius: 6, padding: 4 }} />}>
+                        <ToolcallInfo.Root render={<Timeline clipSidebar />}>
                           <Timeline.Item>
                             <Timeline.Badge>
                               <ToolcallInfo.StatusIcon

@@ -509,9 +509,8 @@ export default function CarbonPage() {
                         <ReasoningInfo.Root>
                           <Tile
                             style={{
-                              borderLeft: "3px solid #198038",
-                              backgroundColor: "#defbe6",
-                              opacity: 0.85,
+                              borderLeft: "3px solid #f1c21b",
+                              backgroundColor: "#fff1d6",
                             }}
                           >
                             <ReasoningInfo.Trigger
@@ -559,9 +558,7 @@ export default function CarbonPage() {
                         <ToolcallInfo.Root>
                           <Tile
                             style={{
-                              borderLeft: "3px solid #198038",
-                              backgroundColor: "#defbe6",
-                              opacity: 0.85,
+                              borderLeft: "3px solid #0f62fe",
                             }}
                           >
                             <ToolcallInfo.Trigger

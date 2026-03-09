@@ -392,7 +392,6 @@ export default function PolarisDemo() {
                       >
                         <ReasoningInfo.Root>
                           <Card>
-                            <div style={{ opacity: 0.85 }}>
                             <BlockStack gap="200">
                               <ReasoningInfo.Trigger
                                 render={(props) => (
@@ -407,7 +406,7 @@ export default function PolarisDemo() {
                                       cursor: "pointer",
                                       padding: 0,
                                       fontSize: 12,
-                                      color: "#2e7d32",
+                                      color: "#8a6b0f",
                                     }}
                                   >
                                     <ReasoningInfo.StatusText
@@ -432,13 +431,11 @@ export default function PolarisDemo() {
                                 </Box>
                               </ReasoningInfo.Content>
                             </BlockStack>
-                            </div>
                           </Card>
                         </ReasoningInfo.Root>
 
                         <ToolcallInfo.Root>
                           <Card>
-                            <div style={{ opacity: 0.85 }}>
                             <BlockStack gap="200">
                               <ToolcallInfo.Trigger
                                 render={(props, { state }) => (
@@ -481,7 +478,6 @@ export default function PolarisDemo() {
                                 </BlockStack>
                               </ToolcallInfo.Content>
                             </BlockStack>
-                            </div>
                           </Card>
                         </ToolcallInfo.Root>
 
@@ -629,7 +625,7 @@ function CollapsibleTrigger({
         cursor: "pointer",
         padding: 0,
         fontSize: 12,
-        color: "#2e7d32",
+        color: "#6d7175",
       }}
       {...props}
     >

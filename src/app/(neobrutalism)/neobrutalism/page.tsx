@@ -400,14 +400,13 @@ function ChatWindow({
                     render={<MessageContent role={msg.role} />}
                   >
                     <ReasoningInfo.Root>
-                      <Card className="py-3 opacity-85" style={{ backgroundColor: "#c8e6c9" }}>
+                      <Card className="bg-main py-3">
                         <CardContent>
                           <ReasoningInfo.Trigger
                             render={(props) => (
                               <button
                                 {...props}
-                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading"
-                                style={{ color: "#2e7d32" }}
+                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-main-foreground"
                               >
                                 <Badge>💡</Badge>
                                 <ReasoningInfo.StatusText />
@@ -422,14 +421,13 @@ function ChatWindow({
                     </ReasoningInfo.Root>
 
                     <ToolcallInfo.Root>
-                      <Card className="py-3 opacity-85" style={{ backgroundColor: "#c8e6c9" }}>
+                      <Card className="py-3">
                         <CardContent>
                           <ToolcallInfo.Trigger
                             render={(props, { state }) => (
                               <button
                                 {...props}
-                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading"
-                                style={{ color: "#2e7d32" }}
+                                className="flex items-center gap-2 bg-transparent border-none cursor-pointer p-0 text-xs font-heading text-foreground"
                               >
                                 <ToolcallInfo.StatusIcon
                                   render={(_p, s) => (
