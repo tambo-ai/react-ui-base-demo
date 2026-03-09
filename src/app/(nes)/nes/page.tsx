@@ -48,7 +48,7 @@ export default function NesDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
   const [tab, setTab] = useState<"party" | "inventory" | "quests">("party");
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -251,7 +251,7 @@ export default function NesDemo() {
 
       {/* Chat Bubble */}
       {!chatOpen && (
-        <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
+        <div data-testid="chat-bubble" style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
           <NesButton
             variant="primary"
             onClick={() => setChatOpen(true)}
@@ -462,6 +462,11 @@ export default function NesDemo() {
                       }}
                     />
                   </div>
+                  <MessageInput.FileButton
+                    render={<NesButton variant="warning" style={{ fontSize: 8 }} />}
+                  >
+                    File
+                  </MessageInput.FileButton>
                   <MessageInput.SubmitButton
                     render={<NesButton variant="primary" style={{ fontSize: 8 }} />}
                   >

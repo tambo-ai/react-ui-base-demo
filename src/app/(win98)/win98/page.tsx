@@ -23,7 +23,7 @@ export default function Win98Demo() {
   const [startMenuOpen, setStartMenuOpen] = useState(false);
   const [notepadOpen, setNotepadOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -147,6 +147,7 @@ export default function Win98Demo() {
       {/* Chat Bubble */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           style={{
             position: "fixed",
@@ -232,7 +233,7 @@ export default function Win98Demo() {
             }}
           >
             <ThreadContent.Root
-              style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <ThreadContent.Messages
                 render={(_props, state) => (
@@ -376,6 +377,9 @@ export default function Win98Demo() {
                       style={{ flex: "1 1 auto", resize: "none", fontSize: 11 }}
                     />
                   }
+                />
+                <MessageInput.FileButton
+                  render={<button type="button">File</button>}
                 />
                 <MessageInput.SubmitButton
                   render={<button>Send</button>}

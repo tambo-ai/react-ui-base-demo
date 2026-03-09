@@ -41,7 +41,7 @@ export default function RetroDemo() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -211,7 +211,7 @@ export default function RetroDemo() {
 
       {/* Chat Bubble */}
       {!chatOpen && (
-        <div style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
+        <div data-testid="chat-bubble" style={{ position: "fixed", bottom: 16, right: 16, zIndex: 999 }}>
           <button
             className="retro-btn retro-btn-primary"
             onClick={() => setChatOpen(true)}
@@ -296,12 +296,12 @@ export default function RetroDemo() {
                           render={<MessageContent role={msg.role} />}
                         >
                           <ReasoningInfo.Root>
-                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative" }}>
+                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative", opacity: 0.75 }}>
                               <ReasoningInfo.Trigger
                                 render={(props) => (
                                   <button
                                     {...props}
-                                    className="retro-text"
+                                    className="retro-text-dim"
                                     style={{
                                       display: "flex",
                                       alignItems: "center",
@@ -327,11 +327,11 @@ export default function RetroDemo() {
                           </ReasoningInfo.Root>
 
                           <ToolcallInfo.Root>
-                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative" }}>
+                            <div className="retro-panel" style={{ padding: "6px 10px", fontSize: 14, position: "relative", opacity: 0.75 }}>
                               <ToolcallInfo.Trigger
                                 render={(props, { state }) => (
                                   <CollapsibleTrigger state={state} {...props}>
-                                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
+                                    <span className="retro-text-dim" style={{ display: "inline-flex", alignItems: "center", gap: 6 }}>
                                       <ToolcallInfo.StatusIcon />
                                       <ToolcallInfo.ToolName />
                                     </span>
@@ -383,6 +383,9 @@ export default function RetroDemo() {
                       style={{ minHeight: 36, maxHeight: 80, fontSize: 14 }}
                     />
                   </div>
+                  <MessageInput.FileButton className="retro-btn" style={{ fontSize: 14 }}>
+                    FILE
+                  </MessageInput.FileButton>
                   <MessageInput.SubmitButton className="retro-btn retro-btn-primary" style={{ fontSize: 14 }}>
                     SEND
                   </MessageInput.SubmitButton>

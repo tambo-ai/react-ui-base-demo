@@ -22,7 +22,7 @@ export default function WinXPDemo() {
   const [explorerOpen, setExplorerOpen] = useState(true);
   const [startMenuOpen, setStartMenuOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -143,6 +143,7 @@ export default function WinXPDemo() {
       {/* Chat Bubble */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           style={{
             position: "fixed",
@@ -240,7 +241,7 @@ export default function WinXPDemo() {
             }}
           >
             <ThreadContent.Root
-              style={{ display: "flex", flexDirection: "column", flex: "1 1 auto" }}
+              style={{ display: "flex", flexDirection: "column" }}
             >
               <ThreadContent.Messages
                 render={(_props, state) => (
@@ -363,6 +364,9 @@ export default function WinXPDemo() {
                       style={{ flex: "1 1 auto", resize: "none", fontSize: 11 }}
                     />
                   )}
+                />
+                <MessageInput.FileButton
+                  render={(props) => <button {...props} type="button">File</button>}
                 />
                 <MessageInput.SubmitButton
                   render={(props) => <button {...props}>Send</button>}

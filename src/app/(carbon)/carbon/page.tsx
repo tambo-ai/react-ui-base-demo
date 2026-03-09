@@ -146,7 +146,7 @@ export default function CarbonPage() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
-  const { ref: chatScrollRef } = useScrollToBottom(500);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -410,6 +410,7 @@ export default function CarbonPage() {
       {/* ---------- Floating chat bubble ---------- */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           aria-label="Open chat"
           style={{
@@ -655,17 +656,6 @@ export default function CarbonPage() {
                   alignItems: "flex-end",
                 }}
               >
-                <MessageInput.FileButton
-                  render={
-                    <Button
-                      kind="ghost"
-                      size="md"
-                      renderIcon={Attachment}
-                      hasIconOnly
-                      iconDescription="Attach file"
-                    />
-                  }
-                />
                 <div style={{ flex: 1 }}>
                   <MessageInput.Textarea
                     placeholder="Type a message..."
@@ -678,6 +668,17 @@ export default function CarbonPage() {
                     }
                   />
                 </div>
+                <MessageInput.FileButton
+                  render={
+                    <Button
+                      kind="ghost"
+                      size="md"
+                      renderIcon={Attachment}
+                      hasIconOnly
+                      iconDescription="Attach file"
+                    />
+                  }
+                />
                 <MessageInput.SubmitButton
                   render={
                     <Button

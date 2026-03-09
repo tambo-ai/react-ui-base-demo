@@ -147,7 +147,7 @@ function ChatLayoutContent({
   autoScroll = true,
   ...rest
 }: LayoutProps & { autoScroll?: boolean }) {
-  const { ref } = useScrollToBottom(500);
+  const { ref } = useScrollToBottom();
   return (
     <div
       ref={autoScroll ? ref : undefined}
@@ -165,38 +165,100 @@ function ChatLayoutContent({
 }
 
 /**
- * Auto-scrolls a container to the bottom when content changes,
- * but only if the user is already near the bottom (within `threshold` px).
+ * Auto-scrolls a container to the bottom whenever content changes.
+ * Uses a callback ref so it works with conditionally rendered elements.
+ * Combines MutationObserver, ResizeObserver, and polling for reliability.
+ * Respects user scroll position — stops auto-scrolling when the user scrolls up.
  */
-export function useScrollToBottom(threshold = 80) {
-  const ref = useRef<HTMLDivElement>(null);
+export function useScrollToBottom() {
+  const elRef = useRef<HTMLDivElement | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
+  const isNearBottomRef = useRef(true);
 
   const scrollToBottom = useCallback(() => {
-    const el = ref.current;
+    const el = elRef.current;
     if (el) {
       el.scrollTop = el.scrollHeight;
+      isNearBottomRef.current = true;
     }
   }, []);
 
-  useEffect(() => {
-    const el = ref.current;
+  const ref = useCallback((el: HTMLDivElement | null) => {
+    // Cleanup previous observer
+    cleanupRef.current?.();
+    cleanupRef.current = null;
+    elRef.current = el;
+
     if (!el) return;
 
-    const observer = new MutationObserver(() => {
-      const nearBottom =
-        el.scrollHeight - el.scrollTop - el.clientHeight < threshold;
-      if (nearBottom) {
-        el.scrollTop = el.scrollHeight;
-      }
-    });
+    const BOTTOM_THRESHOLD = 500;
 
-    observer.observe(el, {
+    const checkIfNearBottom = () => {
+      return el.scrollTop + el.clientHeight >= el.scrollHeight - BOTTOM_THRESHOLD;
+    };
+
+    const doScroll = () => {
+      if (!isNearBottomRef.current) return;
+      el.scrollTop = el.scrollHeight;
+    };
+
+    // Scroll multiple times to handle layout timing issues with React 19
+    const scheduleScroll = () => {
+      if (!isNearBottomRef.current) return;
+      el.scrollTop = el.scrollHeight;
+      requestAnimationFrame(() => {
+        if (!isNearBottomRef.current) return;
+        el.scrollTop = el.scrollHeight;
+        requestAnimationFrame(() => {
+          if (!isNearBottomRef.current) return;
+          el.scrollTop = el.scrollHeight;
+        });
+      });
+    };
+
+    // Track user scroll position
+    const onScroll = () => {
+      isNearBottomRef.current = checkIfNearBottom();
+    };
+    el.addEventListener("scroll", onScroll, { passive: true });
+
+    // MutationObserver catches DOM additions (new messages, text changes)
+    const mutationObserver = new MutationObserver(scheduleScroll);
+    mutationObserver.observe(el, {
       childList: true,
       subtree: true,
       characterData: true,
     });
-    return () => observer.disconnect();
-  }, [threshold]);
+
+    // ResizeObserver fires after layout when content size changes
+    const resizeObserver = new ResizeObserver(doScroll);
+    resizeObserver.observe(el);
+
+    // Also observe direct children so we catch when inner content grows
+    const observeChildren = () => {
+      for (const child of Array.from(el.children)) {
+        resizeObserver.observe(child);
+      }
+    };
+    observeChildren();
+
+    // Initial scroll
+    isNearBottomRef.current = true;
+    scheduleScroll();
+
+    cleanupRef.current = () => {
+      el.removeEventListener("scroll", onScroll);
+      mutationObserver.disconnect();
+      resizeObserver.disconnect();
+    };
+  }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      cleanupRef.current?.();
+    };
+  }, []);
 
   return { ref, scrollToBottom };
 }

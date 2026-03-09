@@ -118,7 +118,7 @@ export default function AntdDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
   const threadsButtonRef = useRef<HTMLButtonElement>(null);
-  const { ref: chatScrollRef } = useScrollToBottom(500);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
   // Auto-switch to the most recent thread on initial load
   useEffect(() => {
@@ -467,6 +467,7 @@ export default function AntdDemo() {
       {/* ===== FLOATING CHAT BUBBLE ===== */}
       {!chatOpen && (
         <Button
+          data-testid="chat-bubble"
           type="primary"
           shape="circle"
           size="large"
@@ -672,8 +673,20 @@ export default function AntdDemo() {
                   <MessageInput.Textarea
                     placeholder="Type a message..."
                     render={
-                      <Input.TextArea
-                        autoSize={{ minRows: 1, maxRows: 4 }}
+                      <textarea
+                        rows={2}
+                        style={{
+                          flex: "1 1 auto",
+                          resize: "none",
+                          border: "1px solid #d9d9d9",
+                          borderRadius: 6,
+                          padding: "4px 11px",
+                          fontSize: 14,
+                          lineHeight: "1.5715",
+                          fontFamily: "inherit",
+                          outline: "none",
+                          boxSizing: "border-box",
+                        }}
                       />
                     }
                   />
@@ -689,11 +702,26 @@ export default function AntdDemo() {
                   />
                   <MessageInput.SubmitButton
                     render={
-                      <Button
-                        type="primary"
-                        icon={<SendOutlined />}
+                      <button
+                        type="submit"
                         aria-label="Send"
-                      />
+                        style={{
+                          border: "none",
+                          borderRadius: 6,
+                          padding: "4px 8px",
+                          background: "#1677ff",
+                          color: "#fff",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 16,
+                          height: 32,
+                          width: 32,
+                        }}
+                      >
+                        <SendOutlined />
+                      </button>
                     }
                   />
                   <MessageInput.StopButton

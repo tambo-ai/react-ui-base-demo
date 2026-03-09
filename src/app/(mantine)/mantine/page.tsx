@@ -93,7 +93,7 @@ export default function MantineDemo() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
-  const { ref: chatScrollRef } = useScrollToBottom(500);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -255,6 +255,7 @@ export default function MantineDemo() {
       {/* ---------- Floating chat bubble ---------- */}
       {!chatOpen && (
         <ActionIcon
+          data-testid="chat-bubble"
           size={56}
           radius="xl"
           variant="filled"

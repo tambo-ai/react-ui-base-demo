@@ -35,8 +35,7 @@ yarn-error.log*
 .env*
 !.env.local.example
 
-# recordings
-/recordings
+# recordings (tracked - needed for demo videos)
 
 # vercel
 .vercel

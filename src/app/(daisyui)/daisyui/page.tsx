@@ -21,7 +21,7 @@ export default function DaisyUIDemo() {
 
   const threadsRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   // Auto-switch to most recent thread on initial load
   useEffect(() => {
@@ -324,6 +324,7 @@ export default function DaisyUIDemo() {
       {/* ── Floating chat bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           className="btn btn-primary btn-circle fixed bottom-6 right-6 z-40 shadow-lg text-lg"
           onClick={() => setChatOpen(true)}
           aria-label="Open chat"

@@ -15,66 +15,69 @@
 import { chromium, type Page } from "@playwright/test";
 import * as fs from "fs";
 import * as path from "path";
+import { routes, type Route } from "./routes";
+
+/** Hide the Next.js dev tools overlay so it doesn't appear in recordings. */
+async function hideNextDevTools(page: Page) {
+  await page.evaluate(() => {
+    const selectors = [
+      "nextjs-portal",
+      "[data-nextjs-dialog-overlay]",
+      "[data-nextjs-toast]",
+      "#__next-build-indicator",
+      "#__next-build-watcher",
+    ];
+    for (const sel of selectors) {
+      document.querySelectorAll(sel).forEach((el) => {
+        (el as HTMLElement).style.display = "none";
+      });
+    }
+    document.querySelectorAll("*").forEach((el) => {
+      if (
+        el.shadowRoot &&
+        el.tagName.toLowerCase().startsWith("nextjs-portal")
+      ) {
+        (el as HTMLElement).style.display = "none";
+      }
+    });
+  });
+}
 
 const BASE_URL = process.env.BASE_URL ?? "http://localhost:3000";
-const VIEWPORT = { width: 1440, height: 900 };
 
-// Ordered per storyboard — maximum visual contrast between adjacent cuts
-const routes = [
-  { name: "landing", path: "/", hasChat: false },
-  { name: "primer", path: "/primer", hasChat: true },
-  { name: "neobrutalism", path: "/neobrutalism", hasChat: true },
-  { name: "carbon", path: "/carbon", hasChat: true },
-  { name: "nes", path: "/nes", hasChat: true },
-  { name: "polaris", path: "/polaris", hasChat: true },
-  { name: "retro", path: "/retro", hasChat: true },
-  { name: "daisyui", path: "/daisyui", hasChat: true },
-  { name: "mantine", path: "/mantine", hasChat: true },
-  { name: "win98", path: "/win98", hasChat: true },
-  { name: "chakra", path: "/chakra", hasChat: true },
-  { name: "winxp", path: "/winxp", hasChat: true },
-  { name: "papercss", path: "/papercss", hasChat: true },
-  { name: "pico", path: "/pico", hasChat: true },
-  { name: "antd", path: "/antd", hasChat: true },
-];
+const SIZE = process.env.RECORD_SIZE ?? "large"; // "large" (1440x900) or "small" (960x600)
+const VIEWPORT =
+  SIZE === "small"
+    ? { width: 960, height: 600 }
+    : { width: 1440, height: 900 };
 
-const RECORDINGS_DIR = path.resolve(__dirname, "..", "recordings");
+
+const RECORDINGS_DIR = path.resolve(
+  __dirname,
+  "..",
+  SIZE === "small" ? "recordings-sm" : "recordings"
+);
 
 /**
  * Try multiple selector strategies to find the chat bubble button.
  * Returns null if none found (e.g. landing page).
  */
 async function findChatBubble(page: Page) {
-  // Strategy 1: inline style with position: fixed + bottom (most pages)
-  const inlineFixed = page.locator(
-    'button[style*="position: fixed"][style*="bottom"]'
-  );
-  if ((await inlineFixed.count()) > 0) return inlineFixed.first();
-
-  // Strategy 2: Tailwind utility classes (neobrutalism)
-  const tailwindFixed = page.locator("button.fixed");
-  if ((await tailwindFixed.count()) > 0) return tailwindFixed.first();
-
-  // Strategy 3: parent div with fixed positioning wrapping a button
-  const parentFixed = page.locator(
-    'div[style*="position: fixed"][style*="bottom"] button'
-  );
-  if ((await parentFixed.count()) > 0) return parentFixed.first();
-
-  // Strategy 4: coordinate-based click as last resort
-  // Chat bubbles are always bottom-right, roughly 40px from edges
+  const bubble = page.locator('[data-testid="chat-bubble"]');
+  if ((await bubble.count()) > 0) return bubble.first();
   return null;
 }
 
 async function recordRoute(
   browser: Awaited<ReturnType<typeof chromium.launch>>,
-  route: (typeof routes)[number]
+  route: Route
 ) {
   const outDir = path.join(RECORDINGS_DIR, route.name);
   fs.mkdirSync(outDir, { recursive: true });
 
   const context = await browser.newContext({
     viewport: VIEWPORT,
+    deviceScaleFactor: 4,
     recordVideo: {
       dir: outDir,
       size: VIEWPORT,
@@ -88,6 +91,7 @@ async function recordRoute(
 
   // Let fonts, images, and animations settle
   await page.waitForTimeout(1500);
+  await hideNextDevTools(page);
 
   // Screenshot: dashboard only
   await page.screenshot({
@@ -110,6 +114,7 @@ async function recordRoute(
 
     // Wait for chat window open animation
     await page.waitForTimeout(1000);
+    await hideNextDevTools(page);
 
     // Screenshot: with chat open
     await page.screenshot({

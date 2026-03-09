@@ -250,6 +250,7 @@ export default function NeobrutalismDemo() {
       {/* FLOATING CHAT BUBBLE */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-base border-2 border-border bg-main text-main-foreground shadow-shadow flex items-center justify-center text-2xl font-heading cursor-pointer hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none transition-all"
         >
@@ -281,7 +282,7 @@ function ChatWindow({
   threadsOpen: boolean;
   setThreadsOpen: (v: boolean) => void;
 }) {
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
   const overlayRef = useRef<HTMLDivElement>(null);
 
   // Click outside to close threads overlay
@@ -500,17 +501,17 @@ function ChatWindow({
             )}
           />
           <MessageInput.Content className="flex gap-2 items-end">
-            <MessageInput.FileButton
-              render={<Button variant="neutral" size="icon" className="shrink-0" />}
-            >
-              📎
-            </MessageInput.FileButton>
             <div className="flex-1">
               <MessageInput.Textarea
                 placeholder="Type a message..."
                 render={<Textarea rows={2} />}
               />
             </div>
+            <MessageInput.FileButton
+              render={<Button variant="neutral" size="icon" className="shrink-0" />}
+            >
+              📎
+            </MessageInput.FileButton>
             <MessageInput.SubmitButton render={<Button className="shrink-0" />}>
               SEND
             </MessageInput.SubmitButton>

@@ -103,7 +103,7 @@ export default function PrimerDemo() {
   const [chatOpen, setChatOpen] = useState(false);
   const [threadsOpen, setThreadsOpen] = useState(false);
 
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -388,6 +388,7 @@ export default function PrimerDemo() {
       {/* Chat Bubble */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           onClick={() => setChatOpen(true)}
           style={{
             position: "fixed",

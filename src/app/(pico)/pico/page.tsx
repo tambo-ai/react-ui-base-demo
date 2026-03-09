@@ -24,7 +24,7 @@ export default function PicoDemo() {
   const threadsButtonRef = useRef<HTMLButtonElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
   const chatButtonRef = useRef<HTMLButtonElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   // Auto-switch to the most recent thread on initial load
   useEffect(() => {
@@ -334,6 +334,7 @@ function Chat() {
       {/* ── Floating Chat Bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           ref={chatButtonRef}
           onClick={() => setChatOpen(true)}
           style={{
@@ -529,7 +530,7 @@ function Chat() {
             </div>
 
             {/* Chat Input */}
-            <footer style={{ padding: 0 }}>
+            <footer style={{ padding: "8px 12px" }}>
               <MessageInput.Root>
                 <MessageInput.StagedImages />
                 <MessageInput.Content
@@ -571,17 +572,17 @@ function Chat() {
                   >
                     <MessageInput.FileButton
                       render={
-                        <button className="outline" type="button">
+                        <button className="outline" type="button" style={{ marginBottom: 0 }}>
                           File
                         </button>
                       }
                     />
                     <MessageInput.SubmitButton
-                      render={<button type="submit">Send</button>}
+                      render={<button type="submit" style={{ marginBottom: 0 }}>Send</button>}
                     />
                     <MessageInput.StopButton
                       render={
-                        <button className="secondary" type="button">
+                        <button className="secondary" type="button" style={{ marginBottom: 0 }}>
                           Stop
                         </button>
                       }

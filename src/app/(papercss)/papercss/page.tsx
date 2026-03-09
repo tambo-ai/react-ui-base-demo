@@ -20,7 +20,7 @@ export default function PaperCSSDemo() {
   const [threadsOpen, setThreadsOpen] = useState(false);
   const threadsRef = useRef<HTMLDivElement>(null);
   const chatRef = useRef<HTMLDivElement>(null);
-  const { ref: scrollRef } = useScrollToBottom(500);
+  const { ref: scrollRef } = useScrollToBottom();
 
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
@@ -318,6 +318,7 @@ export default function PaperCSSDemo() {
       {/* ── Floating Chat Bubble ── */}
       {!chatOpen && (
         <button
+          data-testid="chat-bubble"
           className="btn btn-primary paper"
           onClick={() => setChatOpen(true)}
           style={{
