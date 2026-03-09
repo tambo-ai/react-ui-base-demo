@@ -6,7 +6,8 @@
  *   2. Open chat bubble
  *   3. Type "show me hn posts" and submit
  *   4. Wait for the LLM response + HN component to render
- *   5. Hold 10s extra, then stop
+ *   5. Wait 20s for response to settle
+ *   6. Scroll through chat for video, take screenshots, then stop
  *
  * Usage:
  *   RECORD_SIZE=small npx tsx scripts/record-chat.ts   # 960x600
@@ -53,30 +54,89 @@ const OUT_DIR = path.resolve(
 /** Hide the Next.js dev tools overlay so it doesn't appear in recordings. */
 async function hideNextDevTools(page: Page) {
   await page.evaluate(() => {
-    // Hide the Next.js dev indicator and error overlay
-    const selectors = [
-      "nextjs-portal",
-      "[data-nextjs-dialog-overlay]",
-      "[data-nextjs-toast]",
-      "#__next-build-indicator",
-      "#__next-build-watcher",
-    ];
-    for (const sel of selectors) {
-      document.querySelectorAll(sel).forEach((el) => {
-        (el as HTMLElement).style.display = "none";
-      });
-    }
-    // Also hide by shadow DOM — the N indicator
-    const allElements = document.querySelectorAll("*");
-    allElements.forEach((el) => {
+    document
+      .querySelectorAll(
+        'nextjs-portal, [data-nextjs-dialog-overlay], [data-nextjs-toast], #__next-build-indicator, #__next-build-watcher'
+      )
+      .forEach((el) => ((el as HTMLElement).style.display = "none"));
+    document.querySelectorAll("*").forEach((el) => {
       if (
         el.shadowRoot &&
         el.tagName.toLowerCase().startsWith("nextjs-portal")
-      ) {
+      )
         (el as HTMLElement).style.display = "none";
-      }
     });
   });
+}
+
+/** Find the scrollable chat container ancestor of thread-content. */
+function scrollChatJS(action: "top" | "bottom" | "down20") {
+  return `(() => {
+    const tc = document.querySelector('[data-slot="thread-content"]');
+    if (!tc) return false;
+    let el = tc;
+    while (el) {
+      const style = getComputedStyle(el);
+      if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+        ${
+          action === "top"
+            ? "el.scrollTop = 0; return true;"
+            : action === "bottom"
+              ? "el.scrollTop = el.scrollHeight; return true;"
+              : "el.scrollTop += 20; return el.scrollTop + el.clientHeight >= el.scrollHeight - 5;"
+        }
+      }
+      el = el.parentElement;
+    }
+    return false;
+  })()`;
+}
+
+async function scrollAndScreenshot(page: Page, outDir: string) {
+  // Scroll to bottom first
+  await page.evaluate(scrollChatJS("bottom"));
+  await page.waitForTimeout(1000);
+  await hideNextDevTools(page);
+
+  // Main screenshot (at bottom showing HN component)
+  await page.screenshot({
+    path: path.join(outDir, "chat-response.png"),
+    fullPage: false,
+  });
+  console.log(`    -> chat-response.png`);
+
+  // Scroll up in steps, capturing additional screenshots
+  let shotIndex = 1;
+  for (let i = 0; i < 10; i++) {
+    const didScroll = await page.evaluate(`(() => {
+      const tc = document.querySelector('[data-slot="thread-content"]');
+      if (!tc) return false;
+      let el = tc;
+      while (el) {
+        const style = getComputedStyle(el);
+        if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight) {
+          const prev = el.scrollTop;
+          el.scrollTop = Math.max(0, el.scrollTop - 200);
+          return el.scrollTop < prev;
+        }
+        el = el.parentElement;
+      }
+      return false;
+    })()`);
+    if (!didScroll) break;
+
+    await page.waitForTimeout(300);
+    await hideNextDevTools(page);
+    await page.screenshot({
+      path: path.join(outDir, `chat-scroll-${shotIndex}.png`),
+      fullPage: false,
+    });
+    console.log(`    -> chat-scroll-${shotIndex}.png`);
+    shotIndex++;
+  }
+
+  // Scroll back to bottom
+  await page.evaluate(scrollChatJS("bottom"));
 }
 
 async function recordChat(
@@ -115,7 +175,9 @@ async function recordChat(
   // Type the message — prefer data-slot, fall back to generic textarea
   let textarea = page.locator('[data-slot="message-input-textarea"]');
   if ((await textarea.count()) === 0) {
-    textarea = page.locator('[data-slot="message-input-root"] textarea').first();
+    textarea = page
+      .locator('[data-slot="message-input-root"] textarea')
+      .first();
   }
   if ((await textarea.count()) === 0) {
     textarea = page.locator("textarea").first();
@@ -127,45 +189,52 @@ async function recordChat(
   // Submit — prefer data-slot, fall back to aria-label/text
   let sendBtn = page.locator('[data-slot="message-input-submit"]');
   if ((await sendBtn.count()) === 0) {
-    sendBtn = page.locator(
-      '[data-slot="message-input-root"] button[aria-label="Send"], [data-slot="message-input-root"] button[type="submit"]'
-    ).first();
+    sendBtn = page
+      .locator(
+        '[data-slot="message-input-root"] button[aria-label="Send"], [data-slot="message-input-root"] button[type="submit"]'
+      )
+      .first();
   }
   await sendBtn.click();
   console.log(`    -> submitted`);
 
-  // Wait for the HN component to appear (up to 2 minutes)
+  // Wait for the actual HN component to render (look for "pts" + "comments"
+  // which only appear in the rendered HackerNewsPosts component)
   try {
     await page.waitForFunction(
       () => {
         const body = document.body.innerText;
-        return (
-          body.includes("Hacker News") ||
-          body.includes("hacker news") ||
-          body.includes("HN") ||
-          document.querySelectorAll('[class*="hn"], [class*="hacker"]').length >
-            0
-        );
+        return body.includes(" pts") && body.includes(" comments");
       },
-      { timeout: 120000 }
+      { timeout: 180000 }
     );
-    console.log(`    -> LLM response with HN component rendered`);
+    console.log(`    -> HN component rendered`);
   } catch {
     console.log(`    -> WARNING: timed out waiting for HN component`);
   }
 
+  // Wait 20s for the response to fully settle
+  console.log(`    -> waiting 20s for response to settle...`);
+  await page.waitForTimeout(20000);
+
   await hideNextDevTools(page);
 
-  // Take a screenshot of the final state
-  await page.screenshot({
-    path: path.join(outDir, "chat-response.png"),
-    fullPage: false,
-  });
-  console.log(`    -> chat-response.png`);
+  // Scroll through chat and take screenshots
+  await scrollAndScreenshot(page, outDir);
 
-  // Hold for 10 more seconds
-  console.log(`    -> waiting 10s...`);
-  await page.waitForTimeout(10000);
+  // Slowly scroll through entire chat for the video
+  console.log(`    -> scrolling chat for video...`);
+  await page.evaluate(scrollChatJS("top"));
+  await page.waitForTimeout(1000);
+
+  for (let i = 0; i < 50; i++) {
+    const atBottom = await page.evaluate(scrollChatJS("down20"));
+    await page.waitForTimeout(100);
+    if (atBottom) break;
+  }
+
+  // Hold at bottom
+  await page.waitForTimeout(3000);
 
   // Close context to finalize video
   await context.close();
