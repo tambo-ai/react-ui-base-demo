@@ -9,7 +9,8 @@ import {
   ToolcallInfo,
 } from "@tambo-ai/react-ui-base";
 import { useTambo, useTamboThreadList } from "@tambo-ai/react";
-import Link from "next/link";
+import { useScrollToBottom } from "@/components/chat-layout";
+import { useState, useEffect, useRef, PropsWithChildren } from "react";
 import {
   Button,
   Textarea,
@@ -17,51 +18,301 @@ import {
   Loader,
   Alert,
   Text,
+  Title,
   NavLink,
   Stack,
   Group,
   Paper,
-  Anchor,
-  Breadcrumbs,
   Code,
   ActionIcon,
-  Collapse,
+  Badge,
+  Progress,
+  Avatar,
+  SimpleGrid,
+  ThemeIcon,
 } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { ChatLayout } from "@/components/chat-layout";
-import { PropsWithChildren, useEffect } from "react";
+
+/* ------------------------------------------------------------------ */
+/*  Dashboard data                                                     */
+/* ------------------------------------------------------------------ */
+
+const projects = [
+  {
+    name: "Website Redesign",
+    status: "In Progress",
+    statusColor: "blue",
+    progress: 68,
+    tasks: "17 / 25",
+    due: "Mar 22",
+    members: ["AK", "SL", "JW"],
+  },
+  {
+    name: "Mobile App v2",
+    status: "Review",
+    statusColor: "yellow",
+    progress: 85,
+    tasks: "34 / 40",
+    due: "Mar 15",
+    members: ["RD", "TP"],
+  },
+  {
+    name: "API Migration",
+    status: "On Track",
+    statusColor: "green",
+    progress: 42,
+    tasks: "8 / 19",
+    due: "Apr 10",
+    members: ["MN", "AK", "RD", "JW"],
+  },
+  {
+    name: "Design System",
+    status: "At Risk",
+    statusColor: "red",
+    progress: 25,
+    tasks: "5 / 20",
+    due: "Apr 30",
+    members: ["SL", "TP"],
+  },
+];
+
+const teamMembers = [
+  { initials: "AK", name: "Alice Kim", role: "Lead Engineer", color: "blue" },
+  { initials: "SL", name: "Sam Lee", role: "Designer", color: "grape" },
+  { initials: "JW", name: "Jamie Wu", role: "Frontend Dev", color: "teal" },
+  { initials: "RD", name: "Raj Desai", role: "Backend Dev", color: "orange" },
+  { initials: "TP", name: "Tara Park", role: "PM", color: "pink" },
+];
+
+/* ------------------------------------------------------------------ */
+/*  Main page component                                                */
+/* ------------------------------------------------------------------ */
 
 export default function MantineDemo() {
   const { currentThreadId, switchThread } = useTambo();
   const { data } = useTamboThreadList();
+  const [chatOpen, setChatOpen] = useState(false);
+  const [threadsOpen, setThreadsOpen] = useState(false);
+  const threadsRef = useRef<HTMLDivElement>(null);
+  const { ref: chatScrollRef } = useScrollToBottom();
 
-  // On initial load, currentThreadId is "placeholder" which doesn't match any
-  // real thread ID in the sidebar list. Auto-switch to the most recent thread
-  // so the sidebar highlights it correctly.
   useEffect(() => {
     if (currentThreadId === "placeholder" && data?.threads?.length) {
       switchThread(data.threads[0].id);
     }
   }, [currentThreadId, data?.threads, switchThread]);
 
+  // Click-outside to close threads overlay
+  useEffect(() => {
+    if (!threadsOpen) return;
+    function handleClick(e: MouseEvent) {
+      if (
+        threadsRef.current &&
+        !threadsRef.current.contains(e.target as Node)
+      ) {
+        setThreadsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [threadsOpen]);
+
   return (
-    <ChatLayout.Root
-      style={{ height: "100vh" }}
-      colors={{ border: "#dee2e6" }}
-    >
-      <ChatLayout.Content>
-        <ChatLayout.Breadcrumb>
-          <Breadcrumbs>
-            <Anchor component={Link} href="/">
-              Home
-            </Anchor>
-            <Anchor component={Link} href="#" aria-current="page">
-              Mantine
-            </Anchor>
-          </Breadcrumbs>
-        </ChatLayout.Breadcrumb>
-        <ChatLayout.MessageArea padding="normal">
-          <ChatLayout.Container size="medium">
+    <div style={{ minHeight: "100vh", background: "#f8f9fa" }}>
+      {/* ---------- Header ---------- */}
+      <Paper
+        shadow="xs"
+        p="sm"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 100,
+          background: "#fff",
+          borderBottom: "1px solid #dee2e6",
+        }}
+      >
+        <Group justify="space-between">
+          <Group gap="sm">
+            <ThemeIcon size="lg" radius="md" variant="gradient" gradient={{ from: "indigo", to: "cyan" }}>
+              <Text size="sm" fw={700}>T</Text>
+            </ThemeIcon>
+            <Title order={3}>Tambo Projects</Title>
+          </Group>
+          <Button
+            variant="light"
+            size="sm"
+            onClick={() => setThreadsOpen((o) => !o)}
+          >
+            Threads
+          </Button>
+        </Group>
+      </Paper>
+
+      {/* ---------- Threads overlay ---------- */}
+      {threadsOpen && (
+        <div
+          ref={threadsRef}
+          style={{
+            position: "fixed",
+            top: 60,
+            right: 16,
+            width: 300,
+            maxHeight: "70vh",
+            zIndex: 200,
+            overflow: "auto",
+          }}
+        >
+          <Paper shadow="md" radius="md" p="md" withBorder>
+            <Text fw={600} size="lg" mb="sm">
+              Threads
+            </Text>
+            <ThreadHistory.Root>
+              <ThreadHistory.NewThreadButton
+                render={<Button size="xs" variant="light" mb="sm" fullWidth />}
+              >
+                + New thread
+              </ThreadHistory.NewThreadButton>
+              <ThreadHistory.List
+                render={(_props, state) => (
+                  <Stack gap={0}>
+                    {state.filteredThreads.map((thread) => (
+                      <ThreadHistory.Item
+                        key={thread.id}
+                        thread={thread}
+                        render={({ children, ...props }, { isActive }) => (
+                          <NavLink
+                            active={isActive}
+                            label={children}
+                            onClick={props.onClick}
+                            style={{ cursor: "pointer" }}
+                          />
+                        )}
+                      />
+                    ))}
+                  </Stack>
+                )}
+              />
+            </ThreadHistory.Root>
+          </Paper>
+        </div>
+      )}
+
+      {/* ---------- Dashboard content ---------- */}
+      <div style={{ maxWidth: 1100, margin: "0 auto", padding: "24px 16px" }}>
+        {/* Project cards */}
+        <Title order={4} mb="md">
+          Projects
+        </Title>
+        <SimpleGrid cols={{ base: 1, sm: 2 }} spacing="md" mb="xl">
+          {projects.map((p) => (
+            <Card key={p.name} shadow="sm" radius="md" withBorder padding="lg">
+              <Group justify="space-between" mb="xs">
+                <Text fw={600}>{p.name}</Text>
+                <Badge color={p.statusColor} variant="light">
+                  {p.status}
+                </Badge>
+              </Group>
+              <Progress value={p.progress} size="sm" radius="xl" mb="sm" color={p.statusColor} />
+              <Group justify="space-between">
+                <Text size="sm" c="dimmed">
+                  Tasks: {p.tasks}
+                </Text>
+                <Text size="sm" c="dimmed">
+                  Due: {p.due}
+                </Text>
+              </Group>
+              <Group gap={4} mt="sm">
+                {p.members.map((m) => (
+                  <Avatar key={m} size="sm" radius="xl" color="blue">
+                    {m}
+                  </Avatar>
+                ))}
+              </Group>
+            </Card>
+          ))}
+        </SimpleGrid>
+
+        {/* Team members */}
+        <Title order={4} mb="md">
+          Team
+        </Title>
+        <SimpleGrid cols={{ base: 2, sm: 3, md: 5 }} spacing="md">
+          {teamMembers.map((m) => (
+            <Card key={m.initials} shadow="sm" radius="md" withBorder padding="md" style={{ textAlign: "center" }}>
+              <Avatar size="lg" radius="xl" mx="auto" mb="xs" color={m.color}>
+                {m.initials}
+              </Avatar>
+              <Text fw={500} size="sm">
+                {m.name}
+              </Text>
+              <Text size="xs" c="dimmed">
+                {m.role}
+              </Text>
+            </Card>
+          ))}
+        </SimpleGrid>
+      </div>
+
+      {/* ---------- Floating chat bubble ---------- */}
+      {!chatOpen && (
+        <ActionIcon
+          data-testid="chat-bubble"
+          size={56}
+          radius="xl"
+          variant="filled"
+          color="blue"
+          onClick={() => setChatOpen(true)}
+          style={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            zIndex: 150,
+            boxShadow: "0 4px 12px rgba(0,0,0,.15)",
+          }}
+          aria-label="Open chat"
+        >
+          <Text size="xl">💬</Text>
+        </ActionIcon>
+      )}
+
+      {/* ---------- Chat window ---------- */}
+      {chatOpen && (
+        <Paper
+          shadow="xl"
+          radius="md"
+          withBorder
+          style={{
+            position: "fixed",
+            bottom: 24,
+            right: 24,
+            width: 400,
+            height: 520,
+            zIndex: 150,
+            display: "flex",
+            flexDirection: "column",
+            overflow: "hidden",
+          }}
+        >
+          {/* Chat header */}
+          <Group
+            justify="space-between"
+            p="sm"
+            style={{ borderBottom: "1px solid #dee2e6", flexShrink: 0 }}
+          >
+            <Text fw={600}>Chat</Text>
+            <ActionIcon variant="subtle" onClick={() => setChatOpen(false)} aria-label="Close chat">
+              ✕
+            </ActionIcon>
+          </Group>
+
+          {/* Messages */}
+          <div
+            ref={chatScrollRef}
+            style={{
+              flex: "1 1 auto",
+              overflowY: "auto",
+              padding: 12,
+            }}
+          >
             <ThreadContent.Root
               style={{ display: "flex", flexDirection: "column" }}
             >
@@ -184,96 +435,68 @@ export default function MantineDemo() {
                 )}
               />
             </ThreadContent.Root>
-          </ChatLayout.Container>
-        </ChatLayout.MessageArea>
-      </ChatLayout.Content>
-      <ChatLayout.InputArea padding="normal">
-        <ChatLayout.Container size="medium">
-          <MessageInput.Root>
-            <MessageInput.StagedImages />
-            <MessageInput.Content render={<Group align="start" gap="sm" />}>
-              <div style={{ flex: "1 1 auto" }}>
-                <MessageInput.Error
-                  render={(props) => (
-                    <Alert color="red" mb="xs" {...props} />
-                  )}
-                />
-                <MessageInput.Textarea
-                  placeholder="Type a message..."
-                  render={<Textarea autosize minRows={2} maxRows={4} />}
-                />
-              </div>
-              <Group gap="xs">
-                <MessageInput.FileButton
-                  render={
-                    <ActionIcon variant="default" aria-label="Attach File">
-                      📎
-                    </ActionIcon>
-                  }
-                />
-                <MessageInput.SubmitButton
-                  render={
-                    <ActionIcon
-                      variant="filled"
-                      color="blue"
-                      type="submit"
-                      aria-label="Send"
-                    >
-                      ➤
-                    </ActionIcon>
-                  }
-                />
-                <MessageInput.StopButton
-                  render={
-                    <ActionIcon
-                      variant="filled"
-                      color="red"
-                      aria-label="Stop"
-                    >
-                      ■
-                    </ActionIcon>
-                  }
-                />
-              </Group>
-            </MessageInput.Content>
-          </MessageInput.Root>
-        </ChatLayout.Container>
-      </ChatLayout.InputArea>
-      <ChatLayout.Sidebar divider>
-        <ThreadHistory.Root>
-          <Text fw={600} size="lg" mb="sm">
-            Threads
-          </Text>
-          <ThreadHistory.NewThreadButton
-            render={<Button size="xs" variant="light" mb="sm" />}
-          >
-            + New thread
-          </ThreadHistory.NewThreadButton>
-          <ThreadHistory.List
-            render={(props, state) => (
-              <Stack gap={0} {...props}>
-                {state.filteredThreads.map((thread) => (
-                  <ThreadHistory.Item
-                    key={thread.id}
-                    thread={thread}
-                    render={({ children, ...props }, { isActive }) => (
-                      <NavLink
-                        active={isActive}
-                        label={children}
-                        onClick={props.onClick}
-                        style={{ cursor: "pointer" }}
-                      />
+          </div>
+
+          {/* Input area */}
+          <div style={{ borderTop: "1px solid #dee2e6", padding: 8, flexShrink: 0 }}>
+            <MessageInput.Root>
+              <MessageInput.StagedImages />
+              <MessageInput.Content render={<Group align="start" gap="sm" />}>
+                <div style={{ flex: "1 1 auto" }}>
+                  <MessageInput.Error
+                    render={(props) => (
+                      <Alert color="red" mb="xs" {...props} />
                     )}
                   />
-                ))}
-              </Stack>
-            )}
-          />
-        </ThreadHistory.Root>
-      </ChatLayout.Sidebar>
-    </ChatLayout.Root>
+                  <MessageInput.Textarea
+                    placeholder="Type a message..."
+                    render={<Textarea autosize minRows={2} maxRows={4} />}
+                  />
+                </div>
+                <Group gap="xs">
+                  <MessageInput.FileButton
+                    render={
+                      <ActionIcon variant="default" aria-label="Attach File">
+                        📎
+                      </ActionIcon>
+                    }
+                  />
+                  <MessageInput.SubmitButton
+                    render={
+                      <ActionIcon
+                        variant="filled"
+                        color="blue"
+                        type="submit"
+                        aria-label="Send"
+                      >
+                        ➤
+                      </ActionIcon>
+                    }
+                  />
+                  <MessageInput.StopButton
+                    render={
+                      <ActionIcon
+                        variant="filled"
+                        color="red"
+                        aria-label="Stop"
+                      >
+                        ■
+                      </ActionIcon>
+                    }
+                  />
+                </Group>
+              </MessageInput.Content>
+            </MessageInput.Root>
+          </div>
+        </Paper>
+      )}
+    </div>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/*  Helper components (kept from original)                             */
+/* ------------------------------------------------------------------ */
 
 function MessageContent({
   role,
