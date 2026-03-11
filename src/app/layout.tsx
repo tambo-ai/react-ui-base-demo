@@ -21,8 +21,8 @@ export default function RootLayout({
         <style
           dangerouslySetInnerHTML={{
             __html: `
-              html { font-size: 16px !important; -webkit-text-size-adjust: 100%; }
-              body { margin: 0 !important; padding: 0 !important; font-size: 16px !important; }
+              html { font-size: 16px !important; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+              body { margin: 0 !important; padding: 0 !important; font-size: 16px !important; overflow-x: hidden; }
             `,
           }}
         />
