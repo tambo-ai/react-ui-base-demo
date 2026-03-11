@@ -3,7 +3,8 @@ import { Providers } from "./providers";
 
 export const metadata: Metadata = {
   title: "Tambo UI Demo",
-  description: "Tambo headless AI chat across 6 UI libraries",
+  description:
+    "The same headless AI chat skinned with 14 different design systems — built with @tambo-ai/react-ui-base",
 };
 
 export default function RootLayout({
