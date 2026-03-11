@@ -298,7 +298,7 @@ function ChatWindow({
   }, [threadsOpen, setThreadsOpen]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-[420px] max-w-[calc(100vw-48px)] h-[600px] max-h-[calc(100vh-48px)] flex flex-col rounded-base border-2 border-border shadow-shadow bg-background overflow-hidden">
+    <div className="fixed bottom-6 right-6 z-50 w-[440px] max-w-[calc(100vw-48px)] h-[620px] max-h-[calc(100vh-48px)] flex flex-col rounded-base border-2 border-border shadow-shadow bg-background overflow-hidden">
       {/* Chat header */}
       <div className="flex items-center justify-between px-4 py-3 border-b-2 border-border bg-secondary-background shrink-0">
         <div className="flex items-center gap-2">

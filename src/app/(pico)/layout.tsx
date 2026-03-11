@@ -6,5 +6,5 @@ export default function PicoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div style={{ height: "100vh" }}>{children}</div>;
+  return <div style={{ height: "100vh", fontSize: "1rem" }}>{children}</div>;
 }

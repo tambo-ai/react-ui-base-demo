@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 const skins = [
   {
@@ -101,87 +101,241 @@ const skins = [
   },
 ];
 
+const LINKS = [
+  { label: "Component Library", href: "https://ui.tambo.co" },
+  { label: "Docs", href: "https://docs.tambo.co" },
+  { label: "GitHub", href: "https://github.com/tambo-ai/tambo" },
+  { label: "Discord", href: "https://discord.gg/dJNvPEHth6" },
+];
+
+function isDark(bg: string) {
+  const hex = bg.replace("#", "");
+  const r = parseInt(hex.substring(0, 2), 16);
+  const g = parseInt(hex.substring(2, 4), 16);
+  const b = parseInt(hex.substring(4, 6), 16);
+  return r * 0.299 + g * 0.587 + b * 0.114 < 128;
+}
+
 export default function Home() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: "48px 32px",
-        fontFamily: "system-ui, -apple-system, sans-serif",
-        maxWidth: 960,
-        margin: "0 auto",
-      }}
-    >
-      <h1 style={{ fontSize: 32, fontWeight: 700, marginBottom: 8 }}>
-        Tambo UI Demo
-      </h1>
-      <p style={{ fontSize: 18, color: "#666", marginBottom: 40 }}>
-        The same headless AI chat — {skins.length} different design systems. Pick a skin to
-        see it in action.
-      </p>
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: 20,
-        }}
-      >
-        {skins.map((skin) => (
-          <a
-            key={skin.href}
-            href={skin.href}
-            style={{
-              display: "block",
-              textDecoration: "none",
-              border: "1px solid #ddd",
-              borderRadius: 12,
-              padding: 24,
-              backgroundColor: skin.bg,
-              transition: "transform 0.15s, box-shadow 0.15s",
-              color: "inherit",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = "translateY(-2px)";
-              e.currentTarget.style.boxShadow =
-                "0 4px 12px rgba(0,0,0,0.1)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = "";
-              e.currentTarget.style.boxShadow = "";
-            }}
-          >
-            <div
-              style={{
-                width: 40,
-                height: 6,
-                borderRadius: 3,
-                backgroundColor: skin.color,
-                marginBottom: 16,
-              }}
-            />
-            <h2
-              style={{
-                fontSize: 20,
-                fontWeight: 600,
-                margin: "0 0 8px",
-                color: ["#ff6a00", "#ff00ff"].includes(skin.color) ? "#333" : skin.color,
-              }}
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Sans:wght@400;500&display=swap');
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: #fafaf8; }
+
+        .skin-card {
+          display: block;
+          text-decoration: none;
+          border-radius: 10px;
+          padding: 22px;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          color: inherit;
+          position: relative;
+        }
+        .skin-card:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+        }
+
+        .link-subtle {
+          color: #888;
+          text-decoration: none;
+          transition: color 0.15s;
+        }
+        .link-subtle:hover { color: #333; }
+
+        .skin-grid {
+          display: grid;
+          gap: 14px;
+          grid-template-columns: repeat(2, 1fr);
+        }
+        @media (min-width: 580px) {
+          .skin-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (min-width: 820px) {
+          .skin-grid { grid-template-columns: repeat(4, 1fr); }
+        }
+        @media (min-width: 1080px) {
+          .skin-grid { grid-template-columns: repeat(5, 1fr); }
+        }
+      `}</style>
+
+      <main style={{ minHeight: "100vh", fontFamily: "'DM Sans', sans-serif" }}>
+        {/* Header */}
+        <header style={{ padding: "40px 32px 0", maxWidth: 1200, margin: "0 auto" }}>
+          <div style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: 16,
+            marginBottom: 32,
+          }}>
+            <a
+              href="https://tambo.co"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none" }}
             >
-              {skin.name}
-            </h2>
-            <p
-              style={{
-                fontSize: 14,
-                color: skin.bg === "#050505" || skin.bg === "#1a103c" ? "#999" : "#666",
-                margin: 0,
-                lineHeight: 1.5,
-              }}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/octo-icon.svg"
+                alt="Tambo"
+                width={36}
+                height={36}
+                style={{ borderRadius: 8 }}
+              />
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/tambo-wordmark.svg"
+                alt="Tambo"
+                height={20}
+                style={{ opacity: 0.85 }}
+              />
+            </a>
+
+            <nav style={{ display: "flex", gap: 20, alignItems: "center", flexWrap: "wrap" }}>
+              {LINKS.map((link) => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="link-subtle"
+                  style={{ fontSize: 14 }}
+                >
+                  {link.label}
+                </a>
+              ))}
+            </nav>
+          </div>
+
+          <h1 style={{
+            fontFamily: "'Newsreader', Georgia, serif",
+            fontSize: 38,
+            fontWeight: 400,
+            letterSpacing: "-0.02em",
+            color: "#1a1a1a",
+            marginBottom: 10,
+            lineHeight: 1.2,
+          }}>
+            One headless chat,{" "}
+            <em style={{ fontStyle: "italic" }}>{skins.length} design systems</em>
+          </h1>
+          <p style={{
+            fontSize: 16,
+            color: "#777",
+            marginBottom: 36,
+            lineHeight: 1.6,
+            maxWidth: 520,
+          }}>
+            The same AI chat built with{" "}
+            <a
+              href="https://www.npmjs.com/package/@tambo-ai/react-ui-base"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#555", textDecoration: "underline", textUnderlineOffset: 3 }}
             >
-              {skin.description}
-            </p>
-          </a>
-        ))}
-      </div>
-    </main>
+              @tambo-ai/react-ui-base
+            </a>{" "}
+            — pick a skin to see it in action.
+          </p>
+        </header>
+
+        {/* Grid */}
+        <section style={{ padding: "0 32px 48px", maxWidth: 1200, margin: "0 auto" }}>
+          <div className="skin-grid">
+            {skins.map((skin) => {
+              const dark = isDark(skin.bg);
+              return (
+                <a
+                  key={skin.href}
+                  href={skin.href}
+                  className="skin-card"
+                  style={{
+                    backgroundColor: skin.bg,
+                    border: dark ? "1px solid rgba(255,255,255,0.08)" : "1px solid rgba(0,0,0,0.08)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 32,
+                      height: 5,
+                      borderRadius: 3,
+                      backgroundColor: skin.color,
+                      marginBottom: 14,
+                      opacity: 0.75,
+                    }}
+                  />
+                  <h2
+                    style={{
+                      fontFamily: "'DM Sans', sans-serif",
+                      fontSize: 16,
+                      fontWeight: 500,
+                      margin: "0 0 6px",
+                      color: dark ? "#fff" : "#1a1a1a",
+                    }}
+                  >
+                    {skin.name}
+                  </h2>
+                  <p
+                    style={{
+                      fontSize: 13,
+                      color: dark ? "rgba(255,255,255,0.55)" : "rgba(0,0,0,0.45)",
+                      margin: 0,
+                      lineHeight: 1.45,
+                    }}
+                  >
+                    {skin.description}
+                  </p>
+                </a>
+              );
+            })}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer style={{
+          padding: "20px 32px",
+          maxWidth: 1200,
+          margin: "0 auto",
+          borderTop: "1px solid rgba(0,0,0,0.06)",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          flexWrap: "wrap",
+          gap: 12,
+        }}>
+          <span style={{ fontSize: 13, color: "#aaa" }}>
+            Built with{" "}
+            <a
+              href="https://github.com/tambo-ai/tambo"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="link-subtle"
+            >
+              Tambo
+            </a>
+            {" — "}open-source generative UI for React
+          </span>
+          <div style={{ display: "flex", gap: 16 }}>
+            {LINKS.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="link-subtle"
+                style={{ fontSize: 13 }}
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </footer>
+      </main>
+    </>
   );
 }
