@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "Tambo UI Demo",
   description:
     "The same headless AI chat skinned with 14 different design systems — built with @tambo-ai/react-ui-base",
+  icons: {
+    icon: "/octo-icon.svg",
+  },
 };
 
 export default function RootLayout({
