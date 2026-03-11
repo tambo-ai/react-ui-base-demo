@@ -291,8 +291,8 @@ export default function ChakraDemo() {
           position="fixed"
           bottom="24px"
           right="24px"
-          w="400px"
-          maxH="600px"
+          w="440px"
+          maxH="640px"
           zIndex={25}
           boxShadow="2xl"
           borderRadius="xl"

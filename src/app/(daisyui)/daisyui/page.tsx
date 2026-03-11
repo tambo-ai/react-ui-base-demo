@@ -337,8 +337,8 @@ export default function DaisyUIDemo() {
       {chatOpen && (
         <div
           ref={chatRef}
-          className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] card bg-base-100 shadow-2xl border border-base-content/10 flex flex-col"
-          style={{ height: 520, maxHeight: "calc(100vh - 3rem)" }}
+          className="fixed bottom-6 right-6 z-50 w-[420px] max-w-[calc(100vw-2rem)] card bg-base-100 shadow-2xl border border-base-content/10 flex flex-col"
+          style={{ height: 580, maxHeight: "calc(100vh - 3rem)" }}
         >
           {/* Chat header */}
           <div className="card-body p-3 pb-0 flex-none">
