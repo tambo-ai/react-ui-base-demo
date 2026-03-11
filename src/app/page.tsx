@@ -1,5 +1,7 @@
 "use client";
 
+import "./landing.css";
+
 const skins = [
   {
     name: "GitHub Primer",
@@ -118,50 +120,6 @@ function isDark(bg: string) {
 
 export default function Home() {
   return (
-    <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=DM+Sans:wght@400;500&display=swap');
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: #fafaf8; }
-
-        .skin-card {
-          display: block;
-          text-decoration: none;
-          border-radius: 10px;
-          padding: 22px;
-          transition: transform 0.2s ease, box-shadow 0.2s ease;
-          color: inherit;
-          position: relative;
-        }
-        .skin-card:hover {
-          transform: translateY(-3px);
-          box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-        }
-
-        .link-subtle {
-          color: #888;
-          text-decoration: none;
-          transition: color 0.15s;
-        }
-        .link-subtle:hover { color: #333; }
-
-        .skin-grid {
-          display: grid;
-          gap: 14px;
-          grid-template-columns: repeat(2, 1fr);
-        }
-        @media (min-width: 580px) {
-          .skin-grid { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (min-width: 820px) {
-          .skin-grid { grid-template-columns: repeat(4, 1fr); }
-        }
-        @media (min-width: 1080px) {
-          .skin-grid { grid-template-columns: repeat(5, 1fr); }
-        }
-      `}</style>
-
       <main style={{ minHeight: "100vh", fontFamily: "'DM Sans', sans-serif" }}>
         {/* Header */}
         <header style={{ padding: "40px 32px 0", maxWidth: 1200, margin: "0 auto" }}>
@@ -336,6 +294,5 @@ export default function Home() {
           </div>
         </footer>
       </main>
-    </>
   );
 }
