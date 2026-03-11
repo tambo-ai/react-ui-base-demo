@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Providers } from "./providers";
+import "./globals.css";
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -17,16 +18,6 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <head>
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              html { font-size: 16px !important; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
-              body { margin: 0 !important; padding: 0 !important; font-size: 16px !important; overflow-x: hidden; }
-            `,
-          }}
-        />
-      </head>
       <body>
         <Providers>{children}</Providers>
       </body>
