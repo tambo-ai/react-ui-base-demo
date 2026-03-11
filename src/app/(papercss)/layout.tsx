@@ -7,7 +7,7 @@ export default function PaperCSSLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ height: "100vh", fontSize: "1rem" }}>
       {/* Load Neucha handwritten font for Paper CSS */}
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link

@@ -6,5 +6,5 @@ export default function CarbonLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="cds--layer-one">{children}</div>;
+  return <div className="cds--layer-one" style={{ fontSize: "0.875rem" }}>{children}</div>;
 }
